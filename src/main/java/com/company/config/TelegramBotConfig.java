@@ -18,6 +18,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Slf4j
 public class TelegramBotConfig extends TelegramLongPollingBot {
 
+    //test
     @Autowired
     @Lazy
     private MessageController messageController;
