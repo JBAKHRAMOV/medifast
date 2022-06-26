@@ -1,13 +1,14 @@
 package com.company.controller;
 
 import com.company.config.TelegramBotConfig;
-import com.company.entity.BotUsersEntity;
+import com.company.dto.BotUsersDTO;
 import com.company.entity.QuestionnaireEntity;
 import com.company.enums.UserQuestionnaireStatus;
-import com.company.enums.UserStatus;
 import com.company.service.BotUsersService;
 import com.company.service.MessageService;
 import com.company.service.QuestionnaireService;
+import com.company.util.button.ButtonUtil;
+import com.company.util.button.InlineButtonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
-import static com.company.enums.UserStatus.*;
+import static com.company.enums.UserStatus.FILL_FORM;
 
 
 @Controller
@@ -23,68 +24,44 @@ import static com.company.enums.UserStatus.*;
 @RequiredArgsConstructor
 public class MessageController {
     @Lazy
-    private final MessageService messageService;
-    @Lazy
     private final TelegramBotConfig telegramBotConfig;
-    private final BotUsersService botUsersService;
     private final QuestionnaireService questionnaireService;
 
     public void messageController(Message message) {
+        String text = "";
 
-        if (message.getText() == null && !message.hasContact()) {
-            var sendMessage = new SendMessage();
-            sendMessage.setChatId(String.valueOf(message.getChatId()));
-
-            sendMessage.setText("""
-                    ❗️Iltimos, menga tekst jo'nating\s
-                    ➖➖➖➖➖➖➖➖➖➖➖
-                    ❗️ Пожалуйста, пришлите мне текст
-                    """);
-            telegramBotConfig.sendMsg(sendMessage);
-            return;
+        if (message.getText() != null) {
+            text = message.getText();
         }
-
-        var text = message.getText();
 
         if (message.hasContact())
             text = message.getContact().getPhoneNumber();
 
         if (text.equals("/start")) {
-            messageService.handleStartMessage(message, message.getFrom());
-        }
 
-        var botUser = botUsersService.getByTelegramId(message.getChatId());
-        if (botUser == null) {
+            TelegramBotConfig.USER_LIST.put(message.getChatId(), new BotUsersDTO());
+
             var sendMessage = new SendMessage();
             sendMessage.setChatId(String.valueOf(message.getChatId()));
+            sendMessage.setText("Iltimos, tilni tanlang. / Пожалуйста, выберите язык.");
+            sendMessage.setReplyMarkup(InlineButtonUtil.languageButtons());
 
-            sendMessage.setText("""
-                    ❗️/start buyrug'ini bosib, qaytadan urinib ko'ring.\s
-                    ➖➖➖➖➖➖➖➖➖➖➖
-                    ❗️Попробуйте еще раз, нажав команду  /start.
-                    """);
             telegramBotConfig.sendMsg(sendMessage);
-            return;
         }
+        var botUser = TelegramBotConfig.USER_LIST.get(message.getChatId());
 
         if (botUser.getStatus().equals(FILL_FORM)
-                || text.equals("✍️ Anketa to'ldirish")
-                || text.equals("✍️ Заполните анкету")) {
+                || text.equals(ButtonUtil.FILL_FORM_BTN_UZ)
+                || text.equals(ButtonUtil.FILL_FORM_BTN_RU)) {
 
             botUser.setStatus(FILL_FORM);
 
-            var entity = questionnaireService.getByTelegramId(message.getFrom().getId());
-            if (entity == null) {
-                var questionnaire = new QuestionnaireEntity();
-                questionnaire.setStatus(UserQuestionnaireStatus.NAME);
-                questionnaire.setTelegramId(message.getFrom().getId());
+            if (botUser.getQuestionnaireStatus().equals(UserQuestionnaireStatus.DEFAULT)) {
+                botUser.setQuestionnaireStatus(UserQuestionnaireStatus.NAME);
+                TelegramBotConfig.USER_LIST.put(message.getChatId(), botUser);
+            }
 
-                questionnaireService.save(questionnaire);
-                questionnaireService.create(message, questionnaire);
-            } else
-                questionnaireService.create(message, entity);
-
-            botUsersService.saveUser(botUser);
+            questionnaireService.create(message);
         }
 
         if (text.equals("\uD83E\uDD16 Bot haqida ma'lumot") || text.equals("\uD83E\uDD16 Информация о боте")) {

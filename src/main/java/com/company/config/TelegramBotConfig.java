@@ -2,6 +2,7 @@ package com.company.config;
 
 import com.company.controller.CallBackQueryController;
 import com.company.controller.MessageController;
+import com.company.dto.BotUsersDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,10 +15,13 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.WeakHashMap;
+
 @Component
 @Slf4j
 public class TelegramBotConfig extends TelegramLongPollingBot {
 
+    public static final WeakHashMap<Long, BotUsersDTO> USER_LIST = new WeakHashMap<>();
     //test
     @Autowired
     @Lazy
@@ -46,9 +50,11 @@ public class TelegramBotConfig extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage()) messageController.messageController(update.getMessage());
-        if (update.hasCallbackQuery()) callBackQueryController
-                .callBackQueryController(update.getCallbackQuery());
+        if (update.hasMessage())
+            messageController.messageController(update.getMessage());
+        if (update.hasCallbackQuery())
+            callBackQueryController
+                    .callBackQueryController(update.getCallbackQuery());
     }
 
     public void sendMsg(Object obj) {

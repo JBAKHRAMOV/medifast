@@ -1,6 +1,7 @@
 package com.company.service;
 
 import com.company.config.TelegramBotConfig;
+import com.company.dto.BotUsersDTO;
 import com.company.entity.QuestionnaireEntity;
 import com.company.enums.Gender;
 import com.company.repository.QuestionnaireRepository;
@@ -34,53 +35,53 @@ public class QuestionnaireService {
         questionnaireRepository.save(entity);
     }
 
-    public void create(Message message, QuestionnaireEntity entity) {
+    public void create(Message message) {
 
         var user = message.getFrom();
+        var dto = TelegramBotConfig.USER_LIST.get(message.getChatId());
 
         var sendMessage = new SendMessage();
         sendMessage.setChatId(String.valueOf(user.getId()));
 
-
-        var botUsers = botUsersService.getByTelegramId(user.getId());
-        switch (botUsers.getLanguageCode()) {
+        switch (dto.getLanguageCode()) {
             case UZ -> {
-                if (entity.getStatus() == NAME) {
+                if (dto.getQuestionnaireStatus() == NAME) {
                     var remove = new ReplyKeyboardRemove();
                     remove.setRemoveKeyboard(true);
 
                     sendMessage.setText("Iltimos, ismingizni kiriting.");
                     sendMessage.setReplyMarkup(remove);
                     telegramBotConfig.sendMsg(sendMessage);
+                    System.out.println(dto);
 
-                    entity.setStatus(SURNAME);
+                    dto.setQuestionnaireStatus(SURNAME);
+                    System.out.println(dto);
+                    TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
 
-                    questionnaireRepository.save(entity);
-                } else if (entity.getStatus() == SURNAME) {
+                } else if (dto.getQuestionnaireStatus() == SURNAME) {
                     sendMessage.setText("Iltimos, familyangizni kiriting.");
 
                     telegramBotConfig.sendMsg(sendMessage);
 
-                    entity.setName(message.getText());
-                    entity.setStatus(BIRTH_DATE);
+                    dto.setName(message.getText());
+                    dto.setQuestionnaireStatus(BIRTH_DATE);
+                    TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
 
-                    questionnaireRepository.save(entity);
-                } else if (entity.getStatus() == BIRTH_DATE) {
+                } else if (dto.getQuestionnaireStatus() == BIRTH_DATE) {
                     sendMessage.setText("Iltimos, tug'ilgan kuningizni kiriting. \nNamuna (24.11.2003)");
                     telegramBotConfig.sendMsg(sendMessage);
 
-                    entity.setSurname(message.getText());
-                    entity.setStatus(GENDER);
+                    dto.setSurname(message.getText());
+                    dto.setQuestionnaireStatus(GENDER);
+                    TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
 
-                    questionnaireRepository.save(entity);
-                } else if (entity.getStatus() == GENDER) {
+                } else if (dto.getQuestionnaireStatus() == GENDER) {
                     try {
                         LocalDate localDate = DateUtil.stringToDate(message.getText());
 
-                        entity.setBirthDate(localDate);
-                        entity.setStatus(GENDER);
-
-                        questionnaireRepository.save(entity);
+                        dto.setBirthDate(localDate);
+                        dto.setQuestionnaireStatus(GENDER);
+                        TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
 
                         sendMessage.setText("Iltimos, o'z jinsingizni tanlang");
                         sendMessage.setReplyMarkup(InlineButtonUtil.genderButtons());
@@ -89,31 +90,30 @@ public class QuestionnaireService {
                         sendMessage.setText("Tug'ilgan kuningizni, to'g'ri kiriting.\nNamuna (24.11.2003)");
                         telegramBotConfig.sendMsg(sendMessage);
                     }
-                } else if (entity.getStatus() == HEIGHT) {
-                    entity.setHeight(message.getText());
-                    entity.setStatus(WEIGHT);
+                } else if (dto.getQuestionnaireStatus() == HEIGHT) {
+                    dto.setHeight(message.getText());
+                    dto.setQuestionnaireStatus(WEIGHT);
 
-                    questionnaireRepository.save(entity);
+                    TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
 
                     sendMessage.setText("Vazningizni kiriting. \n Namuna: (65.5-kg)");
                     telegramBotConfig.sendMsg(sendMessage);
 
-                } else if (entity.getStatus() == WEIGHT) {
-                    entity.setWeight(message.getText());
-                    entity.setStatus(PHONE);
-
-                    questionnaireRepository.save(entity);
+                } else if (dto.getQuestionnaireStatus() == WEIGHT) {
+                    dto.setWeight(message.getText());
+                    dto.setQuestionnaireStatus(PHONE);
+                    TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
 
                     sendMessage.setText("Telefon raqamingizni kiriting");
                     sendMessage.setReplyMarkup(ButtonUtil.requestContact(UZ));
 
                     telegramBotConfig.sendMsg(sendMessage);
-                } else if (entity.getStatus() == PHONE) {
+                } else if (dto.getQuestionnaireStatus() == PHONE) {
 
                     if (message.hasContact())
-                        entity.setPhone(message.getContact().getPhoneNumber());
+                        dto.setPhone(message.getContact().getPhoneNumber());
                     else if (message.getText().length() == 13 && message.getText().startsWith("+998") && checkPhoneNumber(message.getText())) {
-                        entity.setPhone(message.getText());
+                        dto.setPhone(message.getText());
                     } else {
                         sendMessage.setText("Telefon raqam xato, iltimos qaytadan kiriting!");
                         sendMessage.setReplyMarkup(ButtonUtil.requestContact(UZ));
@@ -128,14 +128,14 @@ public class QuestionnaireService {
                     sendMessage.setReplyMarkup(remove);
                     telegramBotConfig.sendMsg(sendMessage);
 
-                    if (entity.getGender() == Gender.MALE) {
-                        sendMessage.setText(getFormat(entity, "ERKAK"));
+                    if (dto.getGender() == Gender.MALE) {
+                        sendMessage.setText(getFormat(dto, "ERKAK"));
                     } else
-                        sendMessage.setText(getFormat(entity, "AYOL"));
+                        sendMessage.setText(getFormat(dto, "AYOL"));
 
                     sendMessage.setParseMode("HTML");
                     sendMessage.setReplyMarkup(InlineButtonUtil.formFillFinishButtons(UZ));
-                    questionnaireRepository.save(entity);
+                    TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
                     telegramBotConfig.sendMsg(sendMessage);
                 }
             }
@@ -147,7 +147,7 @@ public class QuestionnaireService {
 
     }
 
-    private String getFormat(QuestionnaireEntity entity, String gender) {
+    private String getFormat(BotUsersDTO dto, String gender) {
         return String.format("""
                         <b>🔎 Iltimos, o'z ma'lumotlaringizni tekshirib chiqing.</b>
                                                     
@@ -163,11 +163,11 @@ public class QuestionnaireService {
                          qaytadan to'ldirib chiqing.
                          </b>
                         """,
-                entity.getName(), entity.getSurname(),
-                entity.getBirthDate().toString(),
+                dto.getName(), dto.getSurname(),
+                dto.getBirthDate().toString(),
                 gender,
-                entity.getHeight(), entity.getWeight(),
-                entity.getPhone());
+                dto.getHeight(), dto.getWeight(),
+                dto.getPhone());
     }
 
     public QuestionnaireEntity getByTelegramId(Long telegramId) {

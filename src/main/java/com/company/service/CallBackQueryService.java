@@ -1,13 +1,12 @@
 package com.company.service;
 
 import com.company.config.TelegramBotConfig;
+import com.company.dto.BotUsersDTO;
 import com.company.entity.BotUsersEntity;
-import com.company.entity.QuestionnaireEntity;
 import com.company.enums.Gender;
 import com.company.enums.UserQuestionnaireStatus;
 import com.company.enums.UserStatus;
 import com.company.util.button.ButtonUtil;
-import com.company.util.button.InlineButtonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -28,14 +27,12 @@ public class CallBackQueryService {
     @Lazy
     private final TelegramBotConfig telegramBotConfig;
     private final BotUsersService botUsersService;
-    private final MessageService messageService;
-    private final QuestionnaireService questionnaireService;
 
     public void handleLangCodeUZ(Message message, User user) {
-        var entity = botUsersService.getByTelegramId(user.getId());
-        entity.setLanguageCode(UZ);
-        botUsersService.saveUser(entity);
+        var dto = TelegramBotConfig.USER_LIST.get(user.getId());
 
+        dto.setLanguageCode(UZ);
+        TelegramBotConfig.USER_LIST.put(user.getId(), dto);
         var deleteMessage = new DeleteMessage(String.valueOf(message.getChatId()), message.getMessageId());
 
         telegramBotConfig.sendMsg(deleteMessage);
@@ -50,9 +47,9 @@ public class CallBackQueryService {
     }
 
     public void handleLangCodeRU(Message message, User user) {
-        var entity = botUsersService.getByTelegramId(user.getId());
-        entity.setLanguageCode(RU);
-        botUsersService.saveUser(entity);
+        var dto = TelegramBotConfig.USER_LIST.get(user.getId());
+        dto.setLanguageCode(RU);
+        TelegramBotConfig.USER_LIST.put(user.getId(), dto);
 
         var deleteMessage = new DeleteMessage(String.valueOf(message.getChatId()), message.getMessageId());
 
@@ -68,12 +65,12 @@ public class CallBackQueryService {
     }
 
     public void handleGenderMale(Message message, User user) {
-        var entity = questionnaireService.getByTelegramId(user.getId());
+        var dto = TelegramBotConfig.USER_LIST.get(user.getId());
 
-        entity.setGender(Gender.MALE);
-        entity.setStatus(UserQuestionnaireStatus.HEIGHT);
+        dto.setGender(Gender.MALE);
+        dto.setQuestionnaireStatus(UserQuestionnaireStatus.HEIGHT);
 
-        questionnaireService.save(entity);
+        TelegramBotConfig.USER_LIST.put(user.getId(), dto);
 
         EditMessageText editMessageText = new EditMessageText();
         editMessageText.setMessageId(message.getMessageId());
@@ -85,8 +82,7 @@ public class CallBackQueryService {
         var sendMessage = new SendMessage();
         sendMessage.setChatId(String.valueOf(user.getId()));
 
-        var botUsers = botUsersService.getByTelegramId(user.getId());
-        switch (botUsers.getLanguageCode()) {
+        switch (dto.getLanguageCode()) {
             case UZ -> {
                 sendMessage.setText("Bo'yingiz uzunligini kiriting.\nNamuna: (175-sm) ");
                 telegramBotConfig.sendMsg(sendMessage);
@@ -99,12 +95,12 @@ public class CallBackQueryService {
     }
 
     public void handleGenderFemale(Message message, User user) {
-        var entity = questionnaireService.getByTelegramId(user.getId());
+        var dto = TelegramBotConfig.USER_LIST.get(user.getId());
 
-        entity.setGender(Gender.FEMALE);
-        entity.setStatus(UserQuestionnaireStatus.HEIGHT);
+        dto.setGender(Gender.FEMALE);
+        dto.setQuestionnaireStatus(UserQuestionnaireStatus.HEIGHT);
 
-        questionnaireService.save(entity);
+        TelegramBotConfig.USER_LIST.put(user.getId(), dto);
 
         EditMessageText editMessageText = new EditMessageText();
         editMessageText.setMessageId(message.getMessageId());
@@ -115,8 +111,7 @@ public class CallBackQueryService {
         var sendMessage = new SendMessage();
         sendMessage.setChatId(String.valueOf(user.getId()));
 
-        var botUsers = botUsersService.getByTelegramId(user.getId());
-        switch (botUsers.getLanguageCode()) {
+        switch (dto.getLanguageCode()) {
             case UZ -> {
                 sendMessage.setText("Bo'yingiz uzunligini kiriting.\nNamuna: (175-sm) ");
                 telegramBotConfig.sendMsg(sendMessage);
@@ -129,10 +124,10 @@ public class CallBackQueryService {
     }
 
     public void handleCallBackConfirm(Message message, User user) {
-        var botUsers = botUsersService.getByTelegramId(user.getId());
-        var questionnaire = questionnaireService.getByTelegramId(user.getId());
 
-        toBotUsers(botUsers, questionnaire);
+        var dto = TelegramBotConfig.USER_LIST.get(user.getId());
+
+        save(dto);
 
         var editMessageText = new EditMessageText();
 
@@ -143,14 +138,13 @@ public class CallBackQueryService {
     }
 
     public void handleCallBackAgain(Message message, User user) {
-        var botUsers = botUsersService.getByTelegramId(user.getId());
-        var questionnaire = questionnaireService.getByTelegramId(user.getId());
 
-        botUsers.setStatus(UserStatus.NOT_ACTIVE);
-        questionnaire.setStatus(UserQuestionnaireStatus.NAME);
+        var dto = TelegramBotConfig.USER_LIST.get(user.getId());
 
-        questionnaireService.save(questionnaire);
-        botUsersService.saveUser(botUsers);
+        dto.setStatus(UserStatus.NOT_ACTIVE);
+        dto.setQuestionnaireStatus(UserQuestionnaireStatus.NAME);
+
+        TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
 
         var deleteMessage = new DeleteMessage();
 
@@ -161,7 +155,7 @@ public class CallBackQueryService {
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(String.valueOf(message.getChatId()));
-        switch (botUsers.getLanguageCode()) {
+        switch (dto.getLanguageCode()) {
             case UZ -> {
                 sendMessage.setText("Iltimos, yana qaytadan ma'lumotlaringizni kiritib chiqing");
                 sendMessage.setReplyMarkup(ButtonUtil.fillFormButton(UZ));
@@ -174,18 +168,17 @@ public class CallBackQueryService {
         telegramBotConfig.sendMsg(sendMessage);
     }
 
-    private void toBotUsers(BotUsersEntity botUsers, QuestionnaireEntity questionnaire) {
-        botUsers.setStatus(UserStatus.ACTIVE);
-        botUsers.setGender(questionnaire.getGender());
-        botUsers.setBirthDate(questionnaire.getBirthDate());
-        botUsers.setHeight(questionnaire.getHeight());
-        botUsers.setWeight(questionnaire.getWeight());
-        botUsers.setPhone(questionnaire.getPhone());
-        botUsers.setName(questionnaire.getName());
-        botUsers.setSurname(questionnaire.getSurname());
-
-        botUsersService.saveUser(botUsers);
-        questionnaireService.delete(questionnaire);
+    private void save(BotUsersDTO dto) {
+        var entity = new BotUsersEntity();
+        entity.setStatus(UserStatus.ACTIVE);
+        entity.setGender(dto.getGender());
+        entity.setBirthDate(dto.getBirthDate());
+        entity.setHeight(dto.getHeight());
+        entity.setWeight(dto.getWeight());
+        entity.setPhone(dto.getPhone());
+        entity.setName(dto.getName());
+        entity.setSurname(dto.getSurname());
+        botUsersService.saveUser(entity);
     }
 
 }
