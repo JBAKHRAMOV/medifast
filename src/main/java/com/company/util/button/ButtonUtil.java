@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.company.enums.ButtonName.*;
+import static com.company.constants.ButtonName.*;
 
 public class ButtonUtil {
 
@@ -42,12 +42,9 @@ public class ButtonUtil {
 
         keyboard.add(row);
         switch (languageCode) {
-            case UZ -> {
-                row.add(FILL_FORM_BTN_UZ);
-            }
-            case RU -> {
-                row.add(FILL_FORM_BTN_RU);
-            }
+            case UZ -> row.add(FILL_FORM_BTN_UZ);
+            case RU -> row.add(FILL_FORM_BTN_RU);
+            default -> throw new IllegalStateException("Unexpected value: " + languageCode);
         }
 
         keyboardMarkup.setKeyboard(keyboard);

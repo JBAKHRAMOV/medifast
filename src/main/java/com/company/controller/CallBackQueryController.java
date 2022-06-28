@@ -1,8 +1,6 @@
 package com.company.controller;
 
 
-import com.company.enums.ButtonName;
-import com.company.enums.Gender;
 import com.company.service.CallBackQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,10 +8,11 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
-import static com.company.enums.ButtonName.*;
+import static com.company.constants.ButtonName.*;
 import static com.company.enums.Gender.FEMALE;
 import static com.company.enums.Gender.MALE;
-import static com.company.enums.LanguageCode.*;
+import static com.company.enums.LanguageCode.RU;
+import static com.company.enums.LanguageCode.UZ;
 
 @Controller
 @Slf4j

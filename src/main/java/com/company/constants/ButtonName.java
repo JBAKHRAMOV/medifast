@@ -1,4 +1,4 @@
-package com.company.enums;
+package com.company.constants;
 
 public class ButtonName {
    public static String FILL_FORM_BTN_UZ ="✍️ Anketa to'ldirish";

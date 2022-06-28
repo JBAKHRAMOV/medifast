@@ -1,6 +1,5 @@
 package com.company.util.button;
 
-import com.company.enums.ButtonName;
 import com.company.enums.Gender;
 import com.company.enums.LanguageCode;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -10,7 +9,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.company.enums.ButtonName.*;
+import static com.company.constants.ButtonName.*;
 import static com.company.enums.LanguageCode.*;
 import static com.company.enums.LanguageCode.UZ;
 

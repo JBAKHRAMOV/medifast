@@ -12,8 +12,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import static com.company.config.TelegramBotConfig.USER_LIST;
-import static com.company.enums.ButtonName.FILL_FORM_BTN_RU;
-import static com.company.enums.ButtonName.FILL_FORM_BTN_UZ;
+import static com.company.constants.ButtonName.FILL_FORM_BTN_RU;
+import static com.company.constants.ButtonName.FILL_FORM_BTN_UZ;
 import static com.company.enums.UserStatus.FILL_FORM;
 import static com.company.service.MessageService.defaultS;
 
