@@ -1,6 +1,7 @@
 package com.company.controller;
 
 
+import com.company.enums.ButtonName;
 import com.company.enums.Gender;
 import com.company.service.CallBackQueryService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
+import static com.company.enums.ButtonName.*;
+import static com.company.enums.Gender.FEMALE;
+import static com.company.enums.Gender.MALE;
 import static com.company.enums.LanguageCode.*;
 
 @Controller
@@ -25,13 +29,13 @@ public class CallBackQueryController {
             callBackQueryService.handleLangCodeUZ(callbackQuery.getMessage(), callbackQuery.getFrom());
         else if (data.equals(RU.name()))
             callBackQueryService.handleLangCodeRU(callbackQuery.getMessage(), callbackQuery.getFrom());
-        else if (data.equals(Gender.MALE.name()))
+        else if (data.equals(MALE.name()))
             callBackQueryService.handleGenderMale(callbackQuery.getMessage(), callbackQuery.getFrom());
-        else if (data.equals(Gender.FEMALE.name()))
+        else if (data.equals(FEMALE.name()))
             callBackQueryService.handleGenderFemale(callbackQuery.getMessage(), callbackQuery.getFrom());
-        else if (data.equals("confirm"))
+        else if (data.equals(CONFIRM_UZ)|| data.equals(CONFIRM_RU))
             callBackQueryService.handleCallBackConfirm(callbackQuery.getMessage(), callbackQuery.getFrom());
-        else if (data.equals("again"))
+        else if (data.equals(AGAIN_UZ))
             callBackQueryService.handleCallBackAgain(callbackQuery.getMessage(), callbackQuery.getFrom());
 
 

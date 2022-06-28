@@ -21,7 +21,7 @@ public class BotUsersDTO implements Serializable {
     private Long id;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
-//    private Long telegramId;
+    private String complaint="default";
     private String name;
     private String surname;
     private String phone;

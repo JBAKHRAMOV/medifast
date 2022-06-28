@@ -1,5 +1,6 @@
 package com.company.util.button;
 
+import com.company.enums.ButtonName;
 import com.company.enums.Gender;
 import com.company.enums.LanguageCode;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -8,6 +9,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import static com.company.enums.ButtonName.*;
+import static com.company.enums.LanguageCode.*;
+import static com.company.enums.LanguageCode.UZ;
 
 public class InlineButtonUtil {
     public static InlineKeyboardButton button(String text, String callBackData) {
@@ -50,8 +55,8 @@ public class InlineButtonUtil {
     }
 
     public static InlineKeyboardMarkup languageButtons() {
-        var langUzbek = button("\uD83C\uDDFA\uD83C\uDDFF O'zbekcha", LanguageCode.UZ.name());
-        var langRussian = button("\uD83C\uDDF7\uD83C\uDDFA Русский", LanguageCode.RU.name());
+        var langUzbek = button(LANGUAGE_UZ, UZ.name());
+        var langRussian = button(LANGUAGE_RU, RU.name());
         List<InlineKeyboardButton> row1 = row(langUzbek);
         List<InlineKeyboardButton> row2 = row(langRussian);
         return keyboard(rowList(row1, row2));
@@ -62,12 +67,12 @@ public class InlineButtonUtil {
         var again = new InlineKeyboardButton();
         switch (languageCode) {
             case UZ -> {
-                confirm = button("✅ Tasdiqlash", "confirm");
-                again = button("♻️Qaytadan", "again");
+                confirm = button(CONFIRM_UZ, CONFIRM_UZ);
+                again = button(AGAIN_UZ, AGAIN_UZ);
             }
             case RU -> {
-                confirm = button("✅ Подтверждение", "confirm");
-                again = button("♻️Ещё раз", "again");
+                confirm = button(CONFIRM_RU, CONFIRM_RU);
+                again = button(AGAIN_RU, AGAIN_RU);
             }
         }
         List<InlineKeyboardButton> row1 = row(confirm);

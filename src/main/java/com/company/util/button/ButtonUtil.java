@@ -8,9 +8,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.company.enums.ButtonName.*;
+
 public class ButtonUtil {
-    public static final String FILL_FORM_BTN_UZ = "✍️ Anketa to'ldirish";
-    public static final String FILL_FORM_BTN_RU = "✍️ Заполните анкету";
+
 
     public static ReplyKeyboardMarkup keyboard(LanguageCode languageCode) {
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
@@ -21,11 +22,11 @@ public class ButtonUtil {
         switch (languageCode) {
             case UZ -> {
                 row.add(FILL_FORM_BTN_UZ);
-                row.add("\uD83E\uDD16 Bot haqida ma'lumot");
+                row.add(ABOUT_BOT_BTN_UZ);
             }
             case RU -> {
                 row.add(FILL_FORM_BTN_RU);
-                row.add("\uD83E\uDD16 Информация о боте");
+                row.add(ABOUT_BOT_BTN_RU);
             }
         }
 
@@ -60,12 +61,12 @@ public class ButtonUtil {
 
         switch (languageCode) {
             case UZ -> {
-                keyboardButton.setText("Raqaminmi jo'natish");
+                keyboardButton.setText(SEND_CANTACT_UZ);
                 keyboardButton.setRequestContact(true);
 
             }
             case RU -> {
-                keyboardButton.setText("Отправить контакты");
+                keyboardButton.setText(SEND_CANTACT_RU);
                 keyboardButton.setRequestContact(true);
             }
         }
