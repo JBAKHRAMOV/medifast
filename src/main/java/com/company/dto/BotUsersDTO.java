@@ -21,14 +21,13 @@ public class BotUsersDTO implements Serializable {
     private Long id;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
-    private String complaint="default";
     private String name;
     private String surname;
     private String phone;
     private LocalDate birthDate;
     private LanguageCode languageCode;
-    private UserStatus status=UserStatus.NOT_ACTIVE;
-    private UserQuestionnaireStatus questionnaireStatus=UserQuestionnaireStatus.DEFAULT;
+    private UserStatus status = UserStatus.NOT_ACTIVE;
+    private UserQuestionnaireStatus questionnaireStatus = UserQuestionnaireStatus.DEFAULT;
     private Gender gender;
     private String weight;
     private String height;

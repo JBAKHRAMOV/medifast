@@ -134,6 +134,7 @@ public class CallBackQueryService {
         editMessageText.setMessageId(message.getMessageId());
         editMessageText.setChatId(String.valueOf(message.getChatId()));
         editMessageText.setText("Botni shu qismigacha bo'lgan kodlar yozib bo'lindi!\n Qolgan qismi yaqin kunlarda chiqadi!");
+        editMessageText.setReplyMarkup(ButtonUtil.complaintsMenu(UZ));
         telegramBotConfig.sendMsg(editMessageText);
     }
 

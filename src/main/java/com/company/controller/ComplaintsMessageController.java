@@ -11,17 +11,15 @@ import static com.company.service.ComplaintsService.COMPLAINTS_LIST;
 public class ComplaintsMessageController {
 
     public void test(Message message, BotUsersDTO user) {
-        var complaint = message.getDate();
 
         var lang = user.getLanguageCode();
         switch (lang) {
             case UZ -> {
                 for (int i = 0; i < COMPLAINTS_LIST.size(); i++) {
                     var complaintsList = USER_COMPLAINT.get(message.getChatId());
-
-
                 }
             }
+            case RU -> System.out.println("empty");
         }
     }
 }

@@ -15,7 +15,7 @@ import static com.company.config.TelegramBotConfig.USER_LIST;
 import static com.company.constants.ButtonName.FILL_FORM_BTN_RU;
 import static com.company.constants.ButtonName.FILL_FORM_BTN_UZ;
 import static com.company.enums.UserStatus.FILL_FORM;
-import static com.company.service.MessageService.defaultS;
+import static com.company.service.MessageService.defaults;
 
 
 @Controller
@@ -66,7 +66,7 @@ public class MessageController {
         switch (lang) {
             case UZ -> {
                 switch (qStatus) {
-                    case DEFAULT -> defaultS(message, user);
+                    case DEFAULT -> defaults(message, user);
                     case NAME -> messageService.name(message, user, sendMessage);
                     case SURNAME -> messageService.surname(message, user, sendMessage);
                     case BIRTH_DATE -> messageService.birthDate(message, user, sendMessage);
@@ -78,8 +78,7 @@ public class MessageController {
             }
             case RU -> {
                 switch (qStatus) {
-                    case DEFAULT -> messageService.rus(sendMessage);
-                    case NAME -> messageService.rus(sendMessage);
+                    case DEFAULT, NAME -> messageService.rus(sendMessage);
                     case SURNAME -> messageService.rus(sendMessage);
                     case BIRTH_DATE -> messageService.rus(sendMessage);
                     case GENDER -> messageService.rus(sendMessage);

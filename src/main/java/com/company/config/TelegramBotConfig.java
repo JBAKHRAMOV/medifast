@@ -26,14 +26,14 @@ public class TelegramBotConfig extends TelegramLongPollingBot {
 
     public static final WeakHashMap<Long, BotUsersDTO> USER_LIST = new WeakHashMap<>();
 
-    public static final WeakHashMap<Long, List<ComplaintsDTO>> USER_COMPLAINT =new WeakHashMap();
+    public static final WeakHashMap<Long, List<ComplaintsDTO>> USER_COMPLAINT = new WeakHashMap();
     //test
-    @Autowired
     @Lazy
+    @Autowired
     private MessageController messageController;
 
-    @Autowired
     @Lazy
+    @Autowired
     private CallBackQueryController callBackQueryController;
 
     @Value("${bot.name}")

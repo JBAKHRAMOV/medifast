@@ -58,12 +58,12 @@ public class ButtonUtil {
 
         switch (languageCode) {
             case UZ -> {
-                keyboardButton.setText(SEND_CANTACT_UZ);
+                keyboardButton.setText(SEND_CONTACT_UZ);
                 keyboardButton.setRequestContact(true);
 
             }
             case RU -> {
-                keyboardButton.setText(SEND_CANTACT_RU);
+                keyboardButton.setText(SEND_CONTACT_RU);
                 keyboardButton.setRequestContact(true);
             }
         }
@@ -74,5 +74,31 @@ public class ButtonUtil {
         replyKeyboardMarkup.setResizeKeyboard(true);
 
         return replyKeyboardMarkup;
+    }
+
+    public static ReplyKeyboardMarkup complaintsMenu(LanguageCode languageCode) {
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow row = new KeyboardRow();
+        KeyboardRow row2 = new KeyboardRow();
+
+        keyboard.add(row);
+        keyboard.add(row2);
+        switch (languageCode) {
+            case UZ -> {
+                row.add(COMPLAINT_UZ);
+                row.add(BACK_UZ);
+                row2.add(CHANGE_LANG_UZ);
+            }
+            case RU -> {
+                row.add(COMPLAINT_RU);
+                row.add(BACK_RU);
+                row2.add(CHANGE_LANG_RU);
+            }
+        }
+
+        keyboardMarkup.setKeyboard(keyboard);
+        keyboardMarkup.setResizeKeyboard(true);
+        return keyboardMarkup;
     }
 }

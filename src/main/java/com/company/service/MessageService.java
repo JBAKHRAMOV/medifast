@@ -135,7 +135,7 @@ public class MessageService {
         TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
     }
 
-    public static void defaultS(Message message, BotUsersDTO botUser) {
+    public static void defaults(Message message, BotUsersDTO botUser) {
         botUser.setQuestionnaireStatus(UserQuestionnaireStatus.NAME);
         USER_LIST.put(message.getChatId(), botUser);
     }
