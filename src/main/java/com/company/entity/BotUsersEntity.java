@@ -21,7 +21,7 @@ public class BotUsersEntity extends BaseEntity {
         this.telegramId = telegramId;
     }
 
-    @Column
+//    @Column(unique = true, nullable = false)
     private Long telegramId;
 
     @Column
