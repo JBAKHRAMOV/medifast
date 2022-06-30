@@ -1,5 +1,6 @@
 package com.company.util.button;
 
+import com.company.constants.ButtonName;
 import com.company.enums.LanguageCode;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
@@ -96,6 +97,34 @@ public class ButtonUtil {
                 row2.add(CHANGE_LANG_RU);
             }
         }
+
+        keyboardMarkup.setKeyboard(keyboard);
+        keyboardMarkup.setResizeKeyboard(true);
+        return keyboardMarkup;
+    }
+    public static ReplyKeyboardMarkup adminMainMenu(){
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow row = new KeyboardRow();
+
+        keyboard.add(row);
+
+        row.add(ADMIN_STATS);
+        row.add(BROADCAST_A_MESSAGE);
+
+        keyboardMarkup.setKeyboard(keyboard);
+        keyboardMarkup.setResizeKeyboard(true);
+        return keyboardMarkup;
+    }
+    public static ReplyKeyboardMarkup adminBroadcastMsgButton(){
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow row = new KeyboardRow();
+
+        keyboard.add(row);
+
+        row.add(SEND);
+        row.add(AGAIN_UZ);
 
         keyboardMarkup.setKeyboard(keyboard);
         keyboardMarkup.setResizeKeyboard(true);

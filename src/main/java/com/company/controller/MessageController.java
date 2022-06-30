@@ -6,10 +6,13 @@ import com.company.service.MessageService;
 import com.company.util.button.InlineButtonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+
+import java.util.Objects;
 
 import static com.company.config.TelegramBotConfig.USER_LIST;
 import static com.company.constants.ButtonName.FILL_FORM_BTN_RU;
@@ -25,18 +28,29 @@ public class MessageController {
     @Lazy
     private final TelegramBotConfig telegramBotConfig;
     private final MessageService messageService;
+    private final AdminController adminController;
+    @Value("${user.admin}")
+    private Long adminId;
 
     public void messageController(Message message) {
+
+        if (Objects.equals(adminId, message.getFrom().getId())) {
+            adminController.messageController(message);
+            return;
+        }
+
         var text = "";
         var user = USER_LIST.get(message.getChatId());
 
-        if (message.getText() != null) text = message.getText();
+        if (message.hasText()) {
+            text = message.getText();
+        }
 
         if (message.hasContact()) text = message.getContact().getPhoneNumber();
 
-        if (text.equals("/start")) start(message);
-
-        else if (user.getStatus().equals(FILL_FORM)
+        if (text.equals("/start")) {
+            start(message);
+        } else if (user.getStatus().equals(FILL_FORM)
                 || text.equals(FILL_FORM_BTN_UZ)
                 || text.equals(FILL_FORM_BTN_RU)) {
             user.setStatus(FILL_FORM);

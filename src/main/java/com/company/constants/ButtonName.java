@@ -22,10 +22,19 @@ public class ButtonName {
 
     public static final String COMPLAINT_UZ = "Shikoyatlar / Fizik tekshiruv";
     public static final String COMPLAINT_RU = "Жалобы / физический осмотр";
-    public static final String BACK_UZ = "◀️ Orqaga";
-    public static final String BACK_RU = "◀️ Назад";
-    public static final String CHANGE_LANG_UZ = "\uD83C\uDF10 Tilni almashtirish";
-    public static final String CHANGE_LANG_RU = "\uD83C\uDF10 Изменить язык";
+    public static final String BACK_UZ = "↩️ Orqaga";
+    public static final String BACK_RU = "↩️ Назад";
+    public static final String CHANGE_LANG_UZ = "🌐 Tilni almashtirish";
+    public static final String CHANGE_LANG_RU = "🌐 Изменить язык";
+
+    /**
+     * <p>
+     * Buttons name for <b>Admin</b>
+     * </p>
+     **/
+    public static final String ADMIN_STATS = "📊 Statistika";
+    public static final String BROADCAST_A_MESSAGE = "✍️ Xabar tarqatish";
+    public static final String SEND = "📨 Yuborish";
 
 
 }
