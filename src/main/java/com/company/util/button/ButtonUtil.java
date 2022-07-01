@@ -102,6 +102,23 @@ public class ButtonUtil {
         keyboardMarkup.setResizeKeyboard(true);
         return keyboardMarkup;
     }
+
+    public static ReplyKeyboardMarkup comlaintsStop(LanguageCode languageCode) {
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow row = new KeyboardRow();
+
+        keyboard.add(row);
+        switch (languageCode) {
+            case UZ -> row.add(STOP_UZ);
+            case RU -> row.add(STOP_RU);
+            default -> throw new IllegalStateException("Unexpected value: " + languageCode);
+        }
+
+        keyboardMarkup.setKeyboard(keyboard);
+        keyboardMarkup.setResizeKeyboard(true);
+        return keyboardMarkup;
+    }
     public static ReplyKeyboardMarkup adminMainMenu(){
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard = new ArrayList<>();

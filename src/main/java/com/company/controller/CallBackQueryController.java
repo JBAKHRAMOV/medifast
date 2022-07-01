@@ -1,12 +1,14 @@
 package com.company.controller;
 
 
+import com.company.dto.BotUsersDTO;
 import com.company.service.CallBackQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
 
 import static com.company.constants.ButtonName.*;
 import static com.company.enums.Gender.FEMALE;
@@ -20,6 +22,8 @@ import static com.company.enums.LanguageCode.UZ;
 public class CallBackQueryController {
     @Lazy
     private final CallBackQueryService callBackQueryService;
+
+    private final ComplaintsMessageController complaintsMessageController;
 
     public void callBackQueryController(CallbackQuery callbackQuery) {
         String data = callbackQuery.getData();
@@ -36,7 +40,10 @@ public class CallBackQueryController {
             callBackQueryService.handleCallBackConfirm(callbackQuery.getMessage(), callbackQuery.getFrom());
         else if (data.equals(AGAIN_UZ))
             callBackQueryService.handleCallBackAgain(callbackQuery.getMessage(), callbackQuery.getFrom());
+    }
 
-
+    public void complaintFrom(CallbackQuery callbackQuery){
+        String data =callbackQuery.getData();
+        complaintsMessageController.complaintsForm(data, callbackQuery.getMessage());
     }
 }

@@ -17,8 +17,10 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.User;
 
+import static com.company.config.TelegramBotConfig.USER_LIST;
 import static com.company.enums.LanguageCode.RU;
 import static com.company.enums.LanguageCode.UZ;
+import static com.company.enums.UserStatus.ACTIVE;
 
 @Service
 @Slf4j
@@ -29,10 +31,10 @@ public class CallBackQueryService {
     private final BotUsersService botUsersService;
 
     public void handleLangCodeUZ(Message message, User user) {
-        var dto = TelegramBotConfig.USER_LIST.get(user.getId());
+        var dto = USER_LIST.get(user.getId());
 
         dto.setLanguageCode(UZ);
-        TelegramBotConfig.USER_LIST.put(user.getId(), dto);
+        USER_LIST.put(user.getId(), dto);
         var deleteMessage = new DeleteMessage(String.valueOf(message.getChatId()), message.getMessageId());
 
         telegramBotConfig.sendMsg(deleteMessage);
@@ -47,9 +49,9 @@ public class CallBackQueryService {
     }
 
     public void handleLangCodeRU(Message message, User user) {
-        var dto = TelegramBotConfig.USER_LIST.get(user.getId());
+        var dto = USER_LIST.get(user.getId());
         dto.setLanguageCode(RU);
-        TelegramBotConfig.USER_LIST.put(user.getId(), dto);
+        USER_LIST.put(user.getId(), dto);
 
         var deleteMessage = new DeleteMessage(String.valueOf(message.getChatId()), message.getMessageId());
 
@@ -65,12 +67,12 @@ public class CallBackQueryService {
     }
 
     public void handleGenderMale(Message message, User user) {
-        var dto = TelegramBotConfig.USER_LIST.get(user.getId());
+        var dto = USER_LIST.get(user.getId());
 
         dto.setGender(Gender.MALE);
         dto.setQuestionnaireStatus(UserQuestionnaireStatus.HEIGHT);
 
-        TelegramBotConfig.USER_LIST.put(user.getId(), dto);
+        USER_LIST.put(user.getId(), dto);
 
         EditMessageText editMessageText = new EditMessageText();
         editMessageText.setMessageId(message.getMessageId());
@@ -95,12 +97,12 @@ public class CallBackQueryService {
     }
 
     public void handleGenderFemale(Message message, User user) {
-        var dto = TelegramBotConfig.USER_LIST.get(user.getId());
+        var dto = USER_LIST.get(user.getId());
 
         dto.setGender(Gender.FEMALE);
         dto.setQuestionnaireStatus(UserQuestionnaireStatus.HEIGHT);
 
-        TelegramBotConfig.USER_LIST.put(user.getId(), dto);
+        USER_LIST.put(user.getId(), dto);
 
         EditMessageText editMessageText = new EditMessageText();
         editMessageText.setMessageId(message.getMessageId());
@@ -125,27 +127,28 @@ public class CallBackQueryService {
 
     public void handleCallBackConfirm(Message message, User user) {
 
-        var dto = TelegramBotConfig.USER_LIST.get(user.getId());
+        var dto = USER_LIST.get(user.getId());
+        dto.setStatus(ACTIVE);
+        USER_LIST.put(message.getChatId(), dto);
 
         save(dto);
 
-        var editMessageText = new EditMessageText();
+        var editMessageText = new SendMessage();
 
-        editMessageText.setMessageId(message.getMessageId());
         editMessageText.setChatId(String.valueOf(message.getChatId()));
         editMessageText.setText("Botni shu qismigacha bo'lgan kodlar yozib bo'lindi!\n Qolgan qismi yaqin kunlarda chiqadi!");
-//        editMessageText.setReplyMarkup(ButtonUtil.complaintsMenu(UZ));
+        editMessageText.setReplyMarkup(ButtonUtil.complaintsMenu(UZ));
         telegramBotConfig.sendMsg(editMessageText);
     }
 
     public void handleCallBackAgain(Message message, User user) {
 
-        var dto = TelegramBotConfig.USER_LIST.get(user.getId());
+        var dto = USER_LIST.get(user.getId());
 
         dto.setStatus(UserStatus.NOT_ACTIVE);
         dto.setQuestionnaireStatus(UserQuestionnaireStatus.NAME);
 
-        TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
+        USER_LIST.put(message.getChatId(), dto);
 
         var deleteMessage = new DeleteMessage();
 
@@ -171,7 +174,7 @@ public class CallBackQueryService {
 
     private void save(BotUsersDTO dto) {
         var entity = new BotUsersEntity();
-        entity.setStatus(UserStatus.ACTIVE);
+        entity.setStatus(ACTIVE);
         entity.setGender(dto.getGender());
         entity.setBirthDate(dto.getBirthDate());
         entity.setHeight(dto.getHeight());

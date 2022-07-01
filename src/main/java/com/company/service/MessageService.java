@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 
@@ -51,6 +52,7 @@ public class MessageService {
 
         sendMessage.setText("Ma'lumotlar qabul qilindi!");
         sendMessage.setReplyMarkup(remove);
+
         telegramBotConfig.sendMsg(sendMessage);
 
         if (dto.getGender() == Gender.MALE) {
@@ -82,6 +84,7 @@ public class MessageService {
         TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
 
         sendMessage.setText("Vazningizni kiriting. \n Namuna: (65.5-kg)");
+
         telegramBotConfig.sendMsg(sendMessage);
     }
 
@@ -95,8 +98,10 @@ public class MessageService {
 
             sendMessage.setText("Iltimos, o'z jinsingizni tanlang");
             sendMessage.setReplyMarkup(InlineButtonUtil.genderButtons());
+
             telegramBotConfig.sendMsg(sendMessage);
         } catch (DateTimeException e) {
+
             sendMessage.setText("Tug'ilgan kuningizni, to'g'ri kiriting.\nNamuna (24.11.2003)");
             telegramBotConfig.sendMsg(sendMessage);
         }
@@ -104,6 +109,7 @@ public class MessageService {
 
     public void birthDate(Message message, BotUsersDTO dto, SendMessage sendMessage) {
         sendMessage.setText("Iltimos, tug'ilgan kuningizni kiriting. \nNamuna (24.11.2003)");
+
         telegramBotConfig.sendMsg(sendMessage);
 
         dto.setSurname(message.getText());
@@ -127,6 +133,7 @@ public class MessageService {
 
         sendMessage.setText("Iltimos, ismingizni kiriting.");
         sendMessage.setReplyMarkup(remove);
+
         telegramBotConfig.sendMsg(sendMessage);
         System.out.println(dto);
 

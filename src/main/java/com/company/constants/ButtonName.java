@@ -36,5 +36,17 @@ public class ButtonName {
     public static final String BROADCAST_A_MESSAGE = "✍️ Xabar tarqatish";
     public static final String SEND = "📨 Yuborish";
 
+    public static final String STOP_UZ= "tugatish";
+    public static final String STOP_RU = "финиш";
+
+    public static final String MESSSSAGE_SEND_UZ = "Jonatish";
+
+    public static final String MESSSSAGE_SEND_RU = "Отправить";
+
+
+    public static final String MESSSSAGE_SEND_STOP_UZ = "Rad etish";
+
+    public static final String MESSSSAGE_SEND_STOP_RU = "отклонять";
+
 
 }
