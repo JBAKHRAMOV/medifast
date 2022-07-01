@@ -9,15 +9,20 @@ import com.company.entity.BotUsersEntity;
 import com.company.repository.BotUsersRepository;
 import com.company.util.button.ButtonUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.hibernate.sql.Delete;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -99,21 +104,24 @@ public class AdminService {
                     text = message.getText();
 
                 }
-                if (Objects.equals(text, ButtonName.AGAIN_UZ)) {
-                    sendMessage.setText("""
-                            Barcha foydalanuvchilarga xabar jo'natish uchun, rasm yoki tekst jo'nating
-                            """);
-                    sendMessage.setReplyMarkup(remove);
-
-                    telegramBotConfig.sendMsg(sendMessage);
-                    adminDTO.setBroadcastMSGStatus(INSPECTION);
-                } else if (Objects.equals(text, ButtonName.SEND)) {
-                    var thread = new Thread(this::broadcastAMsg);
-                    thread.start();
-                } else {
-                    sendMessage.setChatId(String.valueOf(adminId));
-                    sendMessage.setText("Qaytadan urinib ko'ring!");
-                    telegramBotConfig.sendMsg(sendMessage);
+                switch (text) {
+                    case ButtonName.AGAIN_UZ -> {
+                        sendMessage.setText("""
+                                Barcha foydalanuvchilarga xabar jo'natish uchun, rasm yoki tekst jo'nating
+                                """);
+                        sendMessage.setReplyMarkup(remove);
+                        telegramBotConfig.sendMsg(sendMessage);
+                        adminDTO.setBroadcastMSGStatus(INSPECTION);
+                    }
+                    case ButtonName.SEND -> {
+                        var thread = new Thread(() -> broadcastAMsg());
+                        thread.start();
+                    }
+                    default -> {
+                        sendMessage.setChatId(String.valueOf(adminId));
+                        sendMessage.setText("Qaytadan urinib ko'ring!");
+                        telegramBotConfig.sendMsg(sendMessage);
+                    }
                 }
                 adminDTO.setBroadcastMSGStatus(STARTED);
                 adminDTO.setStatus(null);
@@ -122,38 +130,47 @@ public class AdminService {
         }
     }
 
+    @SneakyThrows
     private void broadcastAMsg() {
         var textDetailDTO = TextDetailDTO.getInstance();
         var photoDetailDTO = PhotoDetailDTO.getInstance();
         var sendMessage = new SendMessage();
         sendMessage.setChatId(String.valueOf(adminId));
 
+        var editMessageText = new EditMessageText();
+        editMessageText.setChatId(String.valueOf(adminId));
+
         Instant start = Instant.now();
 
         sendMessage.setText("⏳");
-        telegramBotConfig.sendMsg(sendMessage);
+
+        Message message = telegramBotConfig.execute(sendMessage);
+        editMessageText.setMessageId(message.getMessageId());
 
         List<BotUsersEntity> all = botUsersRepository.findAll();
-        if (all.isEmpty()) {
-            sendMessage.setText("Botda hali aktiv foydalanuvchilar mavjud emas");
-            telegramBotConfig.sendMsg(sendMessage);
+
+        if (!all.isEmpty()) {
+            if (photoDetailDTO.isHasPhoto()) {
+                var sendPhoto = new SendPhoto();
+
+                sendPhoto.setPhoto(new InputFile(photoDetailDTO.getFileId()));
+                sendPhoto.setCaption(photoDetailDTO.getCaption());
+
+                all.forEach(botUsersEntity -> {
+                    sendPhoto.setChatId(String.valueOf(botUsersEntity.getTelegramId()));
+                    telegramBotConfig.sendMsg(sendPhoto);
+                });
+            } else if (textDetailDTO.isHasText()) {
+                all.forEach(botUsersEntity -> {
+                    sendMessage.setChatId(String.valueOf(botUsersEntity.getTelegramId()));
+                    sendMessage.setText(textDetailDTO.getText());
+                    telegramBotConfig.sendMsg(sendMessage);
+                });
+            }
+        } else {
+            editMessageText.setText("Botda hali aktiv foydalanuvchilar mavjud emas");
+            telegramBotConfig.sendMsg(editMessageText);
             return;
-        }
-        if (photoDetailDTO.isHasPhoto()) {
-            var sendPhoto = new SendPhoto();
-            sendPhoto.setPhoto(new InputFile(photoDetailDTO.getFileId()));
-            sendPhoto.setCaption(photoDetailDTO.getCaption());
-            all.forEach(botUsersEntity -> {
-                sendPhoto.setChatId(String.valueOf(botUsersEntity.getTelegramId()));
-                telegramBotConfig.sendMsg(sendPhoto);
-            });
-        }
-        if (textDetailDTO.isHasText()) {
-            all.forEach(botUsersEntity -> {
-                sendMessage.setChatId(String.valueOf(botUsersEntity.getTelegramId()));
-                sendMessage.setText(textDetailDTO.getText());
-                telegramBotConfig.sendMsg(sendMessage);
-            });
         }
 
         Instant end = Instant.now();
@@ -163,13 +180,11 @@ public class AdminService {
         long minute = timeElapsed.getSeconds() / 60;
         sendMessage.setChatId(String.valueOf(adminId));
 
-        if (minute > 1)
-            sendMessage.setText("Xabaringiz <b>" + minute + " daqiqada </b>foydalanuvchilarga tarqatildi");
-        else
-            sendMessage.setText("Xabaringiz <b>" + timeElapsed.getSeconds() + " soniyada </b>foydalanuvchilarga tarqatildi");
+        editMessageText.setText(minute > 1 ? "Xabaringiz <b>" + minute + " daqiqada </b>foydalanuvchilarga tarqatildi"
+                : "Xabaringiz <b>" + timeElapsed.getSeconds() + " soniyada </b>foydalanuvchilarga tarqatildi");
 
-        sendMessage.setParseMode("HTML");
-        telegramBotConfig.sendMsg(sendMessage);
+        editMessageText.setParseMode("HTML");
+        telegramBotConfig.sendMsg(editMessageText);
 
         textDetailDTO.clear();
         photoDetailDTO.clear();
@@ -190,10 +205,12 @@ public class AdminService {
         photo.setHasPhoto(true);
 
         var msg = new SendPhoto();
+
         msg.setChatId(String.valueOf(adminId));
         msg.setPhoto(new InputFile(f_id));
         msg.setCaption(caption);
         msg.setReplyMarkup(ButtonUtil.adminBroadcastMsgButton());
+
         return msg;
     }
 }

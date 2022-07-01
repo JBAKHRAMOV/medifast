@@ -3,7 +3,6 @@ package com.company.controller;
 import com.company.config.TelegramBotConfig;
 import com.company.constants.ButtonName;
 import com.company.dto.admin.AdminDTO;
-import com.company.enums.admin.AdminStatus;
 import com.company.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.Objects;
 
-import static com.company.enums.admin.AdminStatus.*;
+import static com.company.enums.admin.AdminStatus.BROADCAST_A_MSG;
 
 @Controller
 @RequiredArgsConstructor
