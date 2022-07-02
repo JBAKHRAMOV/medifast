@@ -1,5 +1,6 @@
 package com.company.service;
 
+import com.company.dto.BotUsersDTO;
 import com.company.entity.BotUsersEntity;
 import com.company.repository.BotUsersRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ public class BotUsersService {
     public BotUsersEntity getByTelegramId(Long telegramId) {
         return botUsersRepository.findByTelegramId(telegramId).orElse(null);
     }
+
     public void saveUser(BotUsersEntity entity) {
         botUsersRepository.save(entity);
     }

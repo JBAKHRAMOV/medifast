@@ -24,6 +24,7 @@ import java.util.WeakHashMap;
 
 @Component
 @Slf4j
+
 public class TelegramBotConfig extends TelegramLongPollingBot {
 
     public static final WeakHashMap<Long, BotUsersDTO> USER_LIST = new WeakHashMap<>();
@@ -60,14 +61,8 @@ public class TelegramBotConfig extends TelegramLongPollingBot {
         if (update.hasMessage())
             messageController.messageController(update.getMessage());
         else if (update.hasCallbackQuery()) {
-            if (USER_LIST.get(update.getCallbackQuery().getMessage().getChatId()).getStatus().equals(UserStatus.COMPLAIN_FROM))
-                callBackQueryController.complaintFrom(update.getCallbackQuery());
-            else if (USER_LIST.get(update.getCallbackQuery().getMessage().getChatId()).getStatus().equals(UserStatus.COMPLAIN_INFO)) {
-                callBackQueryController.complaintsInfo(update.getCallbackQuery());
-            } else {
                 callBackQueryController
                         .callBackQueryController(update.getCallbackQuery());
-            }
         } else if (update.getMessage().hasPhoto()) {
             if (USER_LIST.get(update.getCallbackQuery().getMessage().getChatId()).getStatus().equals(UserStatus.COMPLAIN_INFO)){
 

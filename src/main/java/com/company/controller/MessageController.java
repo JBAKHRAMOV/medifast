@@ -32,6 +32,7 @@ public class MessageController {
     private final MessageService messageService;
     private final ComplaintsMessageController complaintsMessageController;
     private final AdminController adminController;
+
     @Value("${user.admin}")
     private Long adminId;
 
@@ -50,7 +51,8 @@ public class MessageController {
 
         if (message.hasContact()) text = message.getContact().getPhoneNumber();
 
-        if (text.equals("/start")) start(message);
+        if (text.equals("/start"))
+            start(message);
 
         else if (user.getStatus().equals(FILL_FORM)
                 || text.equals(FILL_FORM_BTN_UZ)

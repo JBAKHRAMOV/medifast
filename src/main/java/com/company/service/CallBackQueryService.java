@@ -135,16 +135,23 @@ public class CallBackQueryService {
 
     public void handleCallBackConfirm(Message message, User user) {
 
+        var delete =new DeleteMessage();
+        delete.setMessageId(message.getMessageId());
+        delete.setChatId(String.valueOf(message.getChatId()));
+        telegramBotConfig.sendMsg(delete);
+        delete.setMessageId(message.getMessageId()-1);
+        telegramBotConfig.sendMsg(delete);
+
         var dto = USER_LIST.get(user.getId());
         dto.setStatus(ACTIVE);
         USER_LIST.put(message.getChatId(), dto);
 
-        save(dto);
+        save(dto,message.getChatId());
 
         var editMessageText = new SendMessage();
 
         editMessageText.setChatId(String.valueOf(message.getChatId()));
-        editMessageText.setText("Botni shu qismigacha bo'lgan kodlar yozib bo'lindi!\n Qolgan qismi yaqin kunlarda chiqadi!");
+        editMessageText.setText("Ma'lumotlar qabul qilindi ✅");
         editMessageText.setReplyMarkup(ButtonUtil.complaintsMenu(UZ));
         telegramBotConfig.sendMsg(editMessageText);
     }
@@ -198,7 +205,6 @@ public class CallBackQueryService {
             sendMsg.setText("Murojatga sabab bo’lgan shikoyatlarni yozing yoki ovozli habar yuboring: ");
         else
             sendMsg.setText("Напишите или отправьте голосовое сообщение о жалобах, которые привели к обращению: ");
-
         telegramBotConfig.sendMsg(sendMsg);
     }
 
@@ -272,9 +278,10 @@ public class CallBackQueryService {
 
     }
 
-    private void save(BotUsersDTO dto) {
+    private void save(BotUsersDTO dto, long tgId) {
         var entity = new BotUsersEntity();
         entity.setStatus(ACTIVE);
+        entity.setTelegramId(tgId);
         entity.setGender(dto.getGender());
         entity.setBirthDate(dto.getBirthDate());
         entity.setHeight(dto.getHeight());
