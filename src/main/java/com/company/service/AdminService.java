@@ -10,19 +10,16 @@ import com.company.repository.BotUsersRepository;
 import com.company.util.button.ButtonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.hibernate.sql.Delete;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -53,7 +50,7 @@ public class AdminService {
 
         sendMessage.setText("Assalomu alaykum, " + message.getFrom().getFirstName() + "" + "\nBoshqaruv bo'limiga xush kelibsiz 😊");
         sendMessage.setReplyMarkup(ButtonUtil.adminMainMenu());
-
+        adminDTO.clear();
         telegramBotConfig.sendMsg(sendMessage);
     }
 
@@ -130,19 +127,26 @@ public class AdminService {
         }
     }
 
-    public void handleStats(Message message) {
+    public void handleStats() {
+
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(String.valueOf(adminId));
         sendMessage.setText(String.format("""
-                        Bugun qo'shilganlar soni: %d
-                        Oxirgi 3 kuni ichida qo'shilganlar: %d
-                        Oxirgi 1 oyda qo'shilganlar: %d
-                        Jami foydalanuvchilar soni: %d
+                        Bot statistikasi
+                        
+                        📈 Bugun qo'shilganlar soni: <b>%d - ta </b>
+                        
+                        📉 Oxirgi 3 kuni ichida qo'shilganlar: <b>%d - ta </b>
+                        
+                        📅 Oxirgi 1 oyda qo'shilganlar: <b>%d - ta </b>
+                        
+                        👥 Jami foydalanuvchilar soni: <b>%d - ta </b>
                         """,
                 botUsersRepository.joinedToday(),
                 botUsersRepository.joinedLastThreeDays(),
                 botUsersRepository.joinedLastOneMonth(),
                 botUsersRepository.countAllUsers()));
+        sendMessage.setParseMode("HTML");
         telegramBotConfig.sendMsg(sendMessage);
     }
 

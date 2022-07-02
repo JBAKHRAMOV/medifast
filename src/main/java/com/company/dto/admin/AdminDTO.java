@@ -12,7 +12,7 @@ import lombok.ToString;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdminDTO {
-    private BroadcastMSGStatus broadcastMSGStatus = BroadcastMSGStatus.STARTED;
+    private BroadcastMSGStatus broadcastMSGStatus;
     private AdminStatus status;
 
     private static AdminDTO instance = null;
@@ -25,5 +25,9 @@ public class AdminDTO {
             instance = new AdminDTO();
         }
         return instance;
+    }
+
+    public void clear() {
+        status = null;
     }
 }

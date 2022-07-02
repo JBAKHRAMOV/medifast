@@ -44,7 +44,7 @@ public class AdminController {
             adminService.broadcastAMessage(message);
         } else if (Objects.equals(adminDTO.getStatus(), STATS) ||
                 Objects.equals(text, ButtonName.ADMIN_STATS)) {
-            adminService.handleStats(message);
+            adminService.handleStats();
         } else {
             sendMessage.setText("/start");
             telegramBotConfig.sendMsg(sendMessage);

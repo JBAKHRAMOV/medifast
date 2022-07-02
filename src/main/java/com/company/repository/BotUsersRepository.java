@@ -16,14 +16,14 @@ public interface BotUsersRepository extends JpaRepository<BotUsersEntity, Long> 
     @Query(value = """
             select count(id)
             from users
-            where created_date::date = current_date;
+            where date(created_date) = current_date;
             """, nativeQuery = true)
     Integer joinedToday();
 
     @Query(value = """
             select count(id)
             from users
-            where created_date::date > current_date - interval '3' day;
+            where date(created_date) > current_date - interval '3' day;
             """, nativeQuery = true)
     Integer joinedLastThreeDays();
 
@@ -36,7 +36,7 @@ public interface BotUsersRepository extends JpaRepository<BotUsersEntity, Long> 
     @Query(value = """
             select count(id)
             from users
-            where created_date::date > current_date - interval '1' month;
+            where date(created_date) > current_date - interval '1' month;
             """, nativeQuery = true)
     Integer joinedLastOneMonth();
 }
