@@ -32,4 +32,6 @@ public class BotUsersDTO implements Serializable {
     private String weight;
     private String height;
     private Double currentTemperature;
+    private Integer startLenght=0;
+    private Integer finishLenght=2;
 }

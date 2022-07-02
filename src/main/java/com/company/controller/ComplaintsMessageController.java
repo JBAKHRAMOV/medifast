@@ -53,21 +53,20 @@ public class ComplaintsMessageController {
         var sendMessage=new SendMessage();
         sendMessage.setChatId(String.valueOf(message.getChatId()));
         sendMessage.setReplyMarkup(InlineButtonUtil.complaintButtonListSendAgain(lang, message.getChatId()));
-        sendMessage.setText("asdfg");
+        sendMessage.setText("belgilab bolganingizdan song tugatish tugamsini bosing");
         telegramBotConfig.sendMsg(sendMessage);
-        var sendMessage2=new SendMessage();
-        sendMessage2.setChatId(String.valueOf(message.getChatId()));
-        sendMessage2.setReplyMarkup(ButtonUtil.comlaintsStop(lang));
-        sendMessage2.setText("belgilab bolganingizdan song tugatish tugamsini bosing");
-        telegramBotConfig.sendMsg(sendMessage2);
 
     }
 
-    public  void complentsButtonList(Message message, BotUsersDTO user){
-       complaintsMessageService.buttonList(message, user.getLanguageCode());
+    public  void complentsButtonList(Message message, BotUsersDTO user, Integer integer){
+       complaintsMessageService.buttonList(message, user.getLanguageCode(), integer);
     }
 
     public  void result(Message message, BotUsersDTO user){
         complaintsMessageService.result(message, user.getLanguageCode());
+    }
+
+    public void nextComplaint(Message message){
+
     }
 }

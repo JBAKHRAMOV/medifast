@@ -4,6 +4,7 @@ import com.company.controller.CallBackQueryController;
 import com.company.controller.MessageController;
 import com.company.dto.BotUsersDTO;
 import com.company.dto.ComplaintsDTO;
+import com.company.dto.ComplaintsInfoDTO;
 import com.company.entity.ComplaintsEntity;
 import com.company.enums.UserStatus;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ import java.util.WeakHashMap;
 public class TelegramBotConfig extends TelegramLongPollingBot {
 
     public static final WeakHashMap<Long, BotUsersDTO> USER_LIST = new WeakHashMap<>();
+    public static final WeakHashMap<Long, ComplaintsInfoDTO> USER_COMPLAINT_INFO = new WeakHashMap<>();
 
     public static final WeakHashMap<Long, List<ComplaintsDTO>> USER_COMPLAINT = new WeakHashMap();
     //test
@@ -60,8 +62,16 @@ public class TelegramBotConfig extends TelegramLongPollingBot {
         else if (update.hasCallbackQuery()) {
             if (USER_LIST.get(update.getCallbackQuery().getMessage().getChatId()).getStatus().equals(UserStatus.COMPLAIN_FROM))
                 callBackQueryController.complaintFrom(update.getCallbackQuery());
-            callBackQueryController
-                    .callBackQueryController(update.getCallbackQuery());
+            else if (USER_LIST.get(update.getCallbackQuery().getMessage().getChatId()).getStatus().equals(UserStatus.COMPLAIN_INFO)) {
+                callBackQueryController.complaintsInfo(update.getCallbackQuery());
+            } else {
+                callBackQueryController
+                        .callBackQueryController(update.getCallbackQuery());
+            }
+        } else if (update.getMessage().hasPhoto()) {
+            if (USER_LIST.get(update.getCallbackQuery().getMessage().getChatId()).getStatus().equals(UserStatus.COMPLAIN_INFO)){
+
+            }
         }
     }
 

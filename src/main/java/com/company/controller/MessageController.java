@@ -69,9 +69,10 @@ public class MessageController {
                 user.setStatus(COMPLAIN_FROM);
                 List<ComplaintsDTO> list = new LinkedList<>();
                 USER_COMPLAINT.put(message.getChatId(), list);
-                complaintsMessageController.complentsButtonList(message, user);
+                complaintsMessageController.complentsButtonList(message, user, 1);
             }
-
+        } else if (user.getStatus().equals(COMPLAIN_INFO)) {
+            complaintInfo(message, user);
         }
     }
 
@@ -88,37 +89,35 @@ public class MessageController {
 
     public void fillFrom(Message message, BotUsersDTO user) {
         var qStatus = user.getQuestionnaireStatus();
-        var lang = user.getLanguageCode();
 
         var sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId().toString());
 
 
-        switch (lang) {
-            case UZ -> {
-                switch (qStatus) {
-                    case DEFAULT -> defaults(message, user);
-                    case NAME -> messageService.name(message, user, sendMessage);
-                    case SURNAME -> messageService.surname(message, user, sendMessage);
-                    case BIRTH_DATE -> messageService.birthDate(message, user, sendMessage);
-                    case GENDER -> messageService.gender(message, user, sendMessage);
-                    case HEIGHT -> messageService.height(message, user, sendMessage);
-                    case WEIGHT -> messageService.weight(message, user, sendMessage);
-                    case PHONE -> messageService.phone(message, user, sendMessage);
-                }
-            }
-            case RU -> {
-                switch (qStatus) {
-                    case DEFAULT, NAME -> messageService.rus(sendMessage);
-                    case SURNAME -> messageService.rus(sendMessage);
-                    case BIRTH_DATE -> messageService.rus(sendMessage);
-                    case GENDER -> messageService.rus(sendMessage);
-                    case HEIGHT -> messageService.rus(sendMessage);
-                    case WEIGHT -> messageService.rus(sendMessage);
-                    case PHONE -> messageService.rus(sendMessage);
-                }
-            }
+        switch (qStatus) {
+            case DEFAULT -> defaults(message, user);
+            case NAME -> messageService.name(message, user, sendMessage);
+            case SURNAME -> messageService.surname(message, user, sendMessage);
+            case BIRTH_DATE -> messageService.birthDate(message, user, sendMessage);
+            case GENDER -> messageService.gender(message, user, sendMessage);
+            case HEIGHT -> messageService.height(message, user, sendMessage);
+            case WEIGHT -> messageService.weight(message, user, sendMessage);
+            case PHONE -> messageService.phone(message, user, sendMessage);
+        }
+    }
 
+
+    public void complaintInfo(Message message, BotUsersDTO user) {
+        var qStatus = user.getQuestionnaireStatus();
+
+        var sendMessage = new SendMessage();
+        sendMessage.setChatId(message.getChatId().toString());
+
+        switch (qStatus) {
+            case COMPLAINTS_INFO_WRITE -> messageService.complaintsInfoWrite(message, user);
+            case COMPLAINTS_STARTED_TIME -> messageService.complaintsStartedDate(message, user);
+            case DRUGS_LIST -> messageService.drugsList(message, user);
+            case DISEASES_LIST -> messageService.disiasesList(message, user);
         }
     }
 }

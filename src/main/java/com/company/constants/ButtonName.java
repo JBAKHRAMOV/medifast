@@ -36,17 +36,31 @@ public class ButtonName {
     public static final String BROADCAST_A_MESSAGE = "✍️ Xabar tarqatish";
     public static final String SEND = "📨 Yuborish";
 
-    public static final String STOP_UZ= "tugatish";
-    public static final String STOP_RU = "финиш";
+    public static final String STOP_UZ= "Tugatish";
+    public static final String STOP_RU = "Готово";
 
-    public static final String MESSSSAGE_SEND_UZ = "Jonatish";
+    public static final String MESSAGE_SEND_UZ = "Tog'ri";
 
-    public static final String MESSSSAGE_SEND_RU = "Отправить";
+    public static final String MASSAGE_SEND_RU = "Правильно";
 
 
     public static final String MESSSSAGE_SEND_STOP_UZ = "Rad etish";
 
     public static final String MESSSSAGE_SEND_STOP_RU = "отклонять";
+
+    public static final String NEXT_UZ="Keyingisi";
+    public static final String NEXT_RU="следующий";
+
+    public static final String SKIP_UZ="O'tqazib yuborish";
+    public static final String SKIP_RU="пропустить";
+
+    public static final String CIGARETTA_NO_UZ="Yoq";
+    public static final String CIGARETTA_05_1_UZ="0.5-1 pachka";
+    public static final String CIGARETTA_1_2_UZ="1-2 pachka";
+
+    public static final String CIGARETTA_NO_RU="Hет";
+    public static final String CIGARETTA_05_1_RU="0.5-1 пачка ";
+    public static final String CIGARETTA_1_2_RU="1-2 пачка ";
 
 
 }
