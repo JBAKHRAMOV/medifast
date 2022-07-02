@@ -180,17 +180,17 @@ public class CallBackQueryService {
         telegramBotConfig.sendMsg(sendMessage);
     }
 
-    public void startComplaintsInfoQuestionUz(Message message, BotUsersDTO user){
+    public void startComplaintsInfoQuestionUz(Message message, BotUsersDTO user) {
 
-        var delete=new DeleteMessage();
+        var delete = new DeleteMessage();
         delete.setChatId(String.valueOf(message.getChatId()));
         delete.setMessageId(message.getMessageId());
         telegramBotConfig.sendMsg(delete);
-        delete.setMessageId(message.getMessageId()-1);
+        delete.setMessageId(message.getMessageId() - 1);
         telegramBotConfig.sendMsg(delete);
 
         USER_COMPLAINT_INFO.put(message.getChatId(), new ComplaintsInfoDTO());
-        var sendMsg= new SendMessage();
+        var sendMsg = new SendMessage();
         user.setQuestionnaireStatus(COMPLAINTS_INFO_WRITE);
         USER_LIST.put(message.getChatId(), user);
         sendMsg.setChatId(String.valueOf(message.getChatId()));
@@ -202,7 +202,7 @@ public class CallBackQueryService {
         telegramBotConfig.sendMsg(sendMsg);
     }
 
-    public void cigarette(CallbackQuery callbackQuery){
+    public void cigarette(CallbackQuery callbackQuery) {
         var message = callbackQuery.getMessage();
         var user = USER_LIST.get(message.getChatId());
         var data = callbackQuery.getData();
@@ -228,7 +228,7 @@ public class CallBackQueryService {
         }
 
 
-        var delete=new DeleteMessage();
+        var delete = new DeleteMessage();
         delete.setMessageId(message.getMessageId());
         delete.setChatId(String.valueOf(message.getChatId()));
         telegramBotConfig.sendMsg(delete);
@@ -238,7 +238,7 @@ public class CallBackQueryService {
         USER_COMPLAINT_INFO.put(message.getChatId(), infoDTO);
 
 
-        var sendMsg= new SendMessage();
+        var sendMsg = new SendMessage();
         sendMsg.setChatId(String.valueOf(message.getChatId()));
         if (user.getLanguageCode().equals(UZ))
             sendMsg.setText("Hozirda qaysi kasalliklarga davolanyapsiz? ");
@@ -248,9 +248,9 @@ public class CallBackQueryService {
         telegramBotConfig.sendMsg(sendMsg);
     }
 
-    public void result(Message message){
-        var dto=USER_COMPLAINT_INFO.get(message.getChatId());
-        var str= String.format("""
+    public void result(Message message) {
+        var dto = USER_COMPLAINT_INFO.get(message.getChatId());
+        var str = String.format("""
                         <b>🔎 Iltimos, o'z ma'lumotlaringizni tekshirib chiqing.</b>
                                                     
                         <i>Murojatga sabab bo’lgan shikoyatlar: </i> %s
@@ -258,13 +258,13 @@ public class CallBackQueryService {
                         <i>Qabul qilgan va qilayotgan dorilar: </i> %s
                         <i>Sigaret: </i> %s
                         <i>Hozirda davolanayotgan kasalliklar: </i> %s
-                        
+                                                
                         """,
                 dto.getCauseOfComplaint(), dto.getComplaintStartedTime(),
-                dto.getDrugsList(),dto.getCigarette(),
+                dto.getDrugsList(), dto.getCigarette(),
                 dto.getDiseasesList());
 
-        var sendMsg=new SendMessage();
+        var sendMsg = new SendMessage();
         sendMsg.setParseMode("HTML");
         sendMsg.setChatId(String.valueOf(message.getChatId()));
         sendMsg.setText(str);
@@ -284,7 +284,6 @@ public class CallBackQueryService {
         entity.setSurname(dto.getSurname());
         botUsersService.saveUser(entity);
     }
-
 
 
 }

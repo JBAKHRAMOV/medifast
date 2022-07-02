@@ -29,7 +29,7 @@ public class ComplaintsMessageService {
 
         sendMessage.setChatId(String.valueOf(message.getChatId()));
         sendMessage.setReplyMarkup(InlineButtonUtil.complaintButtonList(lang));
-        sendMessage.setText("Ozingizga tegishli bolimlarni belgilang");
+        sendMessage.setText("O'zingizga tegishli bo'limlarni belgilang");
         telegramBotConfig.sendMsg(sendMessage);
 
     }

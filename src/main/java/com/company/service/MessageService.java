@@ -169,10 +169,6 @@ public class MessageService {
         TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
     }
 
-    public static void defaults(Message message, BotUsersDTO botUser) {
-        botUser.setQuestionnaireStatus(UserQuestionnaireStatus.NAME);
-        USER_LIST.put(message.getChatId(), botUser);
-    }
 
     public void complaintsInfoWrite(Message message, BotUsersDTO user) {
         var infoDTO = USER_COMPLAINT_INFO.get(message.getChatId());

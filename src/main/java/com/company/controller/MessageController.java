@@ -1,7 +1,6 @@
 package com.company.controller;
 
 import com.company.config.TelegramBotConfig;
-import com.company.constants.ButtonName;
 import com.company.dto.BotUsersDTO;
 import com.company.dto.ComplaintsDTO;
 import com.company.service.MessageService;
@@ -22,7 +21,6 @@ import static com.company.config.TelegramBotConfig.USER_COMPLAINT;
 import static com.company.config.TelegramBotConfig.USER_LIST;
 import static com.company.constants.ButtonName.*;
 import static com.company.enums.UserStatus.*;
-import static com.company.service.MessageService.defaults;
 
 
 @Controller
@@ -95,7 +93,6 @@ public class MessageController {
 
 
         switch (qStatus) {
-            case DEFAULT -> defaults(message, user);
             case NAME -> messageService.name(message, user, sendMessage);
             case SURNAME -> messageService.surname(message, user, sendMessage);
             case BIRTH_DATE -> messageService.birthDate(message, user, sendMessage);

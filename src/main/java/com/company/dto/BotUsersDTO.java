@@ -27,11 +27,11 @@ public class BotUsersDTO implements Serializable {
     private LocalDate birthDate;
     private LanguageCode languageCode;
     private UserStatus status = UserStatus.NOT_ACTIVE;
-    private UserQuestionnaireStatus questionnaireStatus = UserQuestionnaireStatus.DEFAULT;
+    private UserQuestionnaireStatus questionnaireStatus = UserQuestionnaireStatus.NAME;
     private Gender gender;
     private String weight;
     private String height;
     private Double currentTemperature;
-    private Integer startLenght=0;
-    private Integer finishLenght=2;
+    private Integer startLenght = 0;
+    private Integer finishLenght = 2;
 }
