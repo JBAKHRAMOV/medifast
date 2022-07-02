@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import java.util.Objects;
 
 import static com.company.enums.admin.AdminStatus.BROADCAST_A_MSG;
+import static com.company.enums.admin.AdminStatus.STATS;
 
 @Controller
 @RequiredArgsConstructor
@@ -41,6 +42,9 @@ public class AdminController {
         else if (Objects.equals(adminDTO.getStatus(), BROADCAST_A_MSG) ||
                 Objects.equals(text, ButtonName.BROADCAST_A_MESSAGE)) {
             adminService.broadcastAMessage(message);
+        } else if (Objects.equals(adminDTO.getStatus(), STATS) ||
+                Objects.equals(text, ButtonName.ADMIN_STATS)) {
+            adminService.handleStats(message);
         } else {
             sendMessage.setText("/start");
             telegramBotConfig.sendMsg(sendMessage);

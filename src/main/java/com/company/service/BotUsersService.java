@@ -13,7 +13,6 @@ public class BotUsersService {
     public BotUsersEntity getByTelegramId(Long telegramId) {
         return botUsersRepository.findByTelegramId(telegramId).orElse(null);
     }
-
     public void saveUser(BotUsersEntity entity) {
         botUsersRepository.save(entity);
     }

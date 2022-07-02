@@ -114,7 +114,7 @@ public class AdminService {
                         adminDTO.setBroadcastMSGStatus(INSPECTION);
                     }
                     case ButtonName.SEND -> {
-                        var thread = new Thread(() -> broadcastAMsg());
+                        var thread = new Thread(this::broadcastAMsg);
                         thread.start();
                     }
                     default -> {
@@ -128,6 +128,22 @@ public class AdminService {
             }
             default -> throw new IllegalStateException("Unexpected value: " + adminDTO.getBroadcastMSGStatus());
         }
+    }
+
+    public void handleStats(Message message) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(String.valueOf(adminId));
+        sendMessage.setText(String.format("""
+                        Bugun qo'shilganlar soni: %d
+                        Oxirgi 3 kuni ichida qo'shilganlar: %d
+                        Oxirgi 1 oyda qo'shilganlar: %d
+                        Jami foydalanuvchilar soni: %d
+                        """,
+                botUsersRepository.joinedToday(),
+                botUsersRepository.joinedLastThreeDays(),
+                botUsersRepository.joinedLastOneMonth(),
+                botUsersRepository.countAllUsers()));
+        telegramBotConfig.sendMsg(sendMessage);
     }
 
     @SneakyThrows

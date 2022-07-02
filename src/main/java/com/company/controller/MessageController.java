@@ -8,6 +8,7 @@ import com.company.service.MessageService;
 import com.company.util.button.InlineButtonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -15,6 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.company.config.TelegramBotConfig.USER_COMPLAINT;
 import static com.company.config.TelegramBotConfig.USER_LIST;
@@ -31,12 +33,22 @@ public class MessageController {
     private final TelegramBotConfig telegramBotConfig;
     private final MessageService messageService;
     private final ComplaintsMessageController complaintsMessageController;
+    private final AdminController adminController;
+    @Value("${user.admin}")
+    private Long adminId;
+
 
     public void messageController(Message message) {
         var text = "";
         var user = USER_LIST.get(message.getChatId());
 
-        if (message.getText() != null) text = message.getText();
+        if (Objects.equals(adminId, message.getFrom().getId())) {
+            adminController.messageController(message);
+            return;
+        }
+
+        if (message.hasText())
+            text = message.getText();
 
         if (message.hasContact()) text = message.getContact().getPhoneNumber();
 
@@ -53,7 +65,7 @@ public class MessageController {
 
             if (text.equals(STOP_UZ) || text.equals(STOP_RU))
                 complaintsMessageController.result(message, user);
-            else{
+            else {
                 user.setStatus(COMPLAIN_FROM);
                 List<ComplaintsDTO> list = new LinkedList<>();
                 USER_COMPLAINT.put(message.getChatId(), list);
