@@ -5,13 +5,11 @@ import com.company.dto.BotUsersDTO;
 import com.company.dto.ComplaintsInfoDTO;
 import com.company.entity.BotUsersEntity;
 import com.company.enums.Gender;
-import com.company.enums.LanguageCode;
 import com.company.enums.UserQuestionnaireStatus;
 import com.company.enums.UserStatus;
 import com.company.util.button.ButtonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -24,7 +22,6 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import static com.company.config.TelegramBotConfig.USER_COMPLAINT_INFO;
 import static com.company.config.TelegramBotConfig.USER_LIST;
 import static com.company.constants.ButtonName.*;
-import static com.company.constants.ButtonName.CIGARETTA_NO_RU;
 import static com.company.enums.LanguageCode.RU;
 import static com.company.enums.LanguageCode.UZ;
 import static com.company.enums.UserQuestionnaireStatus.COMPLAINTS_INFO_WRITE;
@@ -135,18 +132,18 @@ public class CallBackQueryService {
 
     public void handleCallBackConfirm(Message message, User user) {
 
-        var delete =new DeleteMessage();
+        var delete = new DeleteMessage();
         delete.setMessageId(message.getMessageId());
         delete.setChatId(String.valueOf(message.getChatId()));
         telegramBotConfig.sendMsg(delete);
-        delete.setMessageId(message.getMessageId()-1);
+        delete.setMessageId(message.getMessageId() - 1);
         telegramBotConfig.sendMsg(delete);
 
         var dto = USER_LIST.get(user.getId());
         dto.setStatus(ACTIVE);
         USER_LIST.put(message.getChatId(), dto);
 
-        save(dto,message.getChatId());
+        save(dto, message.getChatId());
 
         var editMessageText = new SendMessage();
 
@@ -202,7 +199,7 @@ public class CallBackQueryService {
         USER_LIST.put(message.getChatId(), user);
         sendMsg.setChatId(String.valueOf(message.getChatId()));
         if (user.getLanguageCode().equals(UZ))
-            sendMsg.setText("Murojatga sabab bo’lgan shikoyatlarni yozing yoki ovozli habar yuboring: ");
+            sendMsg.setText("Murojaatga sabab bo’lgan shikoyatlarni yozing yoki ovozli xabar yuboring: ");
         else
             sendMsg.setText("Напишите или отправьте голосовое сообщение о жалобах, которые привели к обращению: ");
         telegramBotConfig.sendMsg(sendMsg);

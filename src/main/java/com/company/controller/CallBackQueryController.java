@@ -1,18 +1,13 @@
 package com.company.controller;
 
 
-import com.company.config.TelegramBotConfig;
-import com.company.dto.BotUsersDTO;
 import com.company.dto.ComplaintsDTO;
-import com.company.enums.UserStatus;
 import com.company.service.CallBackQueryService;
-import com.company.service.ComplaintsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,8 +19,8 @@ import static com.company.enums.Gender.FEMALE;
 import static com.company.enums.Gender.MALE;
 import static com.company.enums.LanguageCode.RU;
 import static com.company.enums.LanguageCode.UZ;
-import static com.company.enums.UserStatus.*;
 import static com.company.enums.UserStatus.COMPLAIN_FROM;
+import static com.company.enums.UserStatus.COMPLAIN_INFO;
 import static com.company.service.ComplaintsService.COMPLAINTS_LIST;
 
 @Controller
@@ -40,10 +35,8 @@ public class CallBackQueryController {
     public void callBackQueryController(CallbackQuery callbackQuery) {
         var user = USER_LIST.get(callbackQuery.getMessage().getChatId());
         String data = callbackQuery.getData();
-        if (user.getStatus().equals(COMPLAIN_FROM))
-            complaintFrom(callbackQuery);
-        else if (user.getStatus().equals(COMPLAIN_INFO))
-            complaintFrom(callbackQuery);
+        if (user.getStatus().equals(COMPLAIN_FROM)) complaintFrom(callbackQuery);
+        else if (user.getStatus().equals(COMPLAIN_INFO)) complaintsInfo(callbackQuery);
         else if (data.equals(UZ.name()))
             callBackQueryService.handleLangCodeUZ(callbackQuery.getMessage(), callbackQuery.getFrom());
         else if (data.equals(RU.name()))
@@ -95,9 +88,7 @@ public class CallBackQueryController {
     public void complaintsInfo(CallbackQuery callbackQuery) {
         var user = USER_LIST.get(callbackQuery.getMessage().getChatId());
         String data = callbackQuery.getData();
-        if (data.equals(SKIP_UZ) || data.equals(SKIP_RU))
-            callBackQueryService.result(callbackQuery.getMessage());
-        else
-            callBackQueryService.cigarette(callbackQuery);
+        if (data.equals(SKIP_UZ) || data.equals(SKIP_RU)) callBackQueryService.result(callbackQuery.getMessage());
+        else callBackQueryService.cigarette(callbackQuery);
     }
 }
