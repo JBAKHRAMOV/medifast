@@ -95,7 +95,7 @@ public class InlineButtonUtil {
 
         switch (languageCode) {
             case UZ -> {
-                for (int i = 0; i < COMPLAINTS_LIST.size()/2; i++) {
+                for (int i = 0; i < COMPLAINTS_LIST.size() / 2; i++) {
                     if (i + 1 == COMPLAINTS_LIST.size()) {
                         var button = new InlineKeyboardButton();
                         button = button(COMPLAINTS_LIST.get(i).getNameUz(), COMPLAINTS_LIST.get(i).getKey());
@@ -145,47 +145,55 @@ public class InlineButtonUtil {
 
         List<List<InlineKeyboardButton>> list = new LinkedList<>();
         var userComplientList = USER_COMPLAINT.get(chatId);
-        var user =USER_LIST.get(chatId);
+        var user = USER_LIST.get(chatId);
 
         switch (languageCode) {
             case UZ -> {
 
-                for (int i = user.getStartLenght(); i < COMPLAINTS_LIST.size()/user.getFinishLenght(); i++) {
-                    if (COMPLAINTS_LIST.size()==i+1){
+                for (int i = user.getStartLenght(); i < COMPLAINTS_LIST.size() / user.getFinishLenght(); i++) {
+                    if (COMPLAINTS_LIST.size() == i + 1) {
                         var button = new InlineKeyboardButton();
-                        for (var userComplaints : userComplientList) {
-                            if (userComplaints.getNameUz().equals(COMPLAINTS_LIST.get(i).getNameUz())) {
-                                button = button(COMPLAINTS_LIST.get(i).getNameUz() + " ✅", COMPLAINTS_LIST.get(i).getKey());
-                                break;
-                            } else
-                                button = button(COMPLAINTS_LIST.get(i).getNameUz(), COMPLAINTS_LIST.get(i).getKey());
-                        }
+                        if (!userComplientList.isEmpty()) {
+                            for (var userComplaints : userComplientList) {
+                                if (userComplaints.getNameUz().equals(COMPLAINTS_LIST.get(i).getNameUz())) {
+                                    button = button(COMPLAINTS_LIST.get(i).getNameUz() + " ✅", COMPLAINTS_LIST.get(i).getKey());
+                                    break;
+                                } else
+                                    button = button(COMPLAINTS_LIST.get(i).getNameUz(), COMPLAINTS_LIST.get(i).getKey());
+                            }
+                        } else
+                            button = button(COMPLAINTS_LIST.get(i).getNameUz(), COMPLAINTS_LIST.get(i).getKey());
                         list.add(row(button));
-                    }
-                    else {
+                    } else {
                         var button = new InlineKeyboardButton();
                         var button2 = new InlineKeyboardButton();
-                        for (var userComplaints : userComplientList) {
-                            if (userComplaints.getNameUz().equals(COMPLAINTS_LIST.get(i).getNameUz())) {
-                                button = button(COMPLAINTS_LIST.get(i).getNameUz() + " ✅", COMPLAINTS_LIST.get(i).getKey());
-                                break;
-                            } else
-                                button = button(COMPLAINTS_LIST.get(i).getNameUz(), COMPLAINTS_LIST.get(i).getKey());
-                        }
-                        for (var userComplaints : userComplientList) {
-                            if (userComplaints.getNameUz().equals(COMPLAINTS_LIST.get(i+1).getNameUz())) {
-                                button2 = button(COMPLAINTS_LIST.get(i+1).getNameUz() + " ✅", COMPLAINTS_LIST.get(i+1).getKey());
-                                break;
-                            } else
-                                button2 = button(COMPLAINTS_LIST.get(i+1).getNameUz(), COMPLAINTS_LIST.get(i+1).getKey());
-                        }
+                        if (!userComplientList.isEmpty()) {
+                            for (var userComplaint : userComplientList) {
+                                if (userComplaint.getNameUz().equals(COMPLAINTS_LIST.get(i).getNameUz())) {
+                                    button = button(COMPLAINTS_LIST.get(i).getNameUz() + " ✅", COMPLAINTS_LIST.get(i).getKey());
+                                    break;
+                                } else
+                                    button = button(COMPLAINTS_LIST.get(i).getNameUz(), COMPLAINTS_LIST.get(i).getKey());
+                            }
+                        } else
+                            button = button(COMPLAINTS_LIST.get(i).getNameUz(), COMPLAINTS_LIST.get(i).getKey());
+                        if (!userComplientList.isEmpty()) {
+                            for (var userComplaints : userComplientList) {
+                                if (userComplaints.getNameUz().equals(COMPLAINTS_LIST.get(i + 1).getNameUz())) {
+                                    button2 = button(COMPLAINTS_LIST.get(i + 1).getNameUz() + " ✅", COMPLAINTS_LIST.get(i + 1).getKey());
+                                    break;
+                                } else
+                                    button2 = button(COMPLAINTS_LIST.get(i + 1).getNameUz(), COMPLAINTS_LIST.get(i + 1).getKey());
+                            }
+                        } else
+                            button2 = button(COMPLAINTS_LIST.get(i + 1).getNameUz(), COMPLAINTS_LIST.get(i + 1).getKey());
                         i++;
                         list.add(row(button, button2));
                     }
                 }
-                if (user.getStartLenght()==0){
+                if (user.getStartLenght() == 0) {
                     list.add(row(button(NEXT_UZ, NEXT_UZ)));
-                }else {
+                } else {
                     list.add(row(button(BACK_UZ, BACK_UZ), button(STOP_UZ, STOP_UZ)));
                 }
             }
@@ -200,7 +208,7 @@ public class InlineButtonUtil {
         return keyboard(list);
     }
 
-    public static InlineKeyboardMarkup cigarette(LanguageCode languageCode){
+    public static InlineKeyboardMarkup cigarette(LanguageCode languageCode) {
         var button1 = new InlineKeyboardButton();
         var button2 = new InlineKeyboardButton();
         var button3 = new InlineKeyboardButton();
@@ -219,7 +227,7 @@ public class InlineButtonUtil {
         return keyboard(rowList(row(button1, button2, button3)));
     }
 
-    public static InlineKeyboardMarkup next(LanguageCode languageCode){
+    public static InlineKeyboardMarkup next(LanguageCode languageCode) {
         var button1 = new InlineKeyboardButton();
         switch (languageCode) {
             case UZ -> {

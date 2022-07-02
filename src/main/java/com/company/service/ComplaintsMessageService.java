@@ -39,18 +39,23 @@ public class ComplaintsMessageService {
 
         var str= new StringBuilder();
         var list=TelegramBotConfig.USER_COMPLAINT.get(message.getChatId());
-        switch (lang){
-            case UZ -> {
-                for (var complaits: list) {
-                    str.append(complaits.getNameUz()).append("\n");
+        if (!list.isEmpty()){
+            switch (lang){
+                case UZ -> {
+                    for (var complaits: list) {
+                        str.append(complaits.getNameUz()).append("\n");
+                    }
                 }
-            }
-            case RU -> {
-                for (var complaits: list) {
-                    str.append(complaits.getNameRu()).append("\n");
+                case RU -> {
+                    for (var complaits: list) {
+                        str.append(complaits.getNameRu()).append("\n");
+                    }
                 }
             }
         }
+        else
+            str.append("Siz hech qanday shikoyat belgilamagansiz!");
+
 
         sendMessage.setChatId(String.valueOf(message.getChatId()));
         sendMessage.setReplyMarkup(InlineButtonUtil.confirmComplints(lang));
