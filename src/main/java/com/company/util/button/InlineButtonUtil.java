@@ -112,12 +112,21 @@ public class InlineButtonUtil {
                 list.add(row(button(NEXT_UZ, NEXT_UZ)));
             }
             case RU -> {
-                for (var complints : COMPLAINTS_LIST) {
-                    var button = new InlineKeyboardButton();
-                    button = button(complints.getNameRu(), complints.getKey());
-                    list.add(row(button));
+                for (int i = 0; i < COMPLAINTS_LIST.size() / 2; i++) {
+                    if (i + 1 == COMPLAINTS_LIST.size()) {
+                        var button = new InlineKeyboardButton();
+                        button = button(COMPLAINTS_LIST.get(i).getNameRu(), COMPLAINTS_LIST.get(i).getKey());
+                        list.add(row(button));
+                    } else {
+                        var button = new InlineKeyboardButton();
+                        var button2 = new InlineKeyboardButton();
+                        button = button(COMPLAINTS_LIST.get(i).getNameRu(), COMPLAINTS_LIST.get(i).getKey());
+                        button2 = button(COMPLAINTS_LIST.get(i + 1).getNameRu(), COMPLAINTS_LIST.get(i + 1).getKey());
+                        list.add(row(button, button2));
+                        i++;
+                    }
                 }
-                list.add(row(button(STOP_RU, STOP_RU)));
+                list.add(row(button(NEXT_RU, NEXT_RU)));
             }
         }
         return keyboard(list);
@@ -204,10 +213,57 @@ public class InlineButtonUtil {
                 }
             }
             case RU -> {
-                for (var complints : COMPLAINTS_LIST) {
-                    var button = new InlineKeyboardButton();
-                    button = button(complints.getNameRu(), complints.getKey());
-                    list.add(row(button));
+                for (int i = user.getStartLenght(); i < COMPLAINTS_LIST.size() / user.getFinishLenght(); i++) {
+                    if (COMPLAINTS_LIST.size() == i + 1) {
+                        var button = new InlineKeyboardButton();
+                        if (!userComplientList.isEmpty()) {
+                            for (var userComplaints : userComplientList) {
+                                if (userComplaints.getNameRu().equals(COMPLAINTS_LIST.get(i).getNameRu())) {
+                                    button = button(COMPLAINTS_LIST.get(i).getNameRu() + " ✅", COMPLAINTS_LIST.get(i).getKey());
+                                    break;
+                                }
+                                else
+                                    button = button(COMPLAINTS_LIST.get(i).getNameRu(), COMPLAINTS_LIST.get(i).getKey());
+                            }
+                        } else
+                            button = button(COMPLAINTS_LIST.get(i).getNameRu(), COMPLAINTS_LIST.get(i).getKey());
+                        list.add(row(button));
+                    } else {
+                        var button = new InlineKeyboardButton();
+                        var button2 = new InlineKeyboardButton();
+                        if (!userComplientList.isEmpty()) {
+                            for (var userComplaint : userComplientList) {
+                                if (userComplaint.getNameRu().equals(COMPLAINTS_LIST.get(i).getNameRu())) {
+                                    button = button(COMPLAINTS_LIST.get(i).getNameRu() + " ✅", COMPLAINTS_LIST.get(i).getKey());
+                                    break;
+                                }
+                                else
+                                    button = button(COMPLAINTS_LIST.get(i).getNameRu(), COMPLAINTS_LIST.get(i).getKey());
+
+                            }
+                        } else
+                            button = button(COMPLAINTS_LIST.get(i).getNameRu(), COMPLAINTS_LIST.get(i).getKey());
+                        if (!userComplientList.isEmpty()) {
+                            for (var userComplaints : userComplientList) {
+                                if (userComplaints.getNameRu().equals(COMPLAINTS_LIST.get(i + 1).getNameRu())) {
+                                    button2 = button(COMPLAINTS_LIST.get(i + 1).getNameRu() + " ✅", COMPLAINTS_LIST.get(i + 1).getKey());
+                                    break;
+                                }
+                                else
+                                    button2 = button(COMPLAINTS_LIST.get(i + 1).getNameRu(), COMPLAINTS_LIST.get(i + 1).getKey());
+
+                            }
+
+                        } else
+                            button2 = button(COMPLAINTS_LIST.get(i + 1).getNameRu(), COMPLAINTS_LIST.get(i + 1).getKey());
+                        i++;
+                        list.add(row(button, button2));
+                    }
+                }
+                if (user.getStartLenght() == 0) {
+                    list.add(row(button(NEXT_RU, NEXT_RU)));
+                } else {
+                    list.add(row(button(BACK_RU, BACK_RU), button(STOP_RU, STOP_RU)));
                 }
             }
         }

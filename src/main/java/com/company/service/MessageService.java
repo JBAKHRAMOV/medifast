@@ -20,6 +20,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 
 import static com.company.config.TelegramBotConfig.*;
+import static com.company.enums.LanguageCode.RU;
 import static com.company.enums.LanguageCode.UZ;
 import static com.company.enums.UserQuestionnaireStatus.*;
 
@@ -62,12 +63,23 @@ public class MessageService {
         telegramBotConfig.sendMsg(sendMessage);
 
         if (dto.getGender() == Gender.MALE) {
-            sendMessage.setText(getFormat(dto, "ERKAK"));
-        } else
-            sendMessage.setText(getFormat(dto, "AYOL"));
+            if (dto.getLanguageCode().equals(UZ)){
+                sendMessage.setText(getFormat(dto, "ERKAK"));
+                sendMessage.setReplyMarkup(InlineButtonUtil.formFillFinishButtons(UZ));
+            }
+            else
+                sendMessage.setText(getFormatRU(dto, "Мужской"));
+
+
+        } else {
+            if (dto.getLanguageCode().equals(UZ))
+                sendMessage.setText(getFormat(dto, "AYOL"));
+            else
+                sendMessage.setText(getFormatRU(dto, "Женщина"));
+            sendMessage.setReplyMarkup(InlineButtonUtil.formFillFinishButtons(RU));
+        }
 
         sendMessage.setParseMode("HTML");
-        sendMessage.setReplyMarkup(InlineButtonUtil.formFillFinishButtons(UZ));
         TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
         telegramBotConfig.sendMsg(sendMessage);
     }
@@ -77,11 +89,13 @@ public class MessageService {
         dto.setQuestionnaireStatus(PHONE);
         TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
 
-        if (dto.getLanguageCode().equals(UZ))
+        if (dto.getLanguageCode().equals(UZ)) {
+            sendMessage.setReplyMarkup(ButtonUtil.requestContact(UZ));
             sendMessage.setText("Telefon raqamingizni kiriting");
-        else
+        } else {
             sendMessage.setText("Введите свой номер телефона");
-        sendMessage.setReplyMarkup(ButtonUtil.requestContact(UZ));
+            sendMessage.setReplyMarkup(ButtonUtil.requestContact(RU));
+        }
 
         telegramBotConfig.sendMsg(sendMessage);
     }
@@ -93,9 +107,9 @@ public class MessageService {
         TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
 
         if (dto.getLanguageCode().equals(UZ))
-            sendMessage.setText("Vazningizni kiriting. \n Namuna: (65.5-kg)");
+            sendMessage.setText("Vazningizni kiriting. \nNamuna: (65.5-kg)");
         else
-            sendMessage.setText("Введите свой вес.\n Образец: (65,5 кг)");
+            sendMessage.setText("Введите свой вес.\nОбразец: (65,5 кг)");
 
         telegramBotConfig.sendMsg(sendMessage);
     }
@@ -129,7 +143,7 @@ public class MessageService {
         if (dto.getLanguageCode().equals(UZ))
             sendMessage.setText("Iltimos, tug'ilgan kuningizni kiriting. \nNamuna (24.11.2003)");
         else
-            sendMessage.setText("Пожалуйста, введите свой день рождения.\n Образец (24.11.2003)");
+            sendMessage.setText("Пожалуйста, введите свой день рождения.\nОбразец (24.11.2003)");
 
         telegramBotConfig.sendMsg(sendMessage);
 
@@ -158,7 +172,7 @@ public class MessageService {
         if (dto.getLanguageCode().equals(UZ))
             sendMessage.setText("Iltimos, ismingizni kiriting.");
         else
-            sendMessage.setText("Iltimos, ismingizni kiriting.");
+            sendMessage.setText("Пожалуйста, введите Ваше имя.");
         sendMessage.setReplyMarkup(remove);
 
         telegramBotConfig.sendMsg(sendMessage);
@@ -234,10 +248,10 @@ public class MessageService {
         sendMsg.setChatId(String.valueOf(message.getChatId()));
         if (user.getLanguageCode().equals(UZ))
             sendMsg.setText("O’tkazilgan tekshiruv qog’ozlari bo’lsa rasmga olib yoki rasmga tushirib yuboring (ohirgi 2 oydagisi)" +
-                    "\n Rasm jo'natib bo'lganingizdan so'ng tugatish tugamsini bosing ");
+                    "\nRasm jo'natib bo'lganingizdan so'ng tugatish tugamsini bosing ");
         else
             sendMsg.setText("Если у вас есть документы о проверке, сфотографируйте или пришлите фото (за последние 2 месяца)" +
-                    "\n Когда вы закончите отправку изображения, нажмите кнопку «Готово».");
+                    "\nКогда вы закончите отправку изображения, нажмите кнопку «Готово».");
         sendMsg.setReplyMarkup(InlineButtonUtil.next(user.getLanguageCode()));
         telegramBotConfig.sendMsg(sendMsg);
 
@@ -258,6 +272,29 @@ public class MessageService {
                                                     
                          <b>Agar, o'z ma'lumotlaringizda xatoliklar bo'lsa uni
                          qaytadan to'ldirib chiqing.
+                         </b>
+                        """,
+                dto.getName(), dto.getSurname(),
+                dto.getBirthDate().toString(),
+                gender,
+                dto.getHeight(), dto.getWeight(),
+                dto.getPhone());
+    }
+
+    private String getFormatRU(BotUsersDTO dto, String gender) {
+        return String.format("""
+                        <b>🔎 Пожалуйста, проверьте вашу информацию.</b>
+                                                    
+                        <i>Имя: </i> %s
+                        <i>Фамилия: </i> %s
+                        <i>Дата рождения: </i> %s
+                        <i>твой пол: </i> %s
+                        <i>Твой рост: </i> %s
+                        <i>Твой вес: </i> %s
+                        <i>Номер телефона: </i> %s
+                                                    
+                         <b>Если в ваших данных есть ошибки
+                           Пожалуйста, заполните его снова.
                          </b>
                         """,
                 dto.getName(), dto.getSurname(),

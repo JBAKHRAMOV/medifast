@@ -45,6 +45,9 @@ public class MessageController {
             adminController.messageController(message);
             return;
         }
+        if (text == null){
+            return;
+        }
 
         if (message.hasText())
             text = message.getText();
@@ -54,9 +57,7 @@ public class MessageController {
         if (text.equals("/start"))
             start(message);
 
-        else if (user.getStatus().equals(FILL_FORM)
-                || text.equals(FILL_FORM_BTN_UZ)
-                || text.equals(FILL_FORM_BTN_RU)) {
+        else if (user.getStatus().equals(FILL_FORM) || text.equals(FILL_FORM_BTN_UZ) || text.equals(FILL_FORM_BTN_RU)) {
             user.setStatus(FILL_FORM);
             fillFrom(message, user);
         } else if (user.getStatus().equals(COMPLAIN_FROM)

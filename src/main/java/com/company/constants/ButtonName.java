@@ -4,7 +4,7 @@ public class ButtonName {
     public static final String FILL_FORM_BTN_UZ = "✍️ Anketa to'ldirish";
     public static final String FILL_FORM_BTN_RU = "✍️ Заполните анкету";
     public static final String ABOUT_BOT_BTN_UZ = "\uD83E\uDD16 Bot haqida ma'lumot";
-    public static final String ABOUT_BOT_BTN_RU = "\uD83E\uDD16 Bot haqida ma'lumot";
+    public static final String ABOUT_BOT_BTN_RU = "\uD83E\uDD16 Информация о боте";
 
     public static final String SEND_CONTACT_UZ = "Raqaminmi jo'natish";
     public static final String SEND_CONTACT_RU = "Отправить контакты";
