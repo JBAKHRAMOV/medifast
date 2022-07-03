@@ -149,7 +149,7 @@ public class AdminService {
         sendMessage.setParseMode("HTML");
         telegramBotConfig.sendMsg(sendMessage);
     }
-
+    
     @SneakyThrows
     private void broadcastAMsg() {
         var textDetailDTO = TextDetailDTO.getInstance();
