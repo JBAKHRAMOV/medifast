@@ -79,6 +79,7 @@ public class MessageController {
     private void start(Message message) {
         USER_LIST.put(message.getChatId(), new BotUsersDTO());
 
+
         var sendMessage = new SendMessage();
         sendMessage.setChatId(String.valueOf(message.getChatId()));
         sendMessage.setText("Iltimos, tilni tanlang. / Пожалуйста, выберите язык.");

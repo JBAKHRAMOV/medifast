@@ -141,7 +141,7 @@ public class InlineButtonUtil {
         return keyboard(rowList(row1, row2));
     }
 
-    public static InlineKeyboardMarkup complaintButtonListSendAgain(LanguageCode languageCode, Long chatId) {
+    public static InlineKeyboardMarkup complaintButtonListSendAgain(LanguageCode languageCode, Long chatId, String data) {
 
         List<List<InlineKeyboardButton>> list = new LinkedList<>();
         var userComplientList = USER_COMPLAINT.get(chatId);
@@ -158,7 +158,8 @@ public class InlineButtonUtil {
                                 if (userComplaints.getNameUz().equals(COMPLAINTS_LIST.get(i).getNameUz())) {
                                     button = button(COMPLAINTS_LIST.get(i).getNameUz() + " ✅", COMPLAINTS_LIST.get(i).getKey());
                                     break;
-                                } else
+                                }
+                                else
                                     button = button(COMPLAINTS_LIST.get(i).getNameUz(), COMPLAINTS_LIST.get(i).getKey());
                             }
                         } else
@@ -172,8 +173,10 @@ public class InlineButtonUtil {
                                 if (userComplaint.getNameUz().equals(COMPLAINTS_LIST.get(i).getNameUz())) {
                                     button = button(COMPLAINTS_LIST.get(i).getNameUz() + " ✅", COMPLAINTS_LIST.get(i).getKey());
                                     break;
-                                } else
+                                }
+                                else
                                     button = button(COMPLAINTS_LIST.get(i).getNameUz(), COMPLAINTS_LIST.get(i).getKey());
+
                             }
                         } else
                             button = button(COMPLAINTS_LIST.get(i).getNameUz(), COMPLAINTS_LIST.get(i).getKey());
@@ -182,9 +185,12 @@ public class InlineButtonUtil {
                                 if (userComplaints.getNameUz().equals(COMPLAINTS_LIST.get(i + 1).getNameUz())) {
                                     button2 = button(COMPLAINTS_LIST.get(i + 1).getNameUz() + " ✅", COMPLAINTS_LIST.get(i + 1).getKey());
                                     break;
-                                } else
+                                }
+                                else
                                     button2 = button(COMPLAINTS_LIST.get(i + 1).getNameUz(), COMPLAINTS_LIST.get(i + 1).getKey());
+
                             }
+
                         } else
                             button2 = button(COMPLAINTS_LIST.get(i + 1).getNameUz(), COMPLAINTS_LIST.get(i + 1).getKey());
                         i++;
@@ -224,7 +230,7 @@ public class InlineButtonUtil {
                 button3 = button(CIGARETTA_1_2_RU, CIGARETTA_1_2_RU);
             }
         }
-        return keyboard(rowList(row(button1, button2, button3)));
+        return keyboard(rowList(row(button1),row( button2),row( button3)));
     }
 
     public static InlineKeyboardMarkup next(LanguageCode languageCode) {

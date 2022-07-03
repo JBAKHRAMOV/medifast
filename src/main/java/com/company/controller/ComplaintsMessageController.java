@@ -2,6 +2,7 @@ package com.company.controller;
 
 import com.company.config.TelegramBotConfig;
 import com.company.dto.BotUsersDTO;
+import com.company.dto.ComplaintsDTO;
 import com.company.service.ComplaintsMessageService;
 import com.company.util.button.InlineButtonUtil;
 import lombok.RequiredArgsConstructor;
@@ -23,32 +24,31 @@ public class ComplaintsMessageController {
     private final ComplaintsMessageService complaintsMessageService;
 
     public void complaintsForm(String text, Message message) {
-        System.out.println(message.getChatId());
-        var lis = USER_COMPLAINT.get(message.getChatId());
-        System.out.println(USER_COMPLAINT);
 
-        for (var complaint : COMPLAINTS_LIST) {
-            if (text.equals(complaint.getKey())) {
-                lis.add(complaint);
-                System.out.println(complaint);
-                USER_COMPLAINT.put(message.getChatId(), lis);
+        var list = USER_COMPLAINT.get(message.getChatId());
+
+        ComplaintsDTO dto = null;
+        for (var complaint:COMPLAINTS_LIST) {
+            if (complaint.getKey().equals(text)){
+                dto=complaint;
                 break;
             }
         }
-        System.out.println(USER_COMPLAINT);
+
+        if (!list.contains(dto))
+            list.add(dto);
+        else
+            list.remove(dto);
+
+        USER_COMPLAINT.put(message.getChatId(), list);
 
         var lang = USER_LIST.get(message.getChatId()).getLanguageCode();
 
         EditMessageText editMessageText = new EditMessageText();
         editMessageText.setMessageId(message.getMessageId());
         editMessageText.setChatId(String.valueOf(message.getChatId()));
-        editMessageText.setReplyMarkup(InlineButtonUtil.complaintButtonListSendAgain(lang, message.getChatId()));
+        editMessageText.setReplyMarkup(InlineButtonUtil.complaintButtonListSendAgain(lang, message.getChatId(), text));
         editMessageText.setText("belgilab bolganingizdan song tugatish tugamsini bosing");
-
-        /*var sendMessage=new SendMessage();
-        sendMessage.setChatId(String.valueOf(message.getChatId()));
-        sendMessage.setReplyMarkup(InlineButtonUtil.complaintButtonListSendAgain(lang, message.getChatId()));
-        sendMessage.setText("belgilab bolganingizdan song tugatish tugamsini bosing");*/
 
         telegramBotConfig.sendMsg(editMessageText);
 
