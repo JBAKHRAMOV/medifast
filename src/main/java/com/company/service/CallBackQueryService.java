@@ -1,5 +1,6 @@
 package com.company.service;
 
+import ch.qos.logback.core.layout.EchoLayout;
 import com.company.config.TelegramBotConfig;
 import com.company.dto.BotUsersDTO;
 import com.company.dto.ComplaintsInfoDTO;
@@ -18,6 +19,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 
 import static com.company.config.TelegramBotConfig.USER_COMPLAINT_INFO;
 import static com.company.config.TelegramBotConfig.USER_LIST;
@@ -148,8 +150,14 @@ public class CallBackQueryService {
         var editMessageText = new SendMessage();
 
         editMessageText.setChatId(String.valueOf(message.getChatId()));
-        editMessageText.setText("Ma'lumotlar qabul qilindi ✅");
-        editMessageText.setReplyMarkup(ButtonUtil.complaintsMenu(UZ));
+        if (dto.getLanguageCode().equals(UZ)) {
+            editMessageText.setText("Ma'lumotlar qabul qilindi ✅");
+            editMessageText.setReplyMarkup(ButtonUtil.complaintsMenu(UZ));
+        }
+        else {
+            editMessageText.setText("Информация получена ✅");
+            editMessageText.setReplyMarkup(ButtonUtil.complaintsMenu(RU));
+        }
         telegramBotConfig.sendMsg(editMessageText);
     }
 
@@ -192,12 +200,16 @@ public class CallBackQueryService {
         telegramBotConfig.sendMsg(delete);
         delete.setMessageId(message.getMessageId() - 1);
         telegramBotConfig.sendMsg(delete);
+        var remove = new ReplyKeyboardRemove();
+
+        remove.setRemoveKeyboard(true);
 
         USER_COMPLAINT_INFO.put(message.getChatId(), new ComplaintsInfoDTO());
         var sendMsg = new SendMessage();
         user.setQuestionnaireStatus(COMPLAINTS_INFO_WRITE);
         USER_LIST.put(message.getChatId(), user);
         sendMsg.setChatId(String.valueOf(message.getChatId()));
+        sendMsg.setReplyMarkup(remove);
         if (user.getLanguageCode().equals(UZ))
             sendMsg.setText("Murojaatga sabab bo’lgan shikoyatlarni yozing yoki ovozli xabar yuboring: ");
         else

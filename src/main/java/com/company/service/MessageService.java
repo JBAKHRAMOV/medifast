@@ -63,20 +63,23 @@ public class MessageService {
         telegramBotConfig.sendMsg(sendMessage);
 
         if (dto.getGender() == Gender.MALE) {
-            if (dto.getLanguageCode().equals(UZ)){
+            if (dto.getLanguageCode().equals(UZ)) {
                 sendMessage.setText(getFormat(dto, "ERKAK"));
                 sendMessage.setReplyMarkup(InlineButtonUtil.formFillFinishButtons(UZ));
-            }
-            else
+            } else {
+                sendMessage.setReplyMarkup(InlineButtonUtil.formFillFinishButtons(RU));
                 sendMessage.setText(getFormatRU(dto, "Мужской"));
-
+            }
 
         } else {
-            if (dto.getLanguageCode().equals(UZ))
+            if (dto.getLanguageCode().equals(UZ)) {
+                sendMessage.setReplyMarkup(InlineButtonUtil.formFillFinishButtons(UZ));
                 sendMessage.setText(getFormat(dto, "AYOL"));
-            else
+            } else {
+
+                sendMessage.setReplyMarkup(InlineButtonUtil.formFillFinishButtons(RU));
                 sendMessage.setText(getFormatRU(dto, "Женщина"));
-            sendMessage.setReplyMarkup(InlineButtonUtil.formFillFinishButtons(RU));
+            }
         }
 
         sendMessage.setParseMode("HTML");
