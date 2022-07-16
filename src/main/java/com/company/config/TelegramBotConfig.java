@@ -5,7 +5,6 @@ import com.company.controller.MessageController;
 import com.company.dto.BotUsersDTO;
 import com.company.dto.ComplaintsDTO;
 import com.company.dto.ComplaintsInfoDTO;
-import com.company.entity.ComplaintsEntity;
 import com.company.enums.UserStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,9 +63,7 @@ public class TelegramBotConfig extends TelegramLongPollingBot {
                 callBackQueryController
                         .callBackQueryController(update.getCallbackQuery());
         } else if (update.getMessage().hasPhoto()) {
-            if (USER_LIST.get(update.getCallbackQuery().getMessage().getChatId()).getStatus().equals(UserStatus.COMPLAIN_INFO)){
-
-            }
+            USER_LIST.get(update.getCallbackQuery().getMessage().getChatId());
         }
     }
 

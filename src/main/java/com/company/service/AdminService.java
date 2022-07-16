@@ -6,6 +6,7 @@ import com.company.dto.admin.AdminDTO;
 import com.company.dto.admin.PhotoDetailDTO;
 import com.company.dto.admin.TextDetailDTO;
 import com.company.entity.BotUsersEntity;
+import com.company.enums.Gender;
 import com.company.repository.BotUsersRepository;
 import com.company.util.button.ButtonUtil;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRem
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +38,7 @@ public class AdminService {
     @Lazy
     private final TelegramBotConfig telegramBotConfig;
     private final BotUsersRepository botUsersRepository;
+    private final GeneratePdfService generatePdfService;
 
 
     @Value("${user.admin}")
@@ -52,6 +55,21 @@ public class AdminService {
         sendMessage.setReplyMarkup(ButtonUtil.adminMainMenu());
         adminDTO.clear();
         telegramBotConfig.sendMsg(sendMessage);
+
+        var botUsersEntity = new BotUsersEntity();
+
+        botUsersEntity.setTelegramId(123456789L);
+        botUsersEntity.setName("Ali");
+        botUsersEntity.setSurname("Valiyev");
+        botUsersEntity.setPhone("+998932158000");
+        botUsersEntity.setBirthDate(LocalDate.now());
+        botUsersEntity.setHeight("170-sm");
+        botUsersEntity.setGender(Gender.MALE);
+        botUsersEntity.setWeight("90-kg");
+        botUsersEntity.setCurrentTemperature(40D);
+
+        generatePdfService.createPdf(botUsersEntity);
+
     }
 
     public void broadcastAMessage(Message message) {
@@ -133,13 +151,13 @@ public class AdminService {
         sendMessage.setChatId(String.valueOf(adminId));
         sendMessage.setText(String.format("""
                         Bot statistikasi
-                        
+                                                
                         📈 Bugun qo'shilganlar soni: <b>%d - ta </b>
-                        
+                                                
                         📉 Oxirgi 3 kuni ichida qo'shilganlar: <b>%d - ta </b>
-                        
+                                                
                         📅 Oxirgi 1 oyda qo'shilganlar: <b>%d - ta </b>
-                        
+                                                
                         👥 Jami foydalanuvchilar soni: <b>%d - ta </b>
                         """,
                 botUsersRepository.joinedToday(),
@@ -149,7 +167,7 @@ public class AdminService {
         sendMessage.setParseMode("HTML");
         telegramBotConfig.sendMsg(sendMessage);
     }
-    
+
     @SneakyThrows
     private void broadcastAMsg() {
         var textDetailDTO = TextDetailDTO.getInstance();

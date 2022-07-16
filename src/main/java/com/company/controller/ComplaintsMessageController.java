@@ -1,14 +1,12 @@
 package com.company.controller;
 
 import com.company.config.TelegramBotConfig;
-import com.company.constants.ButtonName;
 import com.company.dto.BotUsersDTO;
 import com.company.dto.ComplaintsDTO;
 import com.company.service.ComplaintsMessageService;
 import com.company.util.button.InlineButtonUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
@@ -53,7 +51,7 @@ public class ComplaintsMessageController {
         editMessageText.setMessageId(message.getMessageId());
         editMessageText.setChatId(String.valueOf(message.getChatId()));
         editMessageText.setReplyMarkup(InlineButtonUtil.complaintButtonListSendAgain(lang, message.getChatId(), text));
-        editMessageText.setText("belgilab bolganingizdan song tugatish tugamsini bosing");
+        editMessageText.setText("Belgilab bo'lganingizdan so'ng tugatish tugmasini bosing");
 
         telegramBotConfig.sendMsg(editMessageText);
 
