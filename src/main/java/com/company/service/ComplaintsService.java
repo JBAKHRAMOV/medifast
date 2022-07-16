@@ -37,6 +37,7 @@ public class ComplaintsService {
         var entityList = complaintsRepository.findAllByUserId(id);
 
         if (entityList.isEmpty()) {
+
             entitySave(dtoList, id);
         } else {
             complaintsRepository.deleteAll(entityList);
