@@ -18,7 +18,9 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.WeakHashMap;
 
 @Component
@@ -26,10 +28,10 @@ import java.util.WeakHashMap;
 
 public class TelegramBotConfig extends TelegramLongPollingBot {
 
-    public static final WeakHashMap<Long, BotUsersDTO> USER_LIST = new WeakHashMap<>();
-    public static final WeakHashMap<Long, ComplaintsInfoDTO> USER_COMPLAINT_INFO = new WeakHashMap<>();
+    public static final Map<Long, BotUsersDTO> USER_LIST = new HashMap<>();
+    public static final Map<Long, ComplaintsInfoDTO> USER_COMPLAINT_INFO = new HashMap<>();
 
-    public static final WeakHashMap<Long, List<ComplaintsDTO>> USER_COMPLAINT = new WeakHashMap();
+    public static final Map<Long, List<ComplaintsDTO>> USER_COMPLAINT = new HashMap();
     //test
     @Lazy
     @Autowired
@@ -77,6 +79,8 @@ public class TelegramBotConfig extends TelegramLongPollingBot {
                 execute((SendVideo) obj);
             else if (obj instanceof SendLocation)
                 execute((SendLocation) obj);
+            else if (obj instanceof SendVoice)
+                execute((SendVoice) obj);
             else if (obj instanceof SendContact)
                 execute((SendContact) obj);
             else if (obj instanceof EditMessageText)

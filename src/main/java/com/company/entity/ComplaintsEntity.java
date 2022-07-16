@@ -18,13 +18,13 @@ import java.time.LocalDate;
 public class ComplaintsEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId;
     @Column
     private String nameUz;
     @Column
     private String nameRu;
     @Column
-    private Boolean isEmpty;
+    private String key;
     @CreatedDate
     private LocalDate createdDate;
 }

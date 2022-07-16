@@ -2,7 +2,9 @@ package com.company.util.button;
 
 import com.company.constants.ButtonName;
 import com.company.enums.LanguageCode;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
@@ -143,6 +145,23 @@ public class ButtonUtil {
         row.add(SEND);
         row.add(AGAIN_UZ);
 
+        keyboardMarkup.setKeyboard(keyboard);
+        keyboardMarkup.setResizeKeyboard(true);
+        return keyboardMarkup;
+    }
+    public static ReplyKeyboardMarkup next(LanguageCode languageCode) {
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow row = new KeyboardRow();
+        keyboard.add(row);
+        switch (languageCode) {
+            case UZ -> {
+                row.add(SKIP_UZ);
+            }
+            case RU -> {
+                row.add(SKIP_RU);
+            }
+        }
         keyboardMarkup.setKeyboard(keyboard);
         keyboardMarkup.setResizeKeyboard(true);
         return keyboardMarkup;

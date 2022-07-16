@@ -8,6 +8,7 @@ import com.company.entity.BotUsersEntity;
 import com.company.enums.Gender;
 import com.company.enums.UserQuestionnaireStatus;
 import com.company.enums.UserStatus;
+import com.company.repository.ComplaintsRepository;
 import com.company.util.button.ButtonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +22,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 
-import static com.company.config.TelegramBotConfig.USER_COMPLAINT_INFO;
-import static com.company.config.TelegramBotConfig.USER_LIST;
+import static com.company.config.TelegramBotConfig.*;
 import static com.company.constants.ButtonName.*;
 import static com.company.enums.LanguageCode.RU;
 import static com.company.enums.LanguageCode.UZ;
@@ -36,6 +36,7 @@ public class CallBackQueryService {
     @Lazy
     private final TelegramBotConfig telegramBotConfig;
     private final BotUsersService botUsersService;
+    private final ComplaintsService complaintsService;
 
     public void handleLangCodeUZ(Message message, User user) {
         var dto = USER_LIST.get(user.getId());
@@ -153,8 +154,7 @@ public class CallBackQueryService {
         if (dto.getLanguageCode().equals(UZ)) {
             editMessageText.setText("Ma'lumotlar qabul qilindi ✅");
             editMessageText.setReplyMarkup(ButtonUtil.complaintsMenu(UZ));
-        }
-        else {
+        } else {
             editMessageText.setText("Информация получена ✅");
             editMessageText.setReplyMarkup(ButtonUtil.complaintsMenu(RU));
         }
@@ -193,7 +193,10 @@ public class CallBackQueryService {
     }
 
     public void startComplaintsInfoQuestionUz(Message message, BotUsersDTO user) {
-
+        var userCoplaints = USER_COMPLAINT.get(message.getChatId());
+        if (!userCoplaints.isEmpty()) {
+            complaintsService.fieldSave(userCoplaints, message.getChatId());
+        }
         var delete = new DeleteMessage();
         delete.setChatId(String.valueOf(message.getChatId()));
         delete.setMessageId(message.getMessageId());

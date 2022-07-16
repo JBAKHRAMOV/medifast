@@ -3,6 +3,7 @@ package com.company.controller;
 import com.company.config.TelegramBotConfig;
 import com.company.dto.BotUsersDTO;
 import com.company.dto.ComplaintsDTO;
+import com.company.service.AudioService;
 import com.company.service.MessageService;
 import com.company.util.button.InlineButtonUtil;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,8 @@ public class MessageController {
     private final ComplaintsMessageController complaintsMessageController;
     private final AdminController adminController;
 
+    private final AudioService audioService;
+
     @Value("${user.admin}")
     private Long adminId;
 
@@ -45,7 +48,7 @@ public class MessageController {
             adminController.messageController(message);
             return;
         }
-        if (text == null){
+        if (text == null) {
             return;
         }
 
@@ -73,7 +76,11 @@ public class MessageController {
                 complaintsMessageController.complentsButtonList(message, user, 1);
             }
         } else if (user.getStatus().equals(COMPLAIN_INFO)) {
-            complaintInfo(message, user);
+            if (message.hasVoice()) {
+                audioService.getAudio(message);
+            } else
+                complaintInfo(message, user);
+
         }
     }
 

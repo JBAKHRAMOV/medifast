@@ -250,7 +250,7 @@ public class MessageService {
         var sendMsg = new SendMessage();
         sendMsg.setChatId(String.valueOf(message.getChatId()));
         if (user.getLanguageCode().equals(UZ))
-            sendMsg.setText("O’tkazilgan tekshiruv qog’ozlari bo’lsa rasmga olib yoki rasmga tushirib yuboring (ohirgi 2 oydagisi)" +
+            sendMsg.setText("O’tkazilgan tekshiruv qog’ozlari bo’lsa rasmini yoki rasmga tushirib yuboring (ohirgi 2 oydagisi)" +
                     "\nRasm jo'natib bo'lganingizdan so'ng tugatish tugamsini bosing ");
         else
             sendMsg.setText("Если у вас есть документы о проверке, сфотографируйте или пришлите фото (за последние 2 месяца)" +
