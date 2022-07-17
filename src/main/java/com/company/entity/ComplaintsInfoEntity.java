@@ -14,19 +14,24 @@ import java.time.LocalDate;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "complaints")
-public class ComplaintsEntity {
+@Table(name = "complaints_info_entity")
+public class ComplaintsInfoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column
     private Long userId;
     @Column
-    private String nameUz;
+    private String causeOfComplaint;
     @Column
-    private String nameRu;
+    private String complaintStartedTime;
     @Column
-    private String key;
-    @CreatedDate
-    private LocalDate createdDate;
+    private String drugsList;
+    @Column
+    private String cigarette;
+    @Column
+    private String diseasesList;
+    @Column
+    private String inspectionPapers;
+
 }

@@ -1,20 +1,22 @@
 package com.company.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.telegram.telegrambots.meta.api.objects.Message;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "user_photo_entity")
-public class UserPhotoEntity {
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "inspection_photo_entity")
+public class InspectionPhotoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column
     private Long userId;
     @Column

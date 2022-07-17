@@ -23,6 +23,7 @@ import static com.company.enums.Gender.MALE;
 import static com.company.enums.LanguageCode.RU;
 import static com.company.enums.LanguageCode.UZ;
 import static com.company.enums.UserQuestionnaireStatus.DRUGS_LIST;
+import static com.company.enums.UserQuestionnaireStatus.INSPECTION_PAPERS;
 import static com.company.enums.UserStatus.COMPLAIN_FROM;
 import static com.company.enums.UserStatus.COMPLAIN_INFO;
 import static com.company.service.ComplaintsService.COMPLAINTS_LIST;
@@ -95,9 +96,20 @@ public class CallBackQueryController {
         String data = callbackQuery.getData();
         if (data.equals(SKIP_UZ) || data.equals(SKIP_RU))
             callBackQueryService.result(callbackQuery.getMessage());
+        else if (data.equals(STOP_UZ)&& user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
+                || data.equals(STOP_RU)&& user.getQuestionnaireStatus().equals(INSPECTION_PAPERS))
+            callBackQueryService.result(callbackQuery.getMessage());
         else if (data.equals(STOP_RU) && user.getQuestionnaireStatus().equals(DRUGS_LIST)
                 || data.equals(STOP_UZ) && user.getQuestionnaireStatus().equals(DRUGS_LIST))
             messageService.drugsList(callbackQuery.getMessage(), user);
-        else callBackQueryService.cigarette(callbackQuery);
+        else if (data.equals(CONFIRM_RU) && user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
+                || data.equals(CONFIRM_UZ) && user.getQuestionnaireStatus().equals(INSPECTION_PAPERS))
+            callBackQueryService.confirm(callbackQuery.getMessage());
+        else if (data.equals(AGAIN_UZ) && user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
+                || data.equals(AGAIN_RU) && user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)){
+            callBackQueryService.again(callbackQuery.getMessage());
+            callBackQueryService.startComplaintsInfoQuestionUz(callbackQuery.getMessage(), user);
         }
+        else callBackQueryService.cigarette(callbackQuery);
     }
+}

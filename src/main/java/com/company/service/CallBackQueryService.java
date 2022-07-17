@@ -1,16 +1,17 @@
 package com.company.service;
 
-import ch.qos.logback.core.layout.EchoLayout;
 import com.company.config.TelegramBotConfig;
-import com.company.dto.BotUsersDTO;
-import com.company.dto.ComplaintsInfoDTO;
-import com.company.dto.UserPhotoDTO;
-import com.company.entity.BotUsersEntity;
+import com.company.dto.*;
+import com.company.entity.*;
 import com.company.enums.Gender;
 import com.company.enums.UserQuestionnaireStatus;
 import com.company.enums.UserStatus;
+import com.company.repository.ComplaintsInfoRepository;
 import com.company.repository.ComplaintsRepository;
+import com.company.repository.DrugsPhotoRepository;
+import com.company.repository.InspectionPhotoRepository;
 import com.company.util.button.ButtonUtil;
+import com.company.util.button.InlineButtonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -22,6 +23,9 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.time.LocalDate;
 
 import static com.company.config.TelegramBotConfig.*;
 import static com.company.constants.ButtonName.*;
@@ -38,6 +42,11 @@ public class CallBackQueryService {
     private final TelegramBotConfig telegramBotConfig;
     private final BotUsersService botUsersService;
     private final ComplaintsService complaintsService;
+    private final ComplaintsRepository complaintsRepository;
+    private final ComplaintsInfoRepository complaintsInfoRepository;
+    private final DrugsPhotoRepository drugsPhotoRepository;
+    private final InspectionPhotoRepository inspectionPhotoRepository;
+    private final GeneratePdfService generatePdfService;
 
     public void handleLangCodeUZ(Message message, User user) {
         var dto = USER_LIST.get(user.getId());
@@ -269,7 +278,64 @@ public class CallBackQueryService {
 
     public void result(Message message) {
         var dto = USER_COMPLAINT_INFO.get(message.getChatId());
-        var str = String.format("""
+        var lang = USER_LIST.get(message.getChatId()).getLanguageCode();
+        var builder = new StringBuilder();
+        if (lang.equals(UZ)) {
+            builder.append("<b>🔎 Iltimos, o'z ma'lumotlaringizni tekshirib chiqing.</b>\n");
+
+            if (!dto.getCauseOfComplaint().startsWith("https")) {
+                builder.append("Murojatga sabab bo’lgan shikoyatlar: ").append(dto.getCauseOfComplaint()).append("\n");
+            }
+            builder.append("Shikoyatlar boshlangan vaqt: ").append(dto.getComplaintStartedTime()).append("\n");
+            if (!dto.getCauseOfComplaint().isEmpty()) {
+                builder.append("Qabul qilgan va qilayotgan dorilar: ").append(dto.getDrugsList()).append("\n");
+            }
+
+            if (!dto.getCigarette().equals(CIGARETTA_NO_UZ))
+                builder.append("Sigaret: chekmayman" + "\n");
+            else if (!dto.getCigarette().equals(CIGARETTA_05_1_UZ))
+                builder.append("Sigaret: 0.5-1 pachka" + "\n");
+            else if (!dto.getCigarette().equals(CIGARETTA_1_2_UZ))
+                builder.append("Sigaret: 1-2 pachka" + "\n");
+            builder.append("Hozirda davolanayotgan kasalliklar: " + dto.getDiseasesList() + "\n");
+        } else {
+            builder.append("<b>🔎 Пожалуйста, проверьте вашу информацию: </b>\n");
+
+            if (!dto.getCauseOfComplaint().startsWith(" https")) {
+                builder.append("Жалобы, которые привели к обращению: " + dto.getCauseOfComplaint() + "\n");
+            }
+            builder.append("Когда начались жалобы: " + dto.getComplaintStartedTime() + "\n");
+            if (!dto.getCauseOfComplaint().isEmpty()) {
+                builder.append("Лекарства, которые вы принимали и принимаете: " + dto.getDrugsList() + "\n");
+            }
+
+            if (!dto.getCigarette().equals(CIGARETTA_NO_UZ))
+                builder.append("Сигареты: не курю" + "\n");
+            else if (!dto.getCigarette().equals(CIGARETTA_05_1_UZ))
+                builder.append("Сигарета: 0,5-1 пачка" + "\n");
+            else if (!dto.getCigarette().equals(CIGARETTA_1_2_UZ))
+                builder.append("Сигареты: 1-2 пачки" + "\n");
+            builder.append("Заболевания, от которых вы сейчас лечитесь:" + dto.getDiseasesList() + "\n");
+        }
+
+        var remove = new ReplyKeyboardRemove();
+        remove.setRemoveKeyboard(true);
+        var tempMsg = new SendMessage();
+        tempMsg.setChatId(String.valueOf(message.getChatId()));
+        tempMsg.setText("...");
+        int id;
+        try {
+            id = telegramBotConfig.execute(tempMsg).getMessageId();
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+
+        var delete = new DeleteMessage();
+        delete.setChatId(String.valueOf(message.getChatId()));
+        delete.setMessageId(id);
+
+
+        /*var str = String.format("""
                         <b>🔎 Iltimos, o'z ma'lumotlaringizni tekshirib chiqing.</b>
                                                     
                         <i>Murojatga sabab bo’lgan shikoyatlar: </i> %s
@@ -281,31 +347,90 @@ public class CallBackQueryService {
                         """,
                 dto.getCauseOfComplaint(), dto.getComplaintStartedTime(),
                 dto.getDrugsList(), dto.getCigarette(),
-                dto.getDiseasesList());
+                dto.getDiseasesList());*/
 
         var sendMsg = new SendMessage();
         sendMsg.setParseMode("HTML");
         sendMsg.setChatId(String.valueOf(message.getChatId()));
-        sendMsg.setText(str);
-        telegramBotConfig.sendMsg(sendMsg);
-
-        var builder = new StringBuilder();
-
-        var list = USER_PHOTOS_DRUGS.get(message.getChatId());
-        if (!list.isEmpty())
-        for (UserPhotoDTO item : list) {
-            builder.append(item.getFielId() + " " + item.getLink() + "\n");
-        }
-        var list1 = USER_PHOTOS_INSPECTION.get(message.getChatId());
-        if (!list1.isEmpty())
-            for (UserPhotoDTO item : list1) {
-                builder.append(item.getFielId() + " " + item.getLink()+ "\n");
-            }
-
         sendMsg.setText(builder.toString());
+        sendMsg.setReplyMarkup(InlineButtonUtil.confirmComplints(lang));
         telegramBotConfig.sendMsg(sendMsg);
 
     }
+
+    public void confirm(Message message) {
+        var id = message.getChatId();
+        var comlaintsList = USER_COMPLAINT.get(id);
+        var infoDto = USER_COMPLAINT_INFO.get(id);
+        var drugs_photo_list = USER_PHOTOS_DRUGS.get(id);
+        var inspection_photo_list = USER_PHOTOS_INSPECTION.get(id);
+
+        if (!comlaintsList.isEmpty()) {
+            for (ComplaintsDTO dto : comlaintsList) {
+                var entity = new ComplaintsEntity();
+                entity.setUserId(id);
+                entity.setNameUz(dto.getNameUz());
+                entity.setNameRu(dto.getNameRu());
+                entity.setKey(dto.getKey());
+                entity.setCreatedDate(LocalDate.now());
+                complaintsRepository.save(entity);
+            }
+        }
+
+        if (infoDto != null) {
+            var entity = new ComplaintsInfoEntity();
+            entity.setUserId(id);
+            entity.setCauseOfComplaint(infoDto.getCauseOfComplaint());
+            entity.setComplaintStartedTime(infoDto.getComplaintStartedTime());
+            if (infoDto.getDrugsList() != null)
+                entity.setDrugsList(infoDto.getDrugsList());
+            entity.setCigarette(infoDto.getCigarette());
+            entity.setDiseasesList(infoDto.getDiseasesList());
+            if (infoDto.getInspectionPapers() != null)
+                entity.setInspectionPapers(infoDto.getInspectionPapers());
+            complaintsInfoRepository.save(entity);
+        }
+
+        if (drugs_photo_list!=null) {
+            for (UserPhotoDTO dto : drugs_photo_list) {
+                var entity = new DrugsPhotoEntity();
+                entity.setUserId(id);
+                entity.setFielId(dto.getFielId());
+                entity.setLink(dto.getLink());
+                drugsPhotoRepository.save(entity);
+            }
+        }
+
+        if (inspection_photo_list!=null) {
+            for (UserPhotoDTO dto : inspection_photo_list) {
+                var entity = new InspectionPhotoEntity();
+                entity.setUserId(id);
+                entity.setFielId(dto.getFielId());
+                entity.setLink(dto.getLink());
+                inspectionPhotoRepository.save(entity);
+            }
+        }
+        /*generatePdfService.createPdf(new PdfDTO(
+                USER_LIST.get(id),
+                infoDto,
+                comlaintsList,
+                drugs_photo_list,
+                inspection_photo_list
+        ));*/
+
+
+        var sendMsg = new SendMessage();
+        sendMsg.setChatId(String.valueOf(message.getChatId()));
+        sendMsg.setText("Malumotlar qabul qilindi!\n Sizga aloqaga chiqamiz!");
+        telegramBotConfig.sendMsg(sendMsg);
+    }
+
+    public void again(Message message) {
+        USER_COMPLAINT_INFO.remove(message.getChatId());
+        USER_PHOTOS_INSPECTION.remove(message.getChatId());
+        USER_PHOTOS_DRUGS.remove(message.getChatId());
+    }
+
 
     private void save(BotUsersDTO dto, long tgId) {
         var entity = new BotUsersEntity();

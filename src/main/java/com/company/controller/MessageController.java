@@ -83,10 +83,14 @@ public class MessageController {
         } else if (user.getStatus().equals(COMPLAIN_INFO)) {
             if (message.hasVoice()&& user.getQuestionnaireStatus().equals(COMPLAINTS_INFO_WRITE)) {
                 audioService.getAudio(message);
-            } else if (message.hasPhoto()&& user.getQuestionnaireStatus().equals(DRUGS_LIST)) {
+            }else if (message.hasPhoto()&& user.getQuestionnaireStatus().equals(DRUGS_LIST))
+                photoServise.drugsPhotoSave(message);
+            else if (message.hasPhoto()&& user.getQuestionnaireStatus().equals(DRUGS_LIST)) {
                 photoServise.drugsPhotoSave(message);
             } else if (text.equals(STOP_UZ)&& user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
-                    || text.equals(STOP_RU)&& user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)) {
+                    || text.equals(STOP_RU)&& user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
+                    || text.equals(SKIP_RU)&& user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
+                    || text.equals(SKIP_UZ)&& user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)) {
                 callBackQueryService.result(message);
             } else if (message.hasPhoto() && user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)) {
                 photoServise.inspectionPhotoSave(message);
