@@ -16,5 +16,5 @@ public class PdfDTO {
     private ComplaintsInfoDTO complaintsInfoDTO;
     private List<ComplaintsDTO> complaintsList;
     private List<UserPhotoDTO> drugsList;
-    private List<UserPhotoDTO> inspactionList;
+    private List<UserPhotoDTO> inspectionList;
 }
