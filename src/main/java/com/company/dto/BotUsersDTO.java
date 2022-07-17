@@ -6,6 +6,7 @@ import com.company.enums.UserQuestionnaireStatus;
 import com.company.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -17,8 +18,10 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@NoArgsConstructor
 public class BotUsersDTO implements Serializable {
     private Long id;
+    private Long telegramId;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
     private String name;
@@ -34,4 +37,8 @@ public class BotUsersDTO implements Serializable {
     private Double currentTemperature;
     private Integer startLenght = 0;
     private Integer finishLenght = 2;
+
+    public BotUsersDTO(Long telegramId) {
+        this.telegramId = telegramId;
+    }
 }

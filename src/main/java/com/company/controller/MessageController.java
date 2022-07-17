@@ -101,7 +101,8 @@ public class MessageController {
     }
 
     private void start(Message message) {
-        USER_LIST.put(message.getChatId(), new BotUsersDTO());
+
+        USER_LIST.put(message.getChatId(), new BotUsersDTO(message.getChatId()));
 
 
         var sendMessage = new SendMessage();
