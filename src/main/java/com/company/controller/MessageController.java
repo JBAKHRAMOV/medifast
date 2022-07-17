@@ -4,7 +4,9 @@ import com.company.config.TelegramBotConfig;
 import com.company.dto.BotUsersDTO;
 import com.company.dto.ComplaintsDTO;
 import com.company.service.AudioService;
+import com.company.service.CallBackQueryService;
 import com.company.service.MessageService;
+import com.company.service.PhotoServise;
 import com.company.util.button.InlineButtonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ import java.util.Objects;
 import static com.company.config.TelegramBotConfig.USER_COMPLAINT;
 import static com.company.config.TelegramBotConfig.USER_LIST;
 import static com.company.constants.ButtonName.*;
+import static com.company.enums.UserQuestionnaireStatus.*;
 import static com.company.enums.UserStatus.*;
 
 
@@ -33,8 +36,10 @@ public class MessageController {
     private final MessageService messageService;
     private final ComplaintsMessageController complaintsMessageController;
     private final AdminController adminController;
+    private final CallBackQueryService callBackQueryService;
 
     private final AudioService audioService;
+    private final PhotoServise photoServise;
 
     @Value("${user.admin}")
     private Long adminId;
@@ -76,8 +81,15 @@ public class MessageController {
                 complaintsMessageController.complentsButtonList(message, user, 1);
             }
         } else if (user.getStatus().equals(COMPLAIN_INFO)) {
-            if (message.hasVoice()) {
+            if (message.hasVoice()&& user.getQuestionnaireStatus().equals(COMPLAINTS_INFO_WRITE)) {
                 audioService.getAudio(message);
+            } else if (message.hasPhoto()&& user.getQuestionnaireStatus().equals(DRUGS_LIST)) {
+                photoServise.drugsPhotoSave(message);
+            } else if (text.equals(STOP_UZ)&& user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
+                    || text.equals(STOP_RU)&& user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)) {
+                callBackQueryService.result(message);
+            } else if (message.hasPhoto() && user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)) {
+                photoServise.inspectionPhotoSave(message);
             } else
                 complaintInfo(message, user);
 

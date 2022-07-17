@@ -228,9 +228,15 @@ public class MessageService {
         user.setQuestionnaireStatus(CIGARETTE);
         USER_LIST.put(message.getChatId(), user);
 
+
         var sendMsg = new SendMessage();
         sendMsg.setChatId(String.valueOf(message.getChatId()));
-        sendMsg.setChatId(String.valueOf(message.getChatId()));
+        var remove=new ReplyKeyboardRemove();
+        remove.setRemoveKeyboard(true);
+        sendMsg.setReplyMarkup(remove);
+        sendMsg.setText("...");
+        telegramBotConfig.sendMsg(sendMsg);
+
         if (user.getLanguageCode().equals(UZ))
             sendMsg.setText("Sigaret chekasizmi?");
         else
@@ -255,7 +261,7 @@ public class MessageService {
         else
             sendMsg.setText("Если у вас есть документы о проверке, сфотографируйте или пришлите фото (за последние 2 месяца)" +
                     "\nКогда вы закончите отправку изображения, нажмите кнопку «Готово».");
-        sendMsg.setReplyMarkup(InlineButtonUtil.next(user.getLanguageCode()));
+        sendMsg.setReplyMarkup(ButtonUtil.next(user.getLanguageCode()));
         telegramBotConfig.sendMsg(sendMsg);
 
 

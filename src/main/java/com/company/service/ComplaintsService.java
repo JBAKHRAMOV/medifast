@@ -5,13 +5,14 @@ import com.company.entity.ComplaintsEntity;
 import com.company.repository.ComplaintsRepository;
 import lombok.RequiredArgsConstructor;
 import org.jvnet.hk2.annotations.Service;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class ComplaintsService {
     private final ComplaintsRepository complaintsRepository;

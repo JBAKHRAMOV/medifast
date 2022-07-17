@@ -5,7 +5,7 @@ import com.company.controller.MessageController;
 import com.company.dto.BotUsersDTO;
 import com.company.dto.ComplaintsDTO;
 import com.company.dto.ComplaintsInfoDTO;
-import com.company.enums.UserStatus;
+import com.company.dto.UserPhotoDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,17 +21,18 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 @Component
 @Slf4j
 
 public class TelegramBotConfig extends TelegramLongPollingBot {
 
-    public static final Map<Long, BotUsersDTO> USER_LIST = new HashMap<>();
-    public static final Map<Long, ComplaintsInfoDTO> USER_COMPLAINT_INFO = new HashMap<>();
+    public static final Map<Long, BotUsersDTO> USER_LIST = new HashMap<>();// userlar
+    public static final Map<Long, ComplaintsInfoDTO> USER_COMPLAINT_INFO = new HashMap<>();// shikotlar yozilgani
+    public static final Map<Long, List<ComplaintsDTO>> USER_COMPLAINT = new HashMap();// Shikoyatlar button
+    public static final Map<Long, List<UserPhotoDTO>> USER_PHOTOS_DRUGS = new HashMap<>();// dorilar rasmlari
 
-    public static final Map<Long, List<ComplaintsDTO>> USER_COMPLAINT = new HashMap();
+    public static final Map<Long, List<UserPhotoDTO>> USER_PHOTOS_INSPECTION = new HashMap<>();// tekshiruv rasmlari
     //test
     @Lazy
     @Autowired

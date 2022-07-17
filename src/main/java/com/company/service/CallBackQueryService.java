@@ -4,6 +4,7 @@ import ch.qos.logback.core.layout.EchoLayout;
 import com.company.config.TelegramBotConfig;
 import com.company.dto.BotUsersDTO;
 import com.company.dto.ComplaintsInfoDTO;
+import com.company.dto.UserPhotoDTO;
 import com.company.entity.BotUsersEntity;
 import com.company.enums.Gender;
 import com.company.enums.UserQuestionnaireStatus;
@@ -286,6 +287,22 @@ public class CallBackQueryService {
         sendMsg.setParseMode("HTML");
         sendMsg.setChatId(String.valueOf(message.getChatId()));
         sendMsg.setText(str);
+        telegramBotConfig.sendMsg(sendMsg);
+
+        var builder = new StringBuilder();
+
+        var list = USER_PHOTOS_DRUGS.get(message.getChatId());
+        if (!list.isEmpty())
+        for (UserPhotoDTO item : list) {
+            builder.append(item.getFielId() + " " + item.getLink() + "\n");
+        }
+        var list1 = USER_PHOTOS_INSPECTION.get(message.getChatId());
+        if (!list1.isEmpty())
+            for (UserPhotoDTO item : list1) {
+                builder.append(item.getFielId() + " " + item.getLink()+ "\n");
+            }
+
+        sendMsg.setText(builder.toString());
         telegramBotConfig.sendMsg(sendMsg);
 
     }
