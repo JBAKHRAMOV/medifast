@@ -138,15 +138,17 @@ public class GeneratePdfService {
     }
 
     private String getComplaintsList(List<ComplaintsDTO> complaintsList, LanguageCode languageCode) {
-        if (complaintsList.isEmpty()) return null;
         StringBuilder txt = new StringBuilder();
-        txt.append("\nShikoyatlar ro'yxati: ");
-        complaintsList.forEach(complaintsDTO -> {
-            switch (languageCode) {
-                case UZ -> txt.append(complaintsDTO.getNameUz()).append(", ");
-                case RU -> txt.append(complaintsDTO.getNameRu()).append(", ");
-            }
-        });
+        if (!complaintsList.isEmpty()) {
+            txt.append("\nShikoyatlar ro'yxati: ");
+            complaintsList.forEach(complaintsDTO -> {
+                switch (languageCode) {
+                    case UZ -> txt.append(complaintsDTO.getNameUz()).append(", ");
+                    case RU -> txt.append(complaintsDTO.getNameRu()).append(", ");
+                }
+            });
+        }
+
         return txt.toString();
     }
 }
