@@ -33,7 +33,7 @@ public class GeneratePdfService {
     @Lazy
     private final TelegramBotConfig telegramBotConfig;
 
-    public void createPdf(PdfDTO dto) {
+    public void     createPdf(PdfDTO dto) {
         var document = new Document();
         var attach = new File(attachFolder);
         if (!attach.exists()) attach.mkdirs();
@@ -59,7 +59,7 @@ public class GeneratePdfService {
             p2.add(getComplaintsList(dto.getComplaintsList(), dto.getUser().getLanguageCode()));
             document.add(p2);
             var linkFont = new Font(Font.FontFamily.HELVETICA, 14, Font.NORMAL, BaseColor.BLUE);
-            if (!dto.getDrugsList().isEmpty()) {
+            if (dto.getDrugsList()!=null) {
                 var p3 = new Paragraph();
                 p3.add("\nQabul qilayotgan dorilari: ");
                 document.add(p3);
@@ -77,7 +77,7 @@ public class GeneratePdfService {
                     }
                 });
             }
-            if (!dto.getInspectionList().isEmpty()) {
+            if (dto.getInspectionList()!=null) {
                 var p4 = new Paragraph();
                 p4.add("\nTekshiruv qog'ozlari: ");
                 document.add(p4);

@@ -14,7 +14,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -104,8 +107,28 @@ public class MessageController {
 
         USER_LIST.put(message.getChatId(), new BotUsersDTO(message.getChatId()));
 
+        var remove= new ReplyKeyboardRemove();
+        remove.setRemoveKeyboard(true);
+        var sendMessage1 = new SendMessage();
+        sendMessage1.setReplyMarkup(remove);
+        sendMessage1.setChatId(String.valueOf(message.getChatId()));
+        sendMessage1.setText("");
+
+        int id;
+
+        try {
+            id=telegramBotConfig.execute(sendMessage1).getMessageId();
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+
+        var delete =new DeleteMessage();
+        delete.setChatId(String.valueOf(message.getChatId()));
+        delete.setMessageId(id);
+        telegramBotConfig.sendMsg(delete);
 
         var sendMessage = new SendMessage();
+        sendMessage.setReplyMarkup(remove);
         sendMessage.setChatId(String.valueOf(message.getChatId()));
         sendMessage.setText("Iltimos, tilni tanlang. / Пожалуйста, выберите язык.");
         sendMessage.setReplyMarkup(InlineButtonUtil.languageButtons());

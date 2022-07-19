@@ -297,7 +297,7 @@ public class CallBackQueryService {
                 builder.append("Sigaret: 0.5-1 pachka" + "\n");
             else if (!dto.getCigarette().equals(CIGARETTA_1_2_UZ))
                 builder.append("Sigaret: 1-2 pachka" + "\n");
-            builder.append("Hozirda davolanayotgan kasalliklar: ").append(dto.getDiseasesList()).append("\n");
+            builder.append("Hozirda davolanayotgan kasalliklar: " + dto.getDiseasesList() + "\n");
         } else {
             builder.append("<b>🔎 Пожалуйста, проверьте вашу информацию: </b>\n");
 
@@ -364,7 +364,7 @@ public class CallBackQueryService {
         var infoDto = USER_COMPLAINT_INFO.get(id);
         var drugs_photo_list = USER_PHOTOS_DRUGS.get(id);
         var inspection_photo_list = USER_PHOTOS_INSPECTION.get(id);
-        System.out.println(infoDto);
+
         if (!comlaintsList.isEmpty()) {
             for (ComplaintsDTO dto : comlaintsList) {
                 var entity = new ComplaintsEntity();
@@ -431,6 +431,18 @@ public class CallBackQueryService {
         USER_PHOTOS_DRUGS.remove(message.getChatId());
     }
 
+    public void backButton(Message message) {
+        var lang = USER_LIST.get(message.getChatId()).getLanguageCode();
+
+        var sendMessage = new SendMessage();
+        sendMessage.setChatId(String.valueOf(message.getChatId()));
+        if (lang.equals(UZ))
+            sendMessage.setText("Kerakli bo'limni tanlang!.");
+        else
+            sendMessage.setText("Выберите нужный раздел!.");
+        sendMessage.setReplyMarkup(ButtonUtil.backButtonClick(lang));
+    }
+
 
     private void save(BotUsersDTO dto, long tgId) {
         var entity = new BotUsersEntity();
@@ -445,4 +457,6 @@ public class CallBackQueryService {
         entity.setSurname(dto.getSurname());
         botUsersService.saveUser(entity);
     }
+
+
 }

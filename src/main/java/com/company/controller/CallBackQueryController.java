@@ -55,6 +55,10 @@ public class CallBackQueryController {
             callBackQueryService.handleCallBackConfirm(callbackQuery.getMessage(), callbackQuery.getFrom());
         else if (data.equals(AGAIN_UZ))
             callBackQueryService.handleCallBackAgain(callbackQuery.getMessage(), callbackQuery.getFrom());
+        else if (data.equals(BACK_UZ)|| data.equals(BACK_RU))
+            callBackQueryService.backButton(callbackQuery.getMessage());
+
+
     }
 
     public void complaintFrom(CallbackQuery callbackQuery) {

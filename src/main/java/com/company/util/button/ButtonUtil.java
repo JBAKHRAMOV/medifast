@@ -183,4 +183,28 @@ public class ButtonUtil {
         keyboardMarkup.setResizeKeyboard(true);
         return keyboardMarkup;
     }
+
+    public static ReplyKeyboardMarkup backButtonClick(LanguageCode languageCode){
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow row = new KeyboardRow();
+        KeyboardRow row2 = new KeyboardRow();
+        keyboard.add(row);
+        switch (languageCode) {
+            case UZ -> {
+                row.add(FILL_FORM_BTN_UZ);
+                row.add(MENU_UZ);
+                row2.add(ABOUT_BOT_BTN_UZ);
+            }
+            case RU -> {
+                row.add(FILL_FORM_BTN_RU);
+                row.add(MENU_RU);
+                row2.add(ABOUT_BOT_BTN_RU);
+            }
+        }
+        keyboardMarkup.setKeyboard(keyboard);
+        keyboardMarkup.setResizeKeyboard(true);
+        return keyboardMarkup;
+    }
+
 }

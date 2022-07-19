@@ -18,8 +18,6 @@ public class ButtonName {
     public static final String AGAIN_UZ = "♻️Qaytadan";
     public static final String AGAIN_RU = "♻️Ещё раз";
 
-    public static final String MENU_UZ = "Menu";
-
     public static final String COMPLAINT_UZ = "Shikoyatlar / Fizik tekshiruv";
     public static final String COMPLAINT_RU = "Жалобы / физический осмотр";
     public static final String BACK_UZ = "↩️ Orqaga";
@@ -61,6 +59,9 @@ public class ButtonName {
     public static final String CIGARETTA_NO_RU = "Hет \uD83D\uDE45\u200D♂️";
     public static final String CIGARETTA_05_1_RU = "0.5-1 пачка \uD83D\uDEAC";
     public static final String CIGARETTA_1_2_RU = "1-2 пачка \uD83D\uDEAC";
+
+    public static final String MENU_UZ = "Menuga qaytish ◀️";
+    public static final String MENU_RU = "Вернуться в меню ◀️";
 
 
 }
