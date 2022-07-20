@@ -84,16 +84,16 @@ public class MessageController {
                 complaintsMessageController.complentsButtonList(message, user, 1);
             }
         } else if (user.getStatus().equals(COMPLAIN_INFO)) {
-            if (message.hasVoice()&& user.getQuestionnaireStatus().equals(COMPLAINTS_INFO_WRITE)) {
+            if (message.hasVoice() && user.getQuestionnaireStatus().equals(COMPLAINTS_INFO_WRITE)) {
                 audioService.getAudio(message);
-            }else if (message.hasPhoto()&& user.getQuestionnaireStatus().equals(DRUGS_LIST))
+            } else if (message.hasPhoto() && user.getQuestionnaireStatus().equals(DRUGS_LIST))
                 photoServise.drugsPhotoSave(message);
-            else if (message.hasPhoto()&& user.getQuestionnaireStatus().equals(DRUGS_LIST)) {
+            else if (message.hasPhoto() && user.getQuestionnaireStatus().equals(DRUGS_LIST)) {
                 photoServise.drugsPhotoSave(message);
-            } else if (text.equals(STOP_UZ)&& user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
-                    || text.equals(STOP_RU)&& user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
-                    || text.equals(SKIP_RU)&& user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
-                    || text.equals(SKIP_UZ)&& user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)) {
+            } else if (text.equals(STOP_UZ) && user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
+                    || text.equals(STOP_RU) && user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
+                    || text.equals(SKIP_RU) && user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
+                    || text.equals(SKIP_UZ) && user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)) {
                 callBackQueryService.result(message);
             } else if (message.hasPhoto() && user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)) {
                 photoServise.inspectionPhotoSave(message);
@@ -107,22 +107,21 @@ public class MessageController {
 
         USER_LIST.put(message.getChatId(), new BotUsersDTO(message.getChatId()));
 
-        var remove= new ReplyKeyboardRemove();
+        var remove = new ReplyKeyboardRemove();
         remove.setRemoveKeyboard(true);
         var sendMessage1 = new SendMessage();
         sendMessage1.setReplyMarkup(remove);
         sendMessage1.setChatId(String.valueOf(message.getChatId()));
-        sendMessage1.setText("");
-
-        int id;
+        sendMessage1.setText(".");
+        int id = 0;
 
         try {
-            id=telegramBotConfig.execute(sendMessage1).getMessageId();
+            id = telegramBotConfig.execute(sendMessage1).getMessageId();
         } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
-        var delete =new DeleteMessage();
+        var delete = new DeleteMessage();
         delete.setChatId(String.valueOf(message.getChatId()));
         delete.setMessageId(id);
         telegramBotConfig.sendMsg(delete);

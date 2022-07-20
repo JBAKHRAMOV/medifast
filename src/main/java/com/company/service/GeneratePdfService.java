@@ -19,8 +19,6 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -33,7 +31,7 @@ public class GeneratePdfService {
     @Lazy
     private final TelegramBotConfig telegramBotConfig;
 
-    public void     createPdf(PdfDTO dto) {
+    public void createPdf(PdfDTO dto) {
         var document = new Document();
         var attach = new File(attachFolder);
         if (!attach.exists()) attach.mkdirs();
@@ -42,9 +40,11 @@ public class GeneratePdfService {
         try {
             PdfWriter.getInstance(document, new FileOutputStream(FILE_NAME));
             document.open();
-            String FONT_FILENAME = "src/main/resources/assets/arial.ttf";
+            String FONT_FILENAME = "assets/arial.ttf";
             BaseFont bf = BaseFont.createFont(FONT_FILENAME, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             var font = new Font(bf, 12f, Font.NORMAL);
+            var linkFont = new Font(Font.FontFamily.HELVETICA, 14, Font.NORMAL, BaseColor.BLUE);
+
             var title = new Paragraph();
             title.setFont(font);
             title.add(dto.getUser().getName() + " " + dto.getUser().getSurname());
@@ -55,11 +55,24 @@ public class GeneratePdfService {
             var p2 = new Paragraph();
             p2.setFont(font);
             p2.add(getUserElements(dto.getUser()));
+            if (dto.getComplaintsInfoDTO().getCauseOfComplaint().startsWith("https://t.me/")) {
+                var paragraph = new Paragraph();
+                paragraph.add("\nMurojaat sabablari: ");
+                var phrase = new Phrase();
+                Chunk chunk = new Chunk();
+                chunk.append("ovozli xabarga havola");
+                chunk.setAnchor(dto.getComplaintsInfoDTO().getCauseOfComplaint());
+                phrase.setFont(linkFont);
+                phrase.add(chunk);
+                document.add(paragraph);
+                document.add(phrase);
+            } else {
+                p2.add("\nMurojaat sabablari: " + dto.getComplaintsInfoDTO().getCauseOfComplaint());
+            }
             p2.add(getComplaintsElements(dto.getComplaintsInfoDTO()));
             p2.add(getComplaintsList(dto.getComplaintsList(), dto.getUser().getLanguageCode()));
             document.add(p2);
-            var linkFont = new Font(Font.FontFamily.HELVETICA, 14, Font.NORMAL, BaseColor.BLUE);
-            if (dto.getDrugsList()!=null) {
+            if (dto.getDrugsList() != null) {
                 var p3 = new Paragraph();
                 p3.add("\nQabul qilayotgan dorilari: ");
                 document.add(p3);
@@ -73,11 +86,11 @@ public class GeneratePdfService {
                     try {
                         document.add(phrase);
                     } catch (DocumentException e) {
-                        throw new RuntimeException(e);
+                        e.printStackTrace();
                     }
                 });
             }
-            if (dto.getInspectionList()!=null) {
+            if (dto.getInspectionList() != null) {
                 var p4 = new Paragraph();
                 p4.add("\nTekshiruv qog'ozlari: ");
                 document.add(p4);
@@ -99,24 +112,19 @@ public class GeneratePdfService {
             System.out.println("Done");
 
             var file = new File(FILE_NAME);
-            export(file);
+            export(file, dto.getUser());
 
         } catch (DocumentException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void export(File mediaFile) {
+    public void export(File mediaFile, BotUsersDTO dto) {
         var sendDocument = new SendDocument();
         sendDocument.setChatId(serviceChannelId);
         sendDocument.setDocument(new InputFile(mediaFile));
 
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-        String formatDateTime = now.format(formatter);
-
-        sendDocument.setCaption(formatDateTime);
+        sendDocument.setCaption(dto.getName() + " " + dto.getSurname());
         telegramBotConfig.sendMsg(sendDocument);
         mediaFile.delete();
         System.out.println("Success");
@@ -128,7 +136,6 @@ public class GeneratePdfService {
 
     private String getComplaintsElements(ComplaintsInfoDTO dto) {
         StringBuilder txt = new StringBuilder();
-        txt.append("\nMurojaat sabablari: ").append(dto.getCauseOfComplaint());
         txt.append("\nShikoyat qachon boshlandi: ").append(dto.getComplaintStartedTime());
         if (dto.getDrugsList() != null)
             txt.append("\nQabul qilgan yoki qilayotgan dorilar ro'yxati: ").append(dto.getDrugsList());
