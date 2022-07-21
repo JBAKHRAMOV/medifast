@@ -6,7 +6,6 @@ import com.company.dto.admin.AdminDTO;
 import com.company.dto.admin.PhotoDetailDTO;
 import com.company.dto.admin.TextDetailDTO;
 import com.company.entity.BotUsersEntity;
-import com.company.enums.Gender;
 import com.company.repository.BotUsersRepository;
 import com.company.util.button.ButtonUtil;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRem
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -38,7 +36,6 @@ public class AdminService {
     @Lazy
     private final TelegramBotConfig telegramBotConfig;
     private final BotUsersRepository botUsersRepository;
-    private final GeneratePdfService generatePdfService;
 
 
     @Value("${user.admin}")
@@ -48,7 +45,8 @@ public class AdminService {
         var sendMessage = new SendMessage();
         var adminDTO = AdminDTO.getInstance();
         adminDTO.setBroadcastMSGStatus(STARTED);
-
+        PhotoDetailDTO.getInstance().clear();
+        TextDetailDTO.getInstance().clear();
         sendMessage.setChatId(String.valueOf(adminId));
 
         sendMessage.setText("Assalomu alaykum, " + message.getFrom().getFirstName() + "" + "\nBoshqaruv bo'limiga xush kelibsiz 😊");
@@ -80,9 +78,13 @@ public class AdminService {
             }
             case INSPECTION -> {
                 if (message.hasPhoto()) {
+                    TextDetailDTO.getInstance().clear();
+
                     SendPhoto msg = getSendPhoto(message);
                     telegramBotConfig.sendMsg(msg);
                 } else if (message.hasText()) {
+                    PhotoDetailDTO.getInstance().clear();
+
                     var textDetailDTO = TextDetailDTO.getInstance();
                     textDetailDTO.setText(message.getText());
                     textDetailDTO.setHasText(true);
@@ -135,13 +137,11 @@ public class AdminService {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(String.valueOf(adminId));
         sendMessage.setText(String.format("""
-                        Bot statistikasi
+                        <b>Bot statistikasi bilan tanishing:</b>
                                                 
-                        📈 Bugun qo'shilganlar soni: <b>%d - ta </b>
-                                                
-                        📉 Oxirgi 3 kuni ichida qo'shilganlar: <b>%d - ta </b>
-                                                
-                        📅 Oxirgi 1 oyda qo'shilganlar: <b>%d - ta </b>
+                        Bugun qo'shilganlar soni: <b>%d - ta </b>
+                        Oxirgi 3 kuni ichida qo'shilganlar: <b>%d - ta </b>
+                        Oxirgi 1 oyda qo'shilganlar: <b>%d - ta </b>
                                                 
                         👥 Jami foydalanuvchilar soni: <b>%d - ta </b>
                         """,
