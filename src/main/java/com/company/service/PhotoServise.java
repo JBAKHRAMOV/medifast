@@ -4,6 +4,7 @@ import com.company.config.TelegramBotConfig;
 import com.company.dto.UserPhotoDTO;
 import com.company.util.button.ButtonUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -23,6 +24,9 @@ public class PhotoServise {
 
     private final TelegramBotConfig telegramBotConfig;
 
+    @Value("${channel.storage.name}")
+    private String channelId;
+
     public void drugsPhotoSave(Message message) {
 
         var photo = message.getPhoto().get(0);
@@ -30,7 +34,7 @@ public class PhotoServise {
         var sendPhoto = new SendPhoto();
         sendPhoto.setPhoto(new InputFile(photo.getFileId()));
         sendPhoto.setCaption("name: " + USER_LIST.get(message.getChatId()).getName());
-        sendPhoto.setChatId("-1001788256915");
+        sendPhoto.setChatId("-100"+channelId);
 
         Message tempMessage = null;
         try {
@@ -39,7 +43,7 @@ public class PhotoServise {
             throw new RuntimeException(e);
         }
 
-        String link = "https://t.me/c/1788256915/" + tempMessage.getMessageId();
+        String link = "https://t.me/c/"+channelId+"/" + tempMessage.getMessageId();
 
         List<UserPhotoDTO> list=new LinkedList<>();
         if (USER_PHOTOS_DRUGS.containsKey(message.getChatId())){
@@ -70,7 +74,7 @@ public class PhotoServise {
         var sendPhoto = new SendPhoto();
         sendPhoto.setPhoto(new InputFile(photo.getFileId()));
         sendPhoto.setCaption("name: " + USER_LIST.get(message.getChatId()).getName());
-        sendPhoto.setChatId("-1001788256915");
+        sendPhoto.setChatId("-100"+channelId);
 
         Message tempMessage = null;
         try {
@@ -79,7 +83,7 @@ public class PhotoServise {
             throw new RuntimeException(e);
         }
 
-        String link = "https://t.me/c/1788256915/" + tempMessage.getMessageId();
+        String link = "https://t.me/c/"+channelId+"/" + tempMessage.getMessageId();
 
         List<UserPhotoDTO> list=new LinkedList<>();
         if (USER_PHOTOS_INSPECTION.containsKey(message.getChatId())){

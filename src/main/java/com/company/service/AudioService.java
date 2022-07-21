@@ -3,6 +3,9 @@ package com.company.service;
 import com.company.config.TelegramBotConfig;
 import com.company.dto.ComplaintsInfoDTO;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
@@ -10,15 +13,21 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import javax.annotation.PostConstruct;
+
 import static com.company.config.TelegramBotConfig.USER_COMPLAINT_INFO;
 import static com.company.config.TelegramBotConfig.USER_LIST;
 import static com.company.enums.LanguageCode.UZ;
 import static com.company.enums.UserQuestionnaireStatus.COMPLAINTS_STARTED_TIME;
 
+
+
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AudioService {
-    private TelegramBotConfig telegramBotConfig;
+    private final TelegramBotConfig telegramBotConfig;
+    @Value("${channel.storage.name}")
+    private String channelId;
 
     public void  getAudio(Message message) {
         var user = TelegramBotConfig.USER_LIST.get(message.getChatId());
@@ -27,7 +36,7 @@ public class AudioService {
 
 
         var voiceMsg = new SendVoice();
-        voiceMsg.setChatId("-1001788256915");
+        voiceMsg.setChatId("-100"+channelId);
         voiceMsg.setCaption("name: "+user.getName());
         voiceMsg.setDuration(voice.getDuration());
         voiceMsg.setVoice(new InputFile(voice.getFileId()));
@@ -40,7 +49,7 @@ public class AudioService {
             throw new RuntimeException(e);
         }
 
-        String link = "https://t.me/c/1788256915/"+tempMessage.getMessageId();
+        String link = "https://t.me/c/"+channelId+"/"+tempMessage.getMessageId();
 
         var dto = USER_COMPLAINT_INFO.get(message.getChatId());
         dto.setCauseOfComplaint(link);
