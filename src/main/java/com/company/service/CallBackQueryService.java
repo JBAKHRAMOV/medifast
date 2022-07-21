@@ -441,6 +441,10 @@ public class CallBackQueryService {
                 inspection_photo_list
         ));
 
+        var delete =new DeleteMessage();
+        delete.setMessageId(message.getMessageId());
+        delete.setChatId(String.valueOf(message.getChatId()));
+        telegramBotConfig.sendMsg(delete);
 
         var sendMsg = new SendMessage();
         sendMsg.setChatId(String.valueOf(message.getChatId()));

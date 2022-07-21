@@ -87,7 +87,7 @@ public class MessageService {
                 sendMessage.setText(getFormatRU(dto, "Женщина"));
             }
         }
-        var user=USER_LIST.get(message.getChatId());
+        var user = USER_LIST.get(message.getChatId());
         user.setQuestionnaireStatus(DEFAULT);
         USER_LIST.put(user.getTelegramId(), user);
 
@@ -232,9 +232,10 @@ public class MessageService {
 
     public void drugsList(Message message, BotUsersDTO user) {
         var infoDTO = USER_COMPLAINT_INFO.get(message.getChatId());
-        if (!message.getText().equals(STOP_UZ) && !message.getText().equals(STOP_RU))
+        if (!message.getText().equals(STOP_UZ) && !message.getText().equals(STOP_RU)) {
             infoDTO.setDrugsList(message.getText());
-        USER_COMPLAINT_INFO.put(message.getChatId(), infoDTO);
+            USER_COMPLAINT_INFO.put(message.getChatId(), infoDTO);
+        }
         user.setQuestionnaireStatus(CIGARETTE);
         USER_LIST.put(message.getChatId(), user);
 
@@ -245,13 +246,13 @@ public class MessageService {
         remove.setRemoveKeyboard(true);
         sendMsg.setReplyMarkup(remove);
         sendMsg.setText("...");
-        int id=0;
+        int id = 0;
         try {
-            id=telegramBotConfig.execute(sendMsg).getMessageId();
+            id = telegramBotConfig.execute(sendMsg).getMessageId();
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
-        var delete=new DeleteMessage();
+        var delete = new DeleteMessage();
         delete.setMessageId(id);
         delete.setChatId(String.valueOf(message.getChatId()));
         telegramBotConfig.sendMsg(delete);
@@ -286,8 +287,8 @@ public class MessageService {
 
     }
 
-    public void changeLanguage(Message message){
-        var user=USER_LIST.get(message.getChatId());
+    public void changeLanguage(Message message) {
+        var user = USER_LIST.get(message.getChatId());
         user.setStatus(CHANGE_LANG);
         USER_LIST.put(message.getChatId(), user);
         var sendMsg = new SendMessage();

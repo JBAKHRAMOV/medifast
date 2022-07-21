@@ -101,8 +101,6 @@ public class MessageController {
                 audioService.getAudio(message);
             } else if (message.hasPhoto() && user.getQuestionnaireStatus().equals(DRUGS_LIST))
                 photoServise.drugsPhotoSave(message);
-            else if (message.hasPhoto() && user.getQuestionnaireStatus().equals(DRUGS_LIST)) {
-                photoServise.drugsPhotoSave(message);
             } else if (text.equals(STOP_UZ) && user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
                     || text.equals(STOP_RU) && user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
                     || text.equals(SKIP_RU) && user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
@@ -114,7 +112,7 @@ public class MessageController {
                 complaintInfo(message, user);
 
         }
-    }
+
 
     private void start(Message message) {
         var user=usersRepository.findByTelegramId(message.getChatId());
