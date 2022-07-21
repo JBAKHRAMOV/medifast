@@ -131,7 +131,7 @@ public class GeneratePdfService {
     }
 
     private String getUserElements(BotUsersDTO dto) {
-        return "Telefon raqami: " + dto.getPhone() + "\nTug'ilgan kuni: " + dto.getBirthDate() + "\nJinsi: " + dto.getGender() + "\nBo'yi: " + dto.getHeight() + "\nVazni: " + dto.getWeight() + "\nHarorati: " + dto.getCurrentTemperature();
+        return "Telefon raqami: " + dto.getPhone() + "\nTug'ilgan kuni: " + dto.getBirthDate() + "\nJinsi: " + dto.getGender() + "\nBo'yi: " + dto.getHeight() + "\nVazni: " + dto.getWeight();
     }
 
     private String getComplaintsElements(ComplaintsInfoDTO dto) {
