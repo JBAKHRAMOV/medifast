@@ -2,6 +2,7 @@ package com.company.config;
 
 import com.company.controller.CallBackQueryController;
 import com.company.controller.MessageController;
+import com.company.controller.ValidationController;
 import com.company.dto.BotUsersDTO;
 import com.company.dto.ComplaintsDTO;
 import com.company.dto.ComplaintsInfoDTO;
@@ -21,6 +22,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Component
 @Slf4j
@@ -41,12 +43,17 @@ public class TelegramBotConfig extends TelegramLongPollingBot {
     @Lazy
     @Autowired
     private CallBackQueryController callBackQueryController;
+    @Lazy
+    @Autowired
+    private ValidationController validationController;
 
     @Value("${bot.name}")
     private String botUsername;
 
     @Value("${bot.token}")
     private String botToken;
+    @Value("${user.admin}")
+    private Long adminId;
 
     @Override
     public String getBotUsername() {
@@ -60,14 +67,31 @@ public class TelegramBotConfig extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage())
-            messageController.messageController(update.getMessage());
-        else if (update.hasCallbackQuery()) {
+        long id = 0;
+        boolean bln = false;
+        if (update.hasCallbackQuery()) {
+            id = update.getCallbackQuery().getMessage().getChatId();
+        } else if (update.hasMessage()) {
+            id = update.getMessage().getChatId();
+        }
+        if (Objects.equals(id, adminId)) {
+            bln = true;
+        } else
+             bln = validationController.mainController(update);
+
+        System.out.println("bln = " + bln);
+        if (bln) {
+            System.out.println("wwwwwww");
+            if (update.hasMessage())
+                messageController.messageController(update.getMessage());
+            else if (update.hasCallbackQuery())
                 callBackQueryController
                         .callBackQueryController(update.getCallbackQuery());
-        } else if (update.getMessage().hasPhoto()) {
-            USER_LIST.get(update.getCallbackQuery().getMessage().getChatId());
+            else if (update.getMessage().hasPhoto())
+                USER_LIST.get(update.getCallbackQuery().getMessage().getChatId());
         }
+
+
     }
 
     public void sendMsg(Object obj) {

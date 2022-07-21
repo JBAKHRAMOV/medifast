@@ -4,6 +4,7 @@ import com.company.config.TelegramBotConfig;
 import com.company.dto.*;
 import com.company.entity.*;
 import com.company.enums.Gender;
+import com.company.enums.LanguageCode;
 import com.company.enums.UserQuestionnaireStatus;
 import com.company.enums.UserStatus;
 import com.company.repository.ComplaintsInfoRepository;
@@ -14,6 +15,7 @@ import com.company.util.button.ButtonUtil;
 import com.company.util.button.InlineButtonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.UserTokenHandler;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -31,7 +33,7 @@ import static com.company.config.TelegramBotConfig.*;
 import static com.company.constants.ButtonName.*;
 import static com.company.enums.LanguageCode.RU;
 import static com.company.enums.LanguageCode.UZ;
-import static com.company.enums.UserQuestionnaireStatus.COMPLAINTS_INFO_WRITE;
+import static com.company.enums.UserQuestionnaireStatus.*;
 import static com.company.enums.UserStatus.ACTIVE;
 
 @Service
@@ -114,6 +116,14 @@ public class CallBackQueryService {
         }
     }
 
+    public void changeLang(Message message, String data){
+        var user =USER_LIST.get(message.getChatId());
+        user.setLanguageCode(LanguageCode.valueOf(data));
+        USER_LIST.put(message.getChatId(), user);
+        handleCallBackConfirm(message);
+
+    }
+
     public void handleGenderFemale(Message message, User user) {
         var dto = USER_LIST.get(user.getId());
 
@@ -143,7 +153,7 @@ public class CallBackQueryService {
         }
     }
 
-    public void handleCallBackConfirm(Message message, User user) {
+    public void handleCallBackConfirm(Message message) {
 
         var delete = new DeleteMessage();
         delete.setMessageId(message.getMessageId());
@@ -152,7 +162,7 @@ public class CallBackQueryService {
         delete.setMessageId(message.getMessageId() - 1);
         telegramBotConfig.sendMsg(delete);
 
-        var dto = USER_LIST.get(user.getId());
+        var dto = USER_LIST.get(message.getChatId());
         dto.setStatus(ACTIVE);
         USER_LIST.put(message.getChatId(), dto);
 
@@ -162,7 +172,24 @@ public class CallBackQueryService {
 
         editMessageText.setChatId(String.valueOf(message.getChatId()));
         if (dto.getLanguageCode().equals(UZ)) {
-            editMessageText.setText("Ma'lumotlar qabul qilindi ✅");
+            editMessageText.setText("Bosh menu!");
+            editMessageText.setReplyMarkup(ButtonUtil.complaintsMenu(UZ));
+        } else {
+            editMessageText.setText("Главное меню!");
+            editMessageText.setReplyMarkup(ButtonUtil.complaintsMenu(RU));
+        }
+        telegramBotConfig.sendMsg(editMessageText);
+        System.out.println(USER_LIST.get(message.getChatId()));
+    }
+
+    public void menu(Message message) {
+        var dto = USER_LIST.get(message.getChatId());
+
+        var editMessageText = new SendMessage();
+
+        editMessageText.setChatId(String.valueOf(message.getChatId()));
+        if (dto.getLanguageCode().equals(UZ)) {
+            editMessageText.setText("Bosh menu");
             editMessageText.setReplyMarkup(ButtonUtil.complaintsMenu(UZ));
         } else {
             editMessageText.setText("Информация получена ✅");
@@ -211,8 +238,6 @@ public class CallBackQueryService {
         delete.setChatId(String.valueOf(message.getChatId()));
         delete.setMessageId(message.getMessageId());
         telegramBotConfig.sendMsg(delete);
-        delete.setMessageId(message.getMessageId() - 1);
-        telegramBotConfig.sendMsg(delete);
         var remove = new ReplyKeyboardRemove();
 
         remove.setRemoveKeyboard(true);
@@ -238,20 +263,18 @@ public class CallBackQueryService {
 
         switch (user.getLanguageCode()) {
             case UZ -> {
-                if (data.equals(CIGARETTA_NO_UZ))
-                    infoDTO.setCigarette(CIGARETTA_NO_UZ);
-                else if (data.equals(CIGARETTA_05_1_UZ))
-                    infoDTO.setCigarette(CIGARETTA_NO_UZ);
-                else
-                    infoDTO.setCigarette(CIGARETTA_NO_UZ);
+                switch (data) {
+                    case CIGARETTA_NO_UZ -> infoDTO.setCigarette(CIGARETTA_NO_UZ);
+                    case CIGARETTA_05_1_UZ -> infoDTO.setCigarette(CIGARETTA_05_1_UZ);
+                    case CIGARETTA_1_2_UZ -> infoDTO.setCigarette(CIGARETTA_1_2_UZ);
+                }
             }
             case RU -> {
-                if (data.equals(CIGARETTA_NO_RU))
-                    infoDTO.setCigarette(CIGARETTA_NO_RU);
-                else if (data.equals(CIGARETTA_05_1_RU))
-                    infoDTO.setCigarette(CIGARETTA_NO_RU);
-                else
-                    infoDTO.setCigarette(CIGARETTA_NO_RU);
+                switch (data) {
+                    case CIGARETTA_NO_RU -> infoDTO.setCigarette(CIGARETTA_NO_RU);
+                    case CIGARETTA_05_1_RU -> infoDTO.setCigarette(CIGARETTA_05_1_RU);
+                    case CIGARETTA_1_2_RU -> infoDTO.setCigarette(CIGARETTA_1_2_RU);
+                }
             }
         }
 
@@ -290,14 +313,11 @@ public class CallBackQueryService {
             if (!dto.getCauseOfComplaint().isEmpty()) {
                 builder.append("Qabul qilgan va qilayotgan dorilar: ").append(dto.getDrugsList()).append("\n");
             }
-
-            if (!dto.getCigarette().equals(CIGARETTA_NO_UZ))
-                builder.append("Sigaret: chekmayman" + "\n");
-            else if (!dto.getCigarette().equals(CIGARETTA_05_1_UZ))
-                builder.append("Sigaret: 0.5-1 pachka" + "\n");
-            else if (!dto.getCigarette().equals(CIGARETTA_1_2_UZ))
-                builder.append("Sigaret: 1-2 pachka" + "\n");
-            builder.append("Hozirda davolanayotgan kasalliklar: " + dto.getDiseasesList() + "\n");
+            switch (dto.getCigarette()){
+                case CIGARETTA_NO_UZ-> builder.append("Sigaret: chekmayman" + "\n");
+                case CIGARETTA_05_1_UZ-> builder.append("Sigaret: 0.5-1 pachka" + "\n");
+                case CIGARETTA_1_2_UZ-> builder.append("Sigaret: 1-2 pachka" + "\n");
+            }
         } else {
             builder.append("<b>🔎 Пожалуйста, проверьте вашу информацию: </b>\n");
 
@@ -308,13 +328,11 @@ public class CallBackQueryService {
             if (!dto.getCauseOfComplaint().isEmpty()) {
                 builder.append("Лекарства, которые вы принимали и принимаете: " + dto.getDrugsList() + "\n");
             }
-
-            if (!dto.getCigarette().equals(CIGARETTA_NO_UZ))
-                builder.append("Сигареты: не курю" + "\n");
-            else if (!dto.getCigarette().equals(CIGARETTA_05_1_UZ))
-                builder.append("Сигарета: 0,5-1 пачка" + "\n");
-            else if (!dto.getCigarette().equals(CIGARETTA_1_2_UZ))
-                builder.append("Сигареты: 1-2 пачки" + "\n");
+            switch (dto.getCigarette()){
+                case CIGARETTA_NO_RU-> builder.append("Сигареты: не курю" + "\n");
+                case CIGARETTA_05_1_RU-> builder.append("Сигарета: 0,5-1 пачка" + "\n");
+                case CIGARETTA_1_2_RU-> builder.append("Сигареты: 1-2 пачки" + "\n");
+            }
             builder.append("Заболевания, от которых вы сейчас лечитесь:" + dto.getDiseasesList() + "\n");
         }
 
@@ -323,6 +341,7 @@ public class CallBackQueryService {
         var tempMsg = new SendMessage();
         tempMsg.setChatId(String.valueOf(message.getChatId()));
         tempMsg.setText("...");
+        tempMsg.setReplyMarkup(remove);
         int id;
         try {
             id = telegramBotConfig.execute(tempMsg).getMessageId();
@@ -333,6 +352,7 @@ public class CallBackQueryService {
         var delete = new DeleteMessage();
         delete.setChatId(String.valueOf(message.getChatId()));
         delete.setMessageId(id);
+        telegramBotConfig.sendMsg(delete);
 
 
         /*var str = String.format("""
@@ -364,6 +384,9 @@ public class CallBackQueryService {
         var infoDto = USER_COMPLAINT_INFO.get(id);
         var drugs_photo_list = USER_PHOTOS_DRUGS.get(id);
         var inspection_photo_list = USER_PHOTOS_INSPECTION.get(id);
+        var user=USER_LIST.get(id);
+        user.setStatus(ACTIVE);
+        USER_LIST.put(id, user);
 
         if (!comlaintsList.isEmpty()) {
             for (ComplaintsDTO dto : comlaintsList) {
@@ -411,7 +434,7 @@ public class CallBackQueryService {
             }
         }
         generatePdfService.createPdf(new PdfDTO(
-                USER_LIST.get(id),
+                user,
                 infoDto,
                 comlaintsList,
                 drugs_photo_list,
@@ -421,7 +444,13 @@ public class CallBackQueryService {
 
         var sendMsg = new SendMessage();
         sendMsg.setChatId(String.valueOf(message.getChatId()));
-        sendMsg.setText("Malumotlar qabul qilindi!\n Sizga aloqaga chiqamiz!");
+        if (user.getLanguageCode().equals(UZ))
+        sendMsg.setText(" Malumotlar qabul qilindi!\n Sizga aloqaga chiqamiz!");
+        else
+            sendMsg.setText(" Информация получена!\n Мы свяжемся с вами!");
+
+        sendMsg.setReplyMarkup(ButtonUtil.menu(user.getLanguageCode()));
+
         telegramBotConfig.sendMsg(sendMsg);
     }
 
@@ -432,7 +461,11 @@ public class CallBackQueryService {
     }
 
     public void backButton(Message message) {
-        var lang = USER_LIST.get(message.getChatId()).getLanguageCode();
+        var user = USER_LIST.get(message.getChatId());
+        user.setQuestionnaireStatus(DEFAULT);
+        USER_LIST.put(message.getChatId(), user);
+        var lang = user.getLanguageCode();
+
 
         var sendMessage = new SendMessage();
         sendMessage.setChatId(String.valueOf(message.getChatId()));
@@ -441,6 +474,7 @@ public class CallBackQueryService {
         else
             sendMessage.setText("Выберите нужный раздел!.");
         sendMessage.setReplyMarkup(ButtonUtil.backButtonClick(lang));
+        telegramBotConfig.sendMsg(sendMessage);
     }
 
 
@@ -454,6 +488,7 @@ public class CallBackQueryService {
         entity.setWeight(dto.getWeight());
         entity.setPhone(dto.getPhone());
         entity.setName(dto.getName());
+        entity.setLanguageCode(dto.getLanguageCode());
         entity.setSurname(dto.getSurname());
         botUsersService.saveUser(entity);
     }

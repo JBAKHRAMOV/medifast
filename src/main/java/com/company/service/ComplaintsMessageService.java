@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -29,8 +30,6 @@ public class ComplaintsMessageService {
             var deleteMsg = new DeleteMessage();
             deleteMsg.setMessageId(message.getMessageId());
             deleteMsg.setChatId(String.valueOf(message.getChatId()));
-            telegramBotConfig.sendMsg(deleteMsg);
-            deleteMsg.setMessageId(message.getMessageId() - 1);
             telegramBotConfig.sendMsg(deleteMsg);
         }
         var sendMessage = new SendMessage();
@@ -59,7 +58,9 @@ public class ComplaintsMessageService {
     }
 
     public void result(Message message, LanguageCode lang) {
-        var sendMessage = new SendMessage();
+        var sendMessage = new EditMessageText();
+        int count=1;
+        sendMessage.setMessageId(message.getMessageId());
 
         var str = new StringBuilder();
         var list = TelegramBotConfig.USER_COMPLAINT.get(message.getChatId());
@@ -67,12 +68,12 @@ public class ComplaintsMessageService {
             switch (lang) {
                 case UZ -> {
                     for (var complaits : list) {
-                        str.append(complaits.getNameUz()).append("\n");
+                        str.append(count++ + ". "+complaits.getNameUz()).append("\n");
                     }
                 }
                 case RU -> {
                     for (var complaits : list) {
-                        str.append(complaits.getNameRu()).append("\n");
+                        str.append(count++ + ". "+complaits.getNameRu()).append("\n");
                     }
                 }
             }

@@ -16,7 +16,13 @@ public class BotUsersService {
     }
 
     public void saveUser(BotUsersEntity entity) {
-        botUsersRepository.save(entity);
+        var user = botUsersRepository.findByTelegramId(entity.getTelegramId());
+        if (user.isEmpty())
+            botUsersRepository.save(entity);
+        else {
+            botUsersRepository.delete(user.get());
+            botUsersRepository.save(entity);
+        }
     }
 
 }

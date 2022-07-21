@@ -207,4 +207,23 @@ public class ButtonUtil {
         return keyboardMarkup;
     }
 
+    public static ReplyKeyboardMarkup menu(LanguageCode languageCode){
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow row = new KeyboardRow();
+        KeyboardRow row2 = new KeyboardRow();
+        keyboard.add(row);
+        switch (languageCode) {
+            case UZ -> {
+                row.add(MENU_UZ);
+            }
+            case RU -> {
+                row.add(MENU_RU);
+            }
+        }
+        keyboardMarkup.setKeyboard(keyboard);
+        keyboardMarkup.setResizeKeyboard(true);
+        return keyboardMarkup;
+    }
+
 }

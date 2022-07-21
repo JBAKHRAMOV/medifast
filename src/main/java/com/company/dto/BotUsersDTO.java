@@ -14,6 +14,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static com.company.enums.LanguageCode.UZ;
+
 @Getter
 @Setter
 @ToString
@@ -28,9 +30,9 @@ public class BotUsersDTO implements Serializable {
     private String surname;
     private String phone;
     private LocalDate birthDate;
-    private LanguageCode languageCode;
+    private LanguageCode languageCode= UZ;
     private UserStatus status = UserStatus.NOT_ACTIVE;
-    private UserQuestionnaireStatus questionnaireStatus = UserQuestionnaireStatus.NAME;
+    private UserQuestionnaireStatus questionnaireStatus = UserQuestionnaireStatus.DEFAULT;
     private Gender gender;
     private String weight;
     private String height;

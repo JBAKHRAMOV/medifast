@@ -3,6 +3,7 @@ package com.company.controller;
 import com.company.config.TelegramBotConfig;
 import com.company.dto.BotUsersDTO;
 import com.company.dto.ComplaintsDTO;
+import com.company.repository.BotUsersRepository;
 import com.company.service.AudioService;
 import com.company.service.CallBackQueryService;
 import com.company.service.MessageService;
@@ -40,6 +41,7 @@ public class MessageController {
     private final ComplaintsMessageController complaintsMessageController;
     private final AdminController adminController;
     private final CallBackQueryService callBackQueryService;
+    private final BotUsersRepository usersRepository;
 
     private final AudioService audioService;
     private final PhotoServise photoServise;
@@ -67,9 +69,19 @@ public class MessageController {
 
         if (text.equals("/start"))
             start(message);
-
+        else if (user.getStatus().equals(ACTIVE) && text.equals(BACK_UZ)
+                || user.getStatus().equals(ACTIVE) & text.equals(BACK_RU))
+            callBackQueryService.backButton(message);
+        else if (user.getStatus().equals(ACTIVE) && text.equals(CHANGE_LANG_RU)
+                || user.getStatus().equals(ACTIVE) & text.equals(CHANGE_LANG_UZ))
+            messageService.changeLanguage(message);
+        else if (user.getStatus().equals(ACTIVE) && text.equals(MENU_UZ)
+                || user.getStatus().equals(ACTIVE) & text.equals(MENU_RU))
+            callBackQueryService.menu(message);
         else if (user.getStatus().equals(FILL_FORM) || text.equals(FILL_FORM_BTN_UZ) || text.equals(FILL_FORM_BTN_RU)) {
             user.setStatus(FILL_FORM);
+            if (user.getQuestionnaireStatus().equals(DEFAULT))
+                user.setQuestionnaireStatus(NAME);
             fillFrom(message, user);
         } else if (user.getStatus().equals(COMPLAIN_FROM)
                 || text.equals(COMPLAINT_RU)
@@ -79,6 +91,7 @@ public class MessageController {
                 complaintsMessageController.result(message, user);
             else {
                 user.setStatus(COMPLAIN_FROM);
+                USER_LIST.put(user.getTelegramId(), user);
                 List<ComplaintsDTO> list = new LinkedList<>();
                 USER_COMPLAINT.put(message.getChatId(), list);
                 complaintsMessageController.complentsButtonList(message, user, 1);
@@ -104,15 +117,33 @@ public class MessageController {
     }
 
     private void start(Message message) {
+        var user=usersRepository.findByTelegramId(message.getChatId());
+        if (user.isEmpty())
+            USER_LIST.put(message.getChatId(), new BotUsersDTO(message.getChatId()));
+        else{
+            var entity=user.get();
 
-        USER_LIST.put(message.getChatId(), new BotUsersDTO(message.getChatId()));
+            var dto=new BotUsersDTO(entity.getTelegramId());
+            dto.setLanguageCode(entity.getLanguageCode());
+            dto.setName(entity.getName());
+            dto.setBirthDate(dto.getBirthDate());
+            dto.setGender(entity.getGender());
+            dto.setHeight(entity.getHeight());
+            dto.setPhone(entity.getPhone());
+            dto.setWeight(entity.getWeight());
+            dto.setStatus(ACTIVE);
+            USER_LIST.put(message.getChatId(), dto);
+            callBackQueryService.backButton(message);
+            return;
+        }
 
         var remove = new ReplyKeyboardRemove();
         remove.setRemoveKeyboard(true);
         var sendMessage1 = new SendMessage();
         sendMessage1.setReplyMarkup(remove);
         sendMessage1.setChatId(String.valueOf(message.getChatId()));
-        sendMessage1.setText(".");
+        sendMessage1.setText("...");
+
         int id = 0;
 
         try {
@@ -131,7 +162,6 @@ public class MessageController {
         sendMessage.setChatId(String.valueOf(message.getChatId()));
         sendMessage.setText("Iltimos, tilni tanlang. / Пожалуйста, выберите язык.");
         sendMessage.setReplyMarkup(InlineButtonUtil.languageButtons());
-
         telegramBotConfig.sendMsg(sendMessage);
     }
 

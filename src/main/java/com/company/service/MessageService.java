@@ -1,9 +1,11 @@
 package com.company.service;
 
 import com.company.config.TelegramBotConfig;
+import com.company.constants.ButtonName;
 import com.company.dto.BotUsersDTO;
 import com.company.enums.Gender;
 import com.company.enums.UserQuestionnaireStatus;
+import com.company.enums.UserStatus;
 import com.company.util.DateUtil;
 import com.company.util.button.ButtonUtil;
 import com.company.util.button.InlineButtonUtil;
@@ -15,14 +17,18 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
 import static com.company.config.TelegramBotConfig.*;
+import static com.company.constants.ButtonName.STOP_RU;
+import static com.company.constants.ButtonName.STOP_UZ;
 import static com.company.enums.LanguageCode.RU;
 import static com.company.enums.LanguageCode.UZ;
 import static com.company.enums.UserQuestionnaireStatus.*;
+import static com.company.enums.UserStatus.CHANGE_LANG;
 
 @Service
 @RequiredArgsConstructor
@@ -43,9 +49,9 @@ public class MessageService {
             dto.setPhone(message.getText());
         } else {
             if (dto.getLanguageCode().equals(UZ))
-                sendMessage.setText("Номер телефона неверен, пожалуйста, введите его еще раз!");
+                sendMessage.setText("Iltimos telefon raqamingizni to'g'ri kiriting!");
             else
-                sendMessage.setText("");
+                sendMessage.setText("Номер телефона неверен, пожалуйста, введите его еще раз!");
             sendMessage.setReplyMarkup(ButtonUtil.requestContact(UZ));
             telegramBotConfig.sendMsg(sendMessage);
             return;
@@ -81,6 +87,9 @@ public class MessageService {
                 sendMessage.setText(getFormatRU(dto, "Женщина"));
             }
         }
+        var user=USER_LIST.get(message.getChatId());
+        user.setQuestionnaireStatus(DEFAULT);
+        USER_LIST.put(user.getTelegramId(), user);
 
         sendMessage.setParseMode("HTML");
         TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
@@ -223,7 +232,8 @@ public class MessageService {
 
     public void drugsList(Message message, BotUsersDTO user) {
         var infoDTO = USER_COMPLAINT_INFO.get(message.getChatId());
-        infoDTO.setDrugsList(message.getText());
+        if (!message.getText().equals(STOP_UZ) && !message.getText().equals(STOP_RU))
+            infoDTO.setDrugsList(message.getText());
         USER_COMPLAINT_INFO.put(message.getChatId(), infoDTO);
         user.setQuestionnaireStatus(CIGARETTE);
         USER_LIST.put(message.getChatId(), user);
@@ -231,11 +241,20 @@ public class MessageService {
 
         var sendMsg = new SendMessage();
         sendMsg.setChatId(String.valueOf(message.getChatId()));
-        var remove=new ReplyKeyboardRemove();
+        var remove = new ReplyKeyboardRemove();
         remove.setRemoveKeyboard(true);
         sendMsg.setReplyMarkup(remove);
         sendMsg.setText("...");
-        telegramBotConfig.sendMsg(sendMsg);
+        int id=0;
+        try {
+            id=telegramBotConfig.execute(sendMsg).getMessageId();
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+        var delete=new DeleteMessage();
+        delete.setMessageId(id);
+        delete.setChatId(String.valueOf(message.getChatId()));
+        telegramBotConfig.sendMsg(delete);
 
         if (user.getLanguageCode().equals(UZ))
             sendMsg.setText("Sigaret chekasizmi?");
@@ -265,6 +284,17 @@ public class MessageService {
         telegramBotConfig.sendMsg(sendMsg);
 
 
+    }
+
+    public void changeLanguage(Message message){
+        var user=USER_LIST.get(message.getChatId());
+        user.setStatus(CHANGE_LANG);
+        USER_LIST.put(message.getChatId(), user);
+        var sendMsg = new SendMessage();
+        sendMsg.setChatId(String.valueOf(message.getChatId()));
+        sendMsg.setText("Iltimos, tilni tanlang. / Пожалуйста, выберите язык.");
+        sendMsg.setReplyMarkup(InlineButtonUtil.languageButtons());
+        telegramBotConfig.sendMsg(sendMsg);
     }
 
     private String getFormat(BotUsersDTO dto, String gender) {

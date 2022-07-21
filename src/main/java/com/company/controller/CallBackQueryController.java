@@ -24,8 +24,7 @@ import static com.company.enums.LanguageCode.RU;
 import static com.company.enums.LanguageCode.UZ;
 import static com.company.enums.UserQuestionnaireStatus.DRUGS_LIST;
 import static com.company.enums.UserQuestionnaireStatus.INSPECTION_PAPERS;
-import static com.company.enums.UserStatus.COMPLAIN_FROM;
-import static com.company.enums.UserStatus.COMPLAIN_INFO;
+import static com.company.enums.UserStatus.*;
 import static com.company.service.ComplaintsService.COMPLAINTS_LIST;
 
 @Controller
@@ -43,6 +42,8 @@ public class CallBackQueryController {
         String data = callbackQuery.getData();
         if (user.getStatus().equals(COMPLAIN_FROM)) complaintFrom(callbackQuery);
         else if (user.getStatus().equals(COMPLAIN_INFO)) complaintsInfo(callbackQuery);
+        else if (user.getStatus().equals(CHANGE_LANG))
+            callBackQueryService.changeLang(callbackQuery.getMessage(), data);
         else if (data.equals(UZ.name()))
             callBackQueryService.handleLangCodeUZ(callbackQuery.getMessage(), callbackQuery.getFrom());
         else if (data.equals(RU.name()))
@@ -52,11 +53,10 @@ public class CallBackQueryController {
         else if (data.equals(FEMALE.name()))
             callBackQueryService.handleGenderFemale(callbackQuery.getMessage(), callbackQuery.getFrom());
         else if (data.equals(CONFIRM_UZ) || data.equals(CONFIRM_RU))
-            callBackQueryService.handleCallBackConfirm(callbackQuery.getMessage(), callbackQuery.getFrom());
-        else if (data.equals(AGAIN_UZ))
+            callBackQueryService.handleCallBackConfirm(callbackQuery.getMessage());
+        else if (data.equals(AGAIN_UZ)|| data.equals(AGAIN_RU))
             callBackQueryService.handleCallBackAgain(callbackQuery.getMessage(), callbackQuery.getFrom());
-        else if (data.equals(BACK_UZ)|| data.equals(BACK_RU))
-            callBackQueryService.backButton(callbackQuery.getMessage());
+
 
 
     }
