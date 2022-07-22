@@ -51,6 +51,7 @@ public class MessageController {
 
 
     public void messageController(Message message) {
+        System.out.println("khshs");
         var text = "";
         var user = USER_LIST.get(message.getChatId());
 
@@ -99,7 +100,7 @@ public class MessageController {
         } else if (user.getStatus().equals(COMPLAIN_INFO)) {
             if (message.hasVoice() && user.getQuestionnaireStatus().equals(COMPLAINTS_INFO_WRITE)) {
                 audioService.getAudio(message);
-            } else if (message.hasPhoto() && user.getQuestionnaireStatus().equals(DRUGS_LIST))
+            } else if (message.hasPhoto() && user.getQuestionnaireStatus().equals(DRUGS_LIST)) {
                 photoServise.drugsPhotoSave(message);
             } else if (text.equals(STOP_UZ) && user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
                     || text.equals(STOP_RU) && user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
@@ -112,16 +113,17 @@ public class MessageController {
                 complaintInfo(message, user);
 
         }
+    }
 
 
     private void start(Message message) {
-        var user=usersRepository.findByTelegramId(message.getChatId());
+        var user = usersRepository.findByTelegramId(message.getChatId());
         if (user.isEmpty())
             USER_LIST.put(message.getChatId(), new BotUsersDTO(message.getChatId()));
-        else{
-            var entity=user.get();
+        else {
+            var entity = user.get();
 
-            var dto=new BotUsersDTO(entity.getTelegramId());
+            var dto = new BotUsersDTO(entity.getTelegramId());
             dto.setLanguageCode(entity.getLanguageCode());
             dto.setName(entity.getName());
             dto.setBirthDate(dto.getBirthDate());
@@ -184,7 +186,6 @@ public class MessageController {
 
     public void complaintInfo(Message message, BotUsersDTO user) {
         var qStatus = user.getQuestionnaireStatus();
-
         var sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId().toString());
 

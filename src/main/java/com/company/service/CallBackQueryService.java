@@ -15,7 +15,6 @@ import com.company.util.button.ButtonUtil;
 import com.company.util.button.InlineButtonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.UserTokenHandler;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -310,7 +309,7 @@ public class CallBackQueryService {
                 builder.append("Murojatga sabab bo’lgan shikoyatlar: ").append(dto.getCauseOfComplaint()).append("\n");
             }
             builder.append("Shikoyatlar boshlangan vaqt: ").append(dto.getComplaintStartedTime()).append("\n");
-            if (!dto.getCauseOfComplaint().isEmpty()) {
+            if (dto.getCauseOfComplaint()!=null) {
                 builder.append("Qabul qilgan va qilayotgan dorilar: ").append(dto.getDrugsList()).append("\n");
             }
             switch (dto.getCigarette()){
@@ -418,7 +417,7 @@ public class CallBackQueryService {
             for (UserPhotoDTO dto : drugs_photo_list) {
                 var entity = new DrugsPhotoEntity();
                 entity.setUserId(id);
-                entity.setFielId(dto.getFielId());
+                entity.setFielId(dto.getFileId());
                 entity.setLink(dto.getLink());
                 drugsPhotoRepository.save(entity);
             }
@@ -428,7 +427,7 @@ public class CallBackQueryService {
             for (UserPhotoDTO dto : inspection_photo_list) {
                 var entity = new InspectionPhotoEntity();
                 entity.setUserId(id);
-                entity.setFielId(dto.getFielId());
+                entity.setFielId(dto.getFileId());
                 entity.setLink(dto.getLink());
                 inspectionPhotoRepository.save(entity);
             }

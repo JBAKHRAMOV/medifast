@@ -1,11 +1,8 @@
 package com.company.service;
 
 import com.company.config.TelegramBotConfig;
-import com.company.constants.ButtonName;
 import com.company.dto.BotUsersDTO;
 import com.company.enums.Gender;
-import com.company.enums.UserQuestionnaireStatus;
-import com.company.enums.UserStatus;
 import com.company.util.DateUtil;
 import com.company.util.button.ButtonUtil;
 import com.company.util.button.InlineButtonUtil;
@@ -22,7 +19,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
-import static com.company.config.TelegramBotConfig.*;
+import static com.company.config.TelegramBotConfig.USER_COMPLAINT_INFO;
+import static com.company.config.TelegramBotConfig.USER_LIST;
 import static com.company.constants.ButtonName.STOP_RU;
 import static com.company.constants.ButtonName.STOP_UZ;
 import static com.company.enums.LanguageCode.RU;
@@ -188,10 +186,8 @@ public class MessageService {
         sendMessage.setReplyMarkup(remove);
 
         telegramBotConfig.sendMsg(sendMessage);
-        System.out.println(dto);
 
         dto.setQuestionnaireStatus(SURNAME);
-        System.out.println(dto);
         TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
     }
 
@@ -202,7 +198,6 @@ public class MessageService {
         USER_COMPLAINT_INFO.put(message.getChatId(), infoDTO);
         user.setQuestionnaireStatus(COMPLAINTS_STARTED_TIME);
         USER_LIST.put(message.getChatId(), user);
-
         var sendMsg = new SendMessage();
         sendMsg.setChatId(String.valueOf(message.getChatId()));
         if (user.getLanguageCode().equals(UZ))

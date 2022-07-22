@@ -159,7 +159,7 @@ public class InlineButtonUtil {
         switch (languageCode) {
             case UZ -> {
 
-                for (int i = user.getStartLenght(); i < COMPLAINTS_LIST.size() / user.getFinishLenght(); i++) {
+                for (int i = user.getStartLength(); i < COMPLAINTS_LIST.size() / user.getFinishLength(); i++) {
                     if (COMPLAINTS_LIST.size() == i + 1) {
                         var button = new InlineKeyboardButton();
                         if (!userComplientList.isEmpty()) {
@@ -206,14 +206,14 @@ public class InlineButtonUtil {
                         list.add(row(button, button2));
                     }
                 }
-                if (user.getStartLenght() == 0) {
+                if (user.getStartLength() == 0) {
                     list.add(row(button(NEXT_UZ, NEXT_UZ)));
                 } else {
                     list.add(row(button(BACK_UZ, BACK_UZ), button(STOP_UZ, STOP_UZ)));
                 }
             }
             case RU -> {
-                for (int i = user.getStartLenght(); i < COMPLAINTS_LIST.size() / user.getFinishLenght(); i++) {
+                for (int i = user.getStartLength(); i < COMPLAINTS_LIST.size() / user.getFinishLength(); i++) {
                     if (COMPLAINTS_LIST.size() == i + 1) {
                         var button = new InlineKeyboardButton();
                         if (!userComplientList.isEmpty()) {
@@ -260,7 +260,7 @@ public class InlineButtonUtil {
                         list.add(row(button, button2));
                     }
                 }
-                if (user.getStartLenght() == 0) {
+                if (user.getStartLength() == 0) {
                     list.add(row(button(NEXT_RU, NEXT_RU)));
                 } else {
                     list.add(row(button(BACK_RU, BACK_RU), button(STOP_RU, STOP_RU)));

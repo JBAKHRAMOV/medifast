@@ -50,7 +50,7 @@ public class PhotoServise {
             list=USER_PHOTOS_DRUGS.get(message.getChatId());
         }
         var dto = new UserPhotoDTO();
-        dto.setFielId(photo.getFileId());
+        dto.setFileId(photo.getFileId());
         dto.setLink(link);
 
         list.add(dto);
@@ -90,7 +90,7 @@ public class PhotoServise {
             list=USER_PHOTOS_INSPECTION.get(message.getChatId());
         }
         var dto = new UserPhotoDTO();
-        dto.setFielId(photo.getFileId());
+        dto.setFileId(photo.getFileId());
         dto.setLink(link);
 
         list.add(dto);

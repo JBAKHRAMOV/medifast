@@ -77,14 +77,12 @@ public class TelegramBotConfig extends TelegramLongPollingBot {
         if (Objects.equals(id, adminId)) {
             bln = true;
         } else
-             bln = validationController.mainController(update);
+            bln = validationController.mainController(update);
 
-        System.out.println("bln = " + bln);
         if (bln) {
-            System.out.println("wwwwwww");
-            if (update.hasMessage())
+            if (update.hasMessage()) {
                 messageController.messageController(update.getMessage());
-            else if (update.hasCallbackQuery())
+            } else if (update.hasCallbackQuery())
                 callBackQueryController
                         .callBackQueryController(update.getCallbackQuery());
             else if (update.getMessage().hasPhoto())

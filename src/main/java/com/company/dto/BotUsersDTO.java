@@ -37,8 +37,8 @@ public class BotUsersDTO implements Serializable {
     private String weight;
     private String height;
     private Double currentTemperature;
-    private Integer startLenght = 0;
-    private Integer finishLenght = 2;
+    private Integer startLength = 0;
+    private Integer finishLength = 2;
 
     public BotUsersDTO(Long telegramId) {
         this.telegramId = telegramId;

@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
-import org.telegram.telegrambots.meta.api.methods.send.SendAudio;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.util.LinkedList;
@@ -65,14 +63,14 @@ public class CallBackQueryController {
         String data = callbackQuery.getData();
         if (data.equals(NEXT_UZ) || data.equals(NEXT_RU)) {
             var user = USER_LIST.get(callbackQuery.getMessage().getChatId());
-            user.setStartLenght(COMPLAINTS_LIST.size() / 2);
-            user.setFinishLenght(1);
+            user.setStartLength(COMPLAINTS_LIST.size() / 2);
+            user.setFinishLength(1);
             USER_LIST.put(callbackQuery.getMessage().getChatId(), user);
             complaintsMessageController.complaintsForm(data, callbackQuery.getMessage());
         } else if (data.equals(BACK_UZ) || data.equals(BACK_RU)) {
             var user = USER_LIST.get(callbackQuery.getMessage().getChatId());
-            user.setStartLenght(0);
-            user.setFinishLenght(2);
+            user.setStartLength(0);
+            user.setFinishLength(2);
             USER_LIST.put(callbackQuery.getMessage().getChatId(), user);
             complaintsMessageController.complaintsForm(data, callbackQuery.getMessage());
         } else if (data.equals(STOP_UZ) || data.equals(STOP_RU)) {
@@ -84,8 +82,8 @@ public class CallBackQueryController {
             callBackQueryService.startComplaintsInfoQuestionUz(callbackQuery.getMessage(), user);
         } else if (data.equals(AGAIN_UZ) || data.equals(AGAIN_RU)) {
             var user = USER_LIST.get(callbackQuery.getMessage().getChatId());
-            user.setStartLenght(0);
-            user.setFinishLenght(2);
+            user.setStartLength(0);
+            user.setFinishLength(2);
             USER_LIST.put(callbackQuery.getMessage().getChatId(), user);
             List<ComplaintsDTO> list = new LinkedList<>();
             USER_COMPLAINT.put(callbackQuery.getMessage().getChatId(), list);

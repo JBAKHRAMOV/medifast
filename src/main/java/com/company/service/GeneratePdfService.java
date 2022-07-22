@@ -109,7 +109,6 @@ public class GeneratePdfService {
                 });
             }
             document.close();
-            System.out.println("Done");
 
             var file = new File(FILE_NAME);
             export(file, dto.getUser());
@@ -127,7 +126,6 @@ public class GeneratePdfService {
         sendDocument.setCaption(dto.getName() + " " + dto.getSurname());
         telegramBotConfig.sendMsg(sendDocument);
         mediaFile.delete();
-        System.out.println("Success");
     }
 
     private String getUserElements(BotUsersDTO dto) {

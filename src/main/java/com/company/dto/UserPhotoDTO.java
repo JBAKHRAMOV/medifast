@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class UserPhotoDTO {
-    private String fielId;
+    private String fileId;
     private String link;
 }
