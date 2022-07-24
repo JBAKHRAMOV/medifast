@@ -493,6 +493,10 @@ public class CallBackQueryService {
         entity.setName(dto.getName());
         entity.setLanguageCode(dto.getLanguageCode());
         entity.setSurname(dto.getSurname());
+        entity.setBloodPrassure(dto.getBloodPrassure());
+        entity.setDiabets(dto.getDiabets());
+        entity.setTemprature(dto.getTemprature());
+        entity.setHeartBeat(dto.getHeartBeat());
         botUsersService.saveUser(entity);
     }
 

@@ -21,7 +21,7 @@ public class BotUsersEntity extends BaseEntity {
         this.telegramId = telegramId;
     }
 
-//    @Column(unique = true, nullable = false)
+    //    @Column(unique = true, nullable = false)
     private Long telegramId;
 
     @Column
@@ -56,4 +56,12 @@ public class BotUsersEntity extends BaseEntity {
 
     @Column
     private Double currentTemperature;
+    @Column
+    private String bloodPrassure;
+    @Column
+    private String heartBeat;
+    @Column
+    private String diabets;
+    @Column
+    private String temprature;
 }
