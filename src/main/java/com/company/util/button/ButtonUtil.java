@@ -78,6 +78,27 @@ public class ButtonUtil {
 
         return replyKeyboardMarkup;
     }
+    public static ReplyKeyboardMarkup skip(LanguageCode languageCode) {
+        KeyboardRow row = new KeyboardRow();
+        KeyboardButton keyboardButton = new KeyboardButton();
+
+        switch (languageCode) {
+            case UZ -> {
+                keyboardButton.setText(SKIP_UZ);
+
+            }
+            case RU -> {
+                keyboardButton.setText(SKIP_RU);
+            }
+        }
+        row.add(keyboardButton);
+
+        var replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setKeyboard(List.of(row));
+        replyKeyboardMarkup.setResizeKeyboard(true);
+
+        return replyKeyboardMarkup;
+    }
 
     public static ReplyKeyboardMarkup complaintsMenu(LanguageCode languageCode) {
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();

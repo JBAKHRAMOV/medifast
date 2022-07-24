@@ -96,6 +96,71 @@ public class MessageService {
 
     public void weight(Message message, BotUsersDTO dto, SendMessage sendMessage) {
         dto.setWeight(message.getText());
+        dto.setQuestionnaireStatus(BLOOD_PRESSURE);
+        TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
+
+        if (dto.getLanguageCode().equals(UZ)) {
+            sendMessage.setReplyMarkup(ButtonUtil.skip(UZ));
+            sendMessage.setText("Qon bosimizgizni kiriting\nYoki o'tkazib yuboring");
+        } else {
+            sendMessage.setText("Введите свое кровяное давление\nИли пропустить");
+            sendMessage.setReplyMarkup(ButtonUtil.skip(RU));
+        }
+
+        telegramBotConfig.sendMsg(sendMessage);
+    }
+
+    public void bloodPressure(Message message, BotUsersDTO dto, SendMessage sendMessage, String text) {
+
+        dto.setBloodPrassure(text);
+        dto.setQuestionnaireStatus(HEART_BEAT);
+        TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
+
+        if (dto.getLanguageCode().equals(UZ)) {
+            sendMessage.setReplyMarkup(ButtonUtil.skip(UZ));
+            sendMessage.setText("Yurak urishi kiriting\nYoki o'tkazib yuboring");
+        } else {
+            sendMessage.setText("Введите сердцебиение\nИли пропустить");
+            sendMessage.setReplyMarkup(ButtonUtil.skip(RU));
+        }
+
+        telegramBotConfig.sendMsg(sendMessage);
+    }
+
+    public void heartBeats(Message message, BotUsersDTO dto, SendMessage sendMessage, String text) {
+        dto.setHeartBeat(text);
+        dto.setQuestionnaireStatus(DIABETES);
+        TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
+
+        if (dto.getLanguageCode().equals(UZ)) {
+            sendMessage.setReplyMarkup(ButtonUtil.skip(UZ));
+            sendMessage.setText("Qandli diabetingiz bolsa kirting\nYoki o'tkazib yuboring");
+        } else {
+            sendMessage.setText("Введите, если у вас диабет\nИли пропустить");
+            sendMessage.setReplyMarkup(ButtonUtil.skip(RU));
+        }
+
+        telegramBotConfig.sendMsg(sendMessage);
+    }
+
+    public void diabeats(Message message, BotUsersDTO dto, SendMessage sendMessage, String text) {
+        dto.setDiabets(text);
+        dto.setQuestionnaireStatus(TEMPERATURE);
+        TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
+
+        if (dto.getLanguageCode().equals(UZ)) {
+            sendMessage.setReplyMarkup(ButtonUtil.skip(UZ));
+            sendMessage.setText("Tempraturangizni kiriting\nYoki o'tkazib yuboring");
+        } else {
+            sendMessage.setText("Введите температуру\nИли пропустить");
+            sendMessage.setReplyMarkup(ButtonUtil.skip(RU));
+        }
+
+        telegramBotConfig.sendMsg(sendMessage);
+    }
+
+    public void tempratura(Message message, BotUsersDTO dto, SendMessage sendMessage, String text) {
+        dto.setTemprature(text);
         dto.setQuestionnaireStatus(PHONE);
         TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
 
@@ -294,7 +359,7 @@ public class MessageService {
     }
 
     private String getFormat(BotUsersDTO dto, String gender) {
-        return String.format("""
+        var str = String.format("""
                         <b>🔎 Iltimos, o'z ma'lumotlaringizni tekshirib chiqing.</b>
                                                     
                         <i>Ism: </i> %s
@@ -303,21 +368,33 @@ public class MessageService {
                         <i>Jinsingiz: </i> %s
                         <i>Bo'yingiz: </i> %s
                         <i>Vazningiz: </i> %s
-                        <i>Telefon raqam: </i> %s
-                                                    
-                         <b>Agar, o'z ma'lumotlaringizda xatoliklar bo'lsa uni
-                         qaytadan to'ldirib chiqing.
-                         </b>
                         """,
                 dto.getName(), dto.getSurname(),
                 dto.getBirthDate().toString(),
                 gender,
-                dto.getHeight(), dto.getWeight(),
-                dto.getPhone());
+                dto.getHeight(), dto.getWeight());
+
+
+        StringBuilder builder = new StringBuilder(str);
+        if (dto.getBloodPrassure() != null)
+            builder.append(String.format("<i>Qon bosim: </i> %s\n", dto.getBloodPrassure()));
+        if (dto.getDiabets() != null)
+            builder.append(String.format("<i>Qandli diabet: </i> %s\n", dto.getDiabets()));
+        if (dto.getTemprature() != null)
+            builder.append(String.format("<i>Tempratura: </i> %s\n", dto.getTemprature()));
+        if (dto.getHeartBeat() != null)
+            builder.append(String.format("<i>Yurak urishi: </i> %s\n", dto.getHeartBeat()));
+
+        builder.append(String.format("<i>Telefon raqam: </i> %s\n\n", dto.getPhone()));
+        builder.append("<b>Agar, o'z ma'lumotlaringizda xatoliklar bo'lsa uni\n" +
+                "qaytadan to'ldirib chiqing.\n" +
+                "</b>");
+
+        return builder.toString();
     }
 
     private String getFormatRU(BotUsersDTO dto, String gender) {
-        return String.format("""
+        var str= String.format("""
                         <b>🔎 Пожалуйста, проверьте вашу информацию.</b>
                                                     
                         <i>Имя: </i> %s
@@ -326,17 +403,28 @@ public class MessageService {
                         <i>твой пол: </i> %s
                         <i>Твой рост: </i> %s
                         <i>Твой вес: </i> %s
-                        <i>Номер телефона: </i> %s
-                                                    
-                         <b>Если в ваших данных есть ошибки
-                           Пожалуйста, заполните его снова.
-                         </b>
                         """,
                 dto.getName(), dto.getSurname(),
                 dto.getBirthDate().toString(),
                 gender,
-                dto.getHeight(), dto.getWeight(),
-                dto.getPhone());
+                dto.getHeight(), dto.getWeight());
+
+        StringBuilder builder = new StringBuilder(str);
+        if (dto.getBloodPrassure() != null)
+            builder.append(String.format("<i>Кровяное давление: </i> %s\n", dto.getBloodPrassure()));
+        if (dto.getDiabets() != null)
+            builder.append(String.format("<i>Диабет: </i> %s\n", dto.getDiabets()));
+        if (dto.getTemprature() != null)
+            builder.append(String.format("<i>Температура: </i> %s\n", dto.getTemprature()));
+        if (dto.getHeartBeat() != null)
+            builder.append(String.format("<i>Стук сердца: </i> %s\n", dto.getHeartBeat()));
+
+        builder.append(String.format("<i>Номер телефона: </i> %s\n\n", dto.getPhone()));
+        builder.append("<b>Если в ваших данных есть ошибки\n" +
+                "Пожалуйста, заполните его снова.\n" +
+                "</b>");
+
+        return builder.toString();
     }
 
     private boolean checkPhoneNumber(String phone) {

@@ -17,6 +17,7 @@ import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.HashMap;
@@ -68,12 +69,29 @@ public class TelegramBotConfig extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         long id = 0;
+        String tempText = "";
         boolean bln = false;
         if (update.hasCallbackQuery()) {
             id = update.getCallbackQuery().getMessage().getChatId();
         } else if (update.hasMessage()) {
+            if (update.getMessage().hasContact())
+                tempText = String.valueOf(update.getMessage().getContact());
+            else
+                tempText = update.getMessage().getText();
             id = update.getMessage().getChatId();
         }
+
+        if (!validationController.checkUSer(update) && !tempText.equals("/start")) {
+            var remove = new ReplyKeyboardRemove();
+            remove.setRemoveKeyboard(true);
+            var sendMsg = new SendMessage();
+            sendMsg.setText("Iltimos /start buyrug'ini bosing!\nПожалуйста, нажмите /start! ");
+            sendMsg.setChatId(String.valueOf(id));
+            sendMsg.setReplyMarkup(remove);
+            sendMsg(sendMsg);
+            return;
+        }
+
         if (Objects.equals(id, adminId)) {
             bln = true;
         } else

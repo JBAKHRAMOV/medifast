@@ -5,6 +5,7 @@ import com.company.service.ValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import static com.company.config.TelegramBotConfig.USER_LIST;
@@ -35,7 +36,7 @@ public class ValidationController {
             case ACTIVE -> bln = validationService.active(update);
             case FILL_FORM -> {
                 switch (user.getQuestionnaireStatus()) {
-                    case WEIGHT, BIRTH_DATE, HEIGHT, SURNAME, NAME -> bln = validationService.fillFormSome(update);
+                    case WEIGHT, BIRTH_DATE, HEIGHT, SURNAME, NAME ,BLOOD_PRESSURE, HEART_BEAT, TEMPERATURE, DIABETES-> bln = validationService.fillFormSome(update);
                     case PHONE -> bln = validationService.fillFormPhone(update);
                     case GENDER -> bln = validationService.fillFormGender(update);
                     case DEFAULT -> bln = validationService.fillFormDefault(update);
@@ -55,6 +56,14 @@ public class ValidationController {
             case CHANGE_LANG -> bln = validationService.changeLang(update);
         }
         return bln;
+    }
+
+    public boolean checkUSer(Update update) {
+        if (update.hasCallbackQuery())
+            return validationService.checkUser(update.getCallbackQuery().getMessage().getChatId());
+        else if (update.hasMessage())
+            return validationService.checkUser(update.getMessage().getChatId());
+        return false;
     }
 }
 

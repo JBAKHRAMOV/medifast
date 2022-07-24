@@ -3,6 +3,7 @@ package com.company.controller;
 import com.company.config.TelegramBotConfig;
 import com.company.dto.BotUsersDTO;
 import com.company.dto.ComplaintsDTO;
+import com.company.enums.UserQuestionnaireStatus;
 import com.company.repository.BotUsersRepository;
 import com.company.service.AudioService;
 import com.company.service.CallBackQueryService;
@@ -167,10 +168,20 @@ public class MessageController {
 
     public void fillFrom(Message message, BotUsersDTO user) {
         var qStatus = user.getQuestionnaireStatus();
+        String text="";
 
         var sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId().toString());
+        if (message.hasContact())
+            text = String.valueOf(message.getContact());
+        else
+            text= message.getText();
 
+        if (Objects.equals(SKIP_UZ, text) || Objects.equals(text,SKIP_RU)) {
+            System.out.println("if");
+            fillFromTemp(qStatus, message, user, sendMessage);
+            return;
+        }
 
         switch (qStatus) {
             case NAME -> messageService.name(message, user, sendMessage);
@@ -180,6 +191,19 @@ public class MessageController {
             case HEIGHT -> messageService.height(message, user, sendMessage);
             case WEIGHT -> messageService.weight(message, user, sendMessage);
             case PHONE -> messageService.phone(message, user, sendMessage);
+            case BLOOD_PRESSURE -> messageService.bloodPressure(message, user, sendMessage, text);
+            case HEART_BEAT -> messageService.heartBeats(message, user, sendMessage, text);
+            case TEMPERATURE -> messageService.tempratura(message, user, sendMessage, text);
+            case DIABETES -> messageService.diabeats(message, user, sendMessage, text);
+        }
+    }
+
+    public void fillFromTemp(UserQuestionnaireStatus qStatus, Message message, BotUsersDTO user, SendMessage sendMessage) {
+        switch (qStatus) {
+            case BLOOD_PRESSURE -> messageService.bloodPressure(message, user, sendMessage, null);
+            case HEART_BEAT -> messageService.heartBeats(message, user, sendMessage, null);
+            case TEMPERATURE -> messageService.tempratura(message, user, sendMessage, null);
+            case DIABETES -> messageService.diabeats(message, user, sendMessage, null);
         }
     }
 

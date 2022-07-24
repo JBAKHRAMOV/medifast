@@ -231,4 +231,8 @@ public class ValidationService {
         }
         return true;
     }
+
+    public boolean checkUser(Long id){
+        return USER_LIST.containsKey(id);
+    }
 }

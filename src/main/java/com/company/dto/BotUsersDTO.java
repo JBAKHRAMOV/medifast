@@ -30,6 +30,10 @@ public class BotUsersDTO implements Serializable {
     private String surname;
     private String phone;
     private LocalDate birthDate;
+    private String bloodPrassure;
+    private String heartBeat;
+    private String diabets;
+    private String temprature;
     private LanguageCode languageCode= UZ;
     private UserStatus status = UserStatus.NOT_ACTIVE;
     private UserQuestionnaireStatus questionnaireStatus = UserQuestionnaireStatus.DEFAULT;
@@ -39,6 +43,7 @@ public class BotUsersDTO implements Serializable {
     private Double currentTemperature;
     private Integer startLength = 0;
     private Integer finishLength = 2;
+    private Boolean checkUser=false;
 
     public BotUsersDTO(Long telegramId) {
         this.telegramId = telegramId;
