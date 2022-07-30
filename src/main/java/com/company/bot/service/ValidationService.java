@@ -38,7 +38,9 @@ public class ValidationService {
                         || text.equals(MENU_RU)
                         || text.equals(MENU_UZ)
                         || text.equals(CHANGE_LANG_RU)
-                        || text.equals(CHANGE_LANG_UZ)) {
+                        || text.equals(CHANGE_LANG_UZ)
+                        || text.equals(AGAIN_DATA_UZ)
+                        || text.equals(AGAIN_DATA_RU)) {
                     return true;
                 }
             }
@@ -232,7 +234,7 @@ public class ValidationService {
         return true;
     }
 
-    public boolean checkUser(Long id){
+    public boolean checkUser(Long id) {
         return USER_LIST.containsKey(id);
     }
 }

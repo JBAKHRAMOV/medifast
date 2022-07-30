@@ -28,7 +28,6 @@ public class ValidationController {
         } else if (update.hasMessage()) {
             user = TelegramBotConfig.USER_LIST.get(update.getMessage().getChatId());
         }
-        System.out.println(user.getStatus() + "  " + user.getQuestionnaireStatus());
 
         switch (user.getStatus()) {
             case ACTIVE -> bln = validationService.active(update);

@@ -289,14 +289,14 @@ public class InlineButtonUtil {
         return keyboard(rowList(row(button1),row( button2),row( button3)));
     }
 
-    public static InlineKeyboardMarkup next(LanguageCode languageCode) {
+    public static InlineKeyboardMarkup againDataWrite(LanguageCode languageCode) {
         var button1 = new InlineKeyboardButton();
         switch (languageCode) {
             case UZ -> {
-                button1 = button(SKIP_UZ, SKIP_UZ);
+                button1 = button(AGAIN_DATA_UZ, AGAIN_DATA_UZ);
             }
             case RU -> {
-                button1 = button(SKIP_RU, SKIP_RU);
+                button1 = button(AGAIN_DATA_RU, AGAIN_DATA_RU);
             }
         }
         return keyboard(rowList(row(button1)));

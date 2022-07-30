@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.util.LinkedList;
@@ -54,7 +55,13 @@ public class CallBackQueryController {
             callBackQueryService.handleCallBackConfirm(callbackQuery.getMessage());
         else if (data.equals(AGAIN_UZ)|| data.equals(AGAIN_RU))
             callBackQueryService.handleCallBackAgain(callbackQuery.getMessage(), callbackQuery.getFrom());
-
+        else if (user.getStatus().equals(ACTIVE)&& data.equals(AGAIN_DATA_RU)
+        ||user.getStatus().equals(ACTIVE)&& data.equals(AGAIN_DATA_UZ)) {
+            var sendMsg=new SendMessage();
+            sendMsg.setChatId(String.valueOf(callbackQuery.getMessage().getChatId()));
+            user.setStatus(FILL_FORM);
+            messageService.name(callbackQuery.getMessage(), user, sendMsg);
+        }
 
 
     }

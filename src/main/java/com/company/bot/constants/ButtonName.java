@@ -63,5 +63,8 @@ public class ButtonName {
     public static final String MENU_UZ = "Menuga qaytish ◀️";
     public static final String MENU_RU = "Вернуться в меню ◀️";
 
+    public static final String AGAIN_DATA_UZ = "Qayta yozish ✍️";
+    public static final String AGAIN_DATA_RU = "Переписать ✍️";
+
 
 }

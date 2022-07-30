@@ -29,6 +29,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import static com.company.bot.enums.admin.BroadcastMSGStatus.*;
+
 @Service
 @RequiredArgsConstructor
 public class AdminService {
@@ -43,7 +45,7 @@ public class AdminService {
     public void handleStartMessage(Message message) {
         var sendMessage = new SendMessage();
         var adminDTO = AdminDTO.getInstance();
-        adminDTO.setBroadcastMSGStatus(BroadcastMSGStatus.STARTED);
+        adminDTO.setBroadcastMSGStatus(STARTED);
         PhotoDetailDTO.getInstance().clear();
         TextDetailDTO.getInstance().clear();
         sendMessage.setChatId(String.valueOf(adminId));
@@ -66,16 +68,16 @@ public class AdminService {
         sendMessage.setChatId(String.valueOf(adminId));
 
         switch (adminDTO.getBroadcastMSGStatus()) {
-            case BroadcastMSGStatus.STARTED -> {
+            case STARTED -> {
                 sendMessage.setText("""
                         Barcha foydalanuvchilarga xabar jo'natish uchun, rasm yoki tekst jo'nating
                         """);
                 sendMessage.setReplyMarkup(remove);
 
                 telegramBotConfig.sendMsg(sendMessage);
-                adminDTO.setBroadcastMSGStatus(BroadcastMSGStatus.INSPECTION);
+                adminDTO.setBroadcastMSGStatus(INSPECTION);
             }
-            case BroadcastMSGStatus.INSPECTION -> {
+            case INSPECTION -> {
                 if (message.hasPhoto()) {
                     TextDetailDTO.getInstance().clear();
 
@@ -94,12 +96,12 @@ public class AdminService {
                     telegramBotConfig.sendMsg(sendMessage);
                 } else {
                     sendMessage.setText("Xatolik,  Iltimos qaytadan urinib ko'ring");
-                    adminDTO.setBroadcastMSGStatus(BroadcastMSGStatus.INSPECTION);
+                    adminDTO.setBroadcastMSGStatus(INSPECTION);
                     telegramBotConfig.sendMsg(sendMessage);
                 }
-                adminDTO.setBroadcastMSGStatus(BroadcastMSGStatus.CHECK_BTN);
+                adminDTO.setBroadcastMSGStatus(CHECK_BTN);
             }
-            case BroadcastMSGStatus.CHECK_BTN -> {
+            case CHECK_BTN -> {
                 String text = "";
                 if (message.hasText()) {
                     text = message.getText();
@@ -112,7 +114,7 @@ public class AdminService {
                                 """);
                         sendMessage.setReplyMarkup(remove);
                         telegramBotConfig.sendMsg(sendMessage);
-                        adminDTO.setBroadcastMSGStatus(BroadcastMSGStatus.INSPECTION);
+                        adminDTO.setBroadcastMSGStatus(INSPECTION);
                     }
                     case ButtonName.SEND -> {
                         var thread = new Thread(this::broadcastAMsg);
@@ -124,7 +126,7 @@ public class AdminService {
                         telegramBotConfig.sendMsg(sendMessage);
                     }
                 }
-                adminDTO.setBroadcastMSGStatus(BroadcastMSGStatus.STARTED);
+                adminDTO.setBroadcastMSGStatus(STARTED);
                 adminDTO.setStatus(null);
             }
             default -> throw new IllegalStateException("Unexpected value: " + adminDTO.getBroadcastMSGStatus());
