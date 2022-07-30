@@ -8,5 +8,5 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
 public class AuthResponseDTO {
-
+    private String name;
 }
