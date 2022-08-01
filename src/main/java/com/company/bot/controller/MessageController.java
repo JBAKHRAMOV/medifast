@@ -121,7 +121,6 @@ public class MessageController {
     private void start(Message message) {
         var user = usersRepository.findByTelegramId(message.getChatId());
         if (user.isEmpty()){
-            System.out.println("userif"+user);
             USER_LIST.put(message.getChatId(), new BotUsersDTO(message.getChatId()));}
         else {
             var entity = user.get();
@@ -137,7 +136,6 @@ public class MessageController {
             dto.setStatus(ACTIVE);
             USER_LIST.put(message.getChatId(), dto);
             callBackQueryService.backButton(message);
-            System.out.println("user else");
             return;
         }
 
