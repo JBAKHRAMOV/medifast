@@ -52,11 +52,12 @@ public class MessageController {
 
 
     public void messageController(Message message) {
-        System.out.println("khshs");
         var text = "";
         var user = USER_LIST.get(message.getChatId());
 
         if (Objects.equals(adminId, message.getFrom().getId())) {
+            if (message.getText().equals("/start"))
+                start(message);
             adminController.messageController(message);
             return;
         }
@@ -119,8 +120,9 @@ public class MessageController {
 
     private void start(Message message) {
         var user = usersRepository.findByTelegramId(message.getChatId());
-        if (user.isEmpty())
-            USER_LIST.put(message.getChatId(), new BotUsersDTO(message.getChatId()));
+        if (user.isEmpty()){
+            System.out.println("userif"+user);
+            USER_LIST.put(message.getChatId(), new BotUsersDTO(message.getChatId()));}
         else {
             var entity = user.get();
 
@@ -135,6 +137,7 @@ public class MessageController {
             dto.setStatus(ACTIVE);
             USER_LIST.put(message.getChatId(), dto);
             callBackQueryService.backButton(message);
+            System.out.println("user else");
             return;
         }
 
@@ -178,7 +181,6 @@ public class MessageController {
             text= message.getText();
 
         if (Objects.equals(SKIP_UZ, text) || Objects.equals(text,SKIP_RU)) {
-            System.out.println("if");
             fillFromTemp(qStatus, message, user, sendMessage);
             return;
         }

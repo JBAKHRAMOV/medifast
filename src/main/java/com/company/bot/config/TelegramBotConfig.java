@@ -82,6 +82,7 @@ public class TelegramBotConfig extends TelegramLongPollingBot {
         }
 
         if (!validationController.checkUSer(update) && !tempText.equals("/start")) {
+            System.out.println("if");
             var remove = new ReplyKeyboardRemove();
             remove.setRemoveKeyboard(true);
             var sendMsg = new SendMessage();

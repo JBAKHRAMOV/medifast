@@ -64,7 +64,6 @@ public class PhotoServise {
             sendMsg.setText("После того, как вы загрузили все изображения, нажмите «Готово»!");
         sendMsg.setReplyMarkup(ButtonUtil.photoNext(USER_LIST.get(message.getChatId()).getLanguageCode()));
         telegramBotConfig.sendMsg(sendMsg);
-        System.out.println(list);
     }
 
     public void inspectionPhotoSave(Message message) {
@@ -104,7 +103,6 @@ public class PhotoServise {
             sendMsg.setText("После того, как вы загрузили все изображения, нажмите «Готово»!");
         sendMsg.setReplyMarkup(ButtonUtil.photoNext(USER_LIST.get(message.getChatId()).getLanguageCode()));
         telegramBotConfig.sendMsg(sendMsg);
-        System.out.println(list);
     }
 }
 

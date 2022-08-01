@@ -22,6 +22,7 @@ public class AdminController {
     @Lazy
     private final TelegramBotConfig telegramBotConfig;
     private final AdminService adminService;
+
     @Value("${user.admin}")
     private Long adminId;
 

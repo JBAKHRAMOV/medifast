@@ -180,7 +180,6 @@ public class CallBackQueryService {
                 editMessageText.setReplyMarkup(ButtonUtil.complaintsMenu(RU));
             }
             telegramBotConfig.sendMsg(editMessageText);
-            System.out.println(USER_LIST.get(message.getChatId()));
         } else {
             var editMessageText = new SendMessage();
 
@@ -194,7 +193,6 @@ public class CallBackQueryService {
                 editMessageText.setReplyMarkup(InlineButtonUtil.againDataWrite(RU));
             }
             telegramBotConfig.sendMsg(editMessageText);
-            System.out.println(USER_LIST.get(message.getChatId()));
         }
     }
 
