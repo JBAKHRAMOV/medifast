@@ -12,7 +12,7 @@ public record CustomUserDetails(AdminEntity user) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        var authorities = new SimpleGrantedAuthority("ADMIN");
+        var authorities = new SimpleGrantedAuthority("ROLE_ADMIN");
 
         return Collections.singleton(authorities);
     }
