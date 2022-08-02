@@ -26,13 +26,11 @@ public class AuthorizationService {
 
         var jwt = JwtUtil.createJwt(admin.getId(), admin.getUsername());
 
-        /*return AuthResponseDTO.builder()
-                .id(admin.getId())
+        return AuthResponseDTO.builder()
                 .name(admin.getName())
                 .surname(admin.getSurname())
-                .email(admin.getEmail())
+                .username(admin.getUsername())
                 .jwt(jwt)
-                .build();*/
-        return null;
+                .build();
     }
 }

@@ -9,4 +9,7 @@ import lombok.Data;
 @Builder
 public class AuthResponseDTO {
     private String name;
+    private String surname;
+    private String username;
+    private String jwt;
 }

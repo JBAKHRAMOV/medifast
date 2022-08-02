@@ -1,5 +1,6 @@
 package com.company.api.entity;
 
+import com.company.bot.service.MessageService;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,5 +18,4 @@ public class AdminEntity {
     private String name, surname;
     private String username;
     private String password;
-
 }
