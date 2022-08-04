@@ -1,7 +1,7 @@
 package com.company.api.entity;
 
 import com.company.api.enums.PatientStatus;
-import com.company.bot.entity.*;
+import com.company.bot.entity.BaseEntity;
 import com.company.bot.enums.Gender;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,8 +30,6 @@ public class PatientEntity extends BaseEntity {
     @Column
     private String height;
     @Column
-    private Double currentTemperature;
-    @Column
     private String bloodPressure;
     @Column
     private String heartBeat;
@@ -39,7 +37,6 @@ public class PatientEntity extends BaseEntity {
     private String diabetes;
     @Column
     private String temperature;
-
     @Column
     private String complaints;
     @Column
@@ -55,5 +52,7 @@ public class PatientEntity extends BaseEntity {
     @Column
     @Enumerated(EnumType.STRING)
     private PatientStatus status;
+    @Column
+    private String diagnosis;
 
 }

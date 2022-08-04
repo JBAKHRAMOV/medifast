@@ -1,11 +1,11 @@
 package com.company.api.entity;
 
 import com.company.bot.entity.BaseEntity;
-import com.company.bot.service.MessageService;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "admin")

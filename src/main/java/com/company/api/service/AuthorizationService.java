@@ -19,10 +19,10 @@ public class AuthorizationService {
 
         var admin = adminRepository
                 .findByUsername(dto.getUsername())
-                .orElseThrow(() -> new AppBadRequestException("Login or Password not valid."));
+                .orElseThrow(() -> new AppBadRequestException("Username or password is incorrect"));
 
         if (!encoder.matches(dto.getPassword(), admin.getPassword()))
-            throw new AppBadRequestException("Login or Password not valid");
+            throw new AppBadRequestException("Username or password is incorrect");
 
         var jwt = JwtUtil.createJwt(admin.getId(), admin.getUsername());
 
