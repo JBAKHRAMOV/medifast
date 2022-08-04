@@ -1,9 +1,13 @@
 package com.company.api.service;
 
+import com.company.api.dto.ImageDTO;
 import com.company.api.dto.PatientDTO;
+import com.company.api.dto.PatientFullResponseDTO;
+import com.company.api.entity.ImageEntity;
 import com.company.api.entity.PatientEntity;
 import com.company.api.enums.PatientStatus;
 import com.company.api.error.ItemNotFoundException;
+import com.company.api.repo.ImageRepository;
 import com.company.api.repo.PatientRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -13,11 +17,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 
 public class PatientService {
     private final PatientRepository patientRepository;
+    private final ImageRepository imageRepository;
     private final ModelMapper mapper;
 
     public void savePatient(PatientEntity entity) {
@@ -56,13 +63,29 @@ public class PatientService {
         return "deleted successfully";
     }
 
-    public PatientDTO getPatientById(Long id) {
+    public PatientFullResponseDTO getPatientById(Long id) {
+
         var entity = patientRepository.findById(id).orElseThrow(() -> new ItemNotFoundException(String.format("%s id patient not found", id)));
-        return toDTO(entity);
+        var patient = toDTO(entity);
+
+        var imageList = imageRepository.findAllByPatient(entity);
+
+        var imageDTOS = imageList.stream()
+                .map(this::toImageDTO)
+                .toList();
+
+        return PatientFullResponseDTO.builder()
+                .patient(patient)
+                .imageList(imageDTOS)
+                .build();
     }
 
 
     private PatientDTO toDTO(PatientEntity entity) {
         return mapper.map(entity, PatientDTO.class);
+    }
+
+    private ImageDTO toImageDTO(ImageEntity entity) {
+        return mapper.map(entity, ImageDTO.class);
     }
 }
