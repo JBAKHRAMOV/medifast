@@ -17,7 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -48,6 +48,7 @@ public class PatientService {
                 () -> new ItemNotFoundException(String.format("%s id patient not found", patientId))
         );
         entity.setStatus(status);
+        patientRepository.updateLastModifiedDate(LocalDateTime.now(), patientId);
         patientRepository.save(entity);
         return "Status updated successfully";
     }

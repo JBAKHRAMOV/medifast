@@ -1,23 +1,35 @@
 package com.company.api.dto;
 
 import com.company.api.enums.PatientStatus;
-import com.company.bot.entity.*;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.company.bot.enums.Gender;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PatientDTO implements Serializable {
     private Long id;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
-    private BotUsersEntity botUsers;
-    private ComplaintsEntity complaints;
-    private ComplaintsInfoEntity complaintsInfo;
-    private DrugsPhotoEntity drugsPhoto;
-    private InspectionPhotoEntity inspectionPhoto;
+    private String name;
+    private String surname;
+    private String phone;
+    private LocalDate birthDate;
+    private Gender gender;
+    private String weight;
+    private String height;
+    private Double currentTemperature;
+    private String bloodPressure;
+    private String heartBeat;
+    private String diabetes;
+    private String temperature;
+    private String complaints;
+    private String causeOfComplaint;
+    private String complaintStartedTime;
+    private String drugsList;
+    private String cigarette;
+    private String diseasesList;
     private PatientStatus status;
 }
