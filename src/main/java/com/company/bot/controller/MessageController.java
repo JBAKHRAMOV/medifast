@@ -163,6 +163,10 @@ public class MessageController {
         delete.setMessageId(id);
         telegramBotConfig.sendMsg(delete);
 
+        if (message.getChatId().equals(adminId)){
+            return;
+        }
+
         var sendMessage = new SendMessage();
         sendMessage.setReplyMarkup(remove);
         sendMessage.setChatId(String.valueOf(message.getChatId()));
