@@ -3,6 +3,7 @@ package com.company.bot.service;
 import com.company.api.entity.ImageEntity;
 import com.company.api.entity.PatientEntity;
 import com.company.api.enums.ImageType;
+import com.company.api.enums.PatientStatus;
 import com.company.api.repo.ImageRepository;
 import com.company.api.repo.PatientRepository;
 import com.company.bot.dto.*;
@@ -550,6 +551,7 @@ public class CallBackQueryService {
         patient.setBloodPressure(dto.getBloodPrassure());
         patient.setHeartBeat(dto.getHeartBeat());
         patient.setDiabetes(dto.getDiabets());
+        patient.setStatus(PatientStatus.PENDING);
         patient.setTemperature(dto.getTemprature());
         var id = patientRepository.save(patient).getId();
         dto.setTempPatientId(id);

@@ -1,5 +1,6 @@
 package com.company.bot.controller;
 
+import com.company.bot.dto.UserPhotoDTO;
 import com.company.bot.service.AudioService;
 import com.company.bot.service.PhotoServise;
 import com.company.bot.util.button.InlineButtonUtil;
@@ -25,8 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.company.bot.config.TelegramBotConfig.USER_COMPLAINT;
-import static com.company.bot.config.TelegramBotConfig.USER_LIST;
+import static com.company.bot.config.TelegramBotConfig.*;
 import static com.company.bot.constants.ButtonName.*;
 import static com.company.bot.enums.UserQuestionnaireStatus.*;
 import static com.company.bot.enums.UserStatus.*;
@@ -97,6 +97,10 @@ public class MessageController {
                 USER_LIST.put(user.getTelegramId(), user);
                 List<ComplaintsDTO> list = new LinkedList<>();
                 USER_COMPLAINT.put(message.getChatId(), list);
+                List<UserPhotoDTO> inspectionList=new LinkedList<>();
+                USER_PHOTOS_INSPECTION.put(message.getChatId(), inspectionList);
+                List<UserPhotoDTO> drugsList=new LinkedList<>();
+                USER_PHOTOS_DRUGS.put(message.getChatId(),drugsList);
                 complaintsMessageController.complentsButtonList(message, user, 1);
             }
         } else if (user.getStatus().equals(COMPLAIN_INFO)) {

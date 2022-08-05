@@ -104,6 +104,7 @@ public class PhotoServise {
         sendMsg.setReplyMarkup(ButtonUtil.photoNext(USER_LIST.get(message.getChatId()).getLanguageCode()));
         telegramBotConfig.sendMsg(sendMsg);
     }
+
 }
 
 
