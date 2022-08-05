@@ -1,7 +1,7 @@
 package com.company.api.controller;
 
 import com.company.api.dto.UpdatePasswordRequestDTO;
-import com.company.api.service.AdminService;
+import com.company.api.service.AdminApiService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/admin")
 @RequiredArgsConstructor
 @Api(tags = "Api for admin")
-public class AdminController {
-    private final AdminService adminService;
+public class AdminApiController {
+    private final AdminApiService adminService;
 
     @PutMapping("/update-password")
     @PreAuthorize("hasRole('ADMIN')")

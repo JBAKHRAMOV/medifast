@@ -40,10 +40,11 @@ public class BotUsersDTO implements Serializable {
     private Gender gender;
     private String weight;
     private String height;
-    private Double currentTemperature;
     private Integer startLength = 0;
     private Integer finishLength = 2;
     private Boolean checkUser=false;
+
+    private Long tempPatientId;
 
     public BotUsersDTO(Long telegramId) {
         this.telegramId = telegramId;

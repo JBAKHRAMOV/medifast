@@ -70,7 +70,7 @@ public class TelegramBotConfig extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         long id = 0;
         String tempText = "";
-        boolean bln = false;
+        boolean bln;
         if (update.hasCallbackQuery()) {
             id = update.getCallbackQuery().getMessage().getChatId();
         } else if (update.hasMessage()) {

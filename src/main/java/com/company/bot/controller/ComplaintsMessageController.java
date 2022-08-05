@@ -64,8 +64,4 @@ public class ComplaintsMessageController {
     public void result(Message message, BotUsersDTO user) {
         complaintsMessageService.result(message, user.getLanguageCode());
     }
-
-    public void nextComplaint(Message message) {
-
-    }
 }

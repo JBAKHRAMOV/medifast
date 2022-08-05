@@ -37,7 +37,7 @@ public class ComplaintsMessageService {
         sendMessage.setReplyMarkup(remove);
         sendMessage.setChatId(String.valueOf(message.getChatId()));
         sendMessage.setText("Tayyorlanmoqda...");
-        Message message1=null;
+        Message message1;
         try {
             message1=telegramBotConfig.execute(sendMessage);
         } catch (TelegramApiException e) {
@@ -68,12 +68,12 @@ public class ComplaintsMessageService {
             switch (lang) {
                 case UZ -> {
                     for (var complaits : list) {
-                        str.append(count++ + ". "+complaits.getNameUz()).append("\n");
+                        str.append(count++).append(". ").append(complaits.getNameUz()).append("\n");
                     }
                 }
                 case RU -> {
                     for (var complaits : list) {
-                        str.append(count++ + ". "+complaits.getNameRu()).append("\n");
+                        str.append(count++).append(". ").append(complaits.getNameRu()).append("\n");
                     }
                 }
             }

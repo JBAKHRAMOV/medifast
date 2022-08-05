@@ -80,13 +80,8 @@ public class ButtonUtil {
         KeyboardButton keyboardButton = new KeyboardButton();
 
         switch (languageCode) {
-            case UZ -> {
-                keyboardButton.setText(SKIP_UZ);
-
-            }
-            case RU -> {
-                keyboardButton.setText(SKIP_RU);
-            }
+            case UZ -> keyboardButton.setText(SKIP_UZ);
+            case RU -> keyboardButton.setText(SKIP_RU);
         }
         row.add(keyboardButton);
 
@@ -123,22 +118,6 @@ public class ButtonUtil {
         return keyboardMarkup;
     }
 
-    public static ReplyKeyboardMarkup comlaintsStop(LanguageCode languageCode) {
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        List<KeyboardRow> keyboard = new ArrayList<>();
-        KeyboardRow row = new KeyboardRow();
-
-        keyboard.add(row);
-        switch (languageCode) {
-            case UZ -> row.add(STOP_UZ);
-            case RU -> row.add(STOP_RU);
-            default -> throw new IllegalStateException("Unexpected value: " + languageCode);
-        }
-
-        keyboardMarkup.setKeyboard(keyboard);
-        keyboardMarkup.setResizeKeyboard(true);
-        return keyboardMarkup;
-    }
     public static ReplyKeyboardMarkup adminMainMenu(){
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard = new ArrayList<>();
@@ -173,12 +152,8 @@ public class ButtonUtil {
         KeyboardRow row = new KeyboardRow();
         keyboard.add(row);
         switch (languageCode) {
-            case UZ -> {
-                row.add(SKIP_UZ);
-            }
-            case RU -> {
-                row.add(SKIP_RU);
-            }
+            case UZ -> row.add(SKIP_UZ);
+            case RU -> row.add(SKIP_RU);
         }
         keyboardMarkup.setKeyboard(keyboard);
         keyboardMarkup.setResizeKeyboard(true);
@@ -190,12 +165,8 @@ public class ButtonUtil {
         KeyboardRow row = new KeyboardRow();
         keyboard.add(row);
         switch (languageCode) {
-            case UZ -> {
-                row.add(STOP_UZ);
-            }
-            case RU -> {
-                row.add(STOP_RU);
-            }
+            case UZ -> row.add(STOP_UZ);
+            case RU -> row.add(STOP_RU);
         }
         keyboardMarkup.setKeyboard(keyboard);
         keyboardMarkup.setResizeKeyboard(true);
@@ -229,15 +200,10 @@ public class ButtonUtil {
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
-        KeyboardRow row2 = new KeyboardRow();
         keyboard.add(row);
         switch (languageCode) {
-            case UZ -> {
-                row.add(MENU_UZ);
-            }
-            case RU -> {
-                row.add(MENU_RU);
-            }
+            case UZ -> row.add(MENU_UZ);
+            case RU -> row.add(MENU_RU);
         }
         keyboardMarkup.setKeyboard(keyboard);
         keyboardMarkup.setResizeKeyboard(true);

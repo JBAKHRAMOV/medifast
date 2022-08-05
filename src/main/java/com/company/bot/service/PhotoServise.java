@@ -36,7 +36,7 @@ public class PhotoServise {
         sendPhoto.setCaption("name: " + USER_LIST.get(message.getChatId()).getName());
         sendPhoto.setChatId("-100"+channelId);
 
-        Message tempMessage = null;
+        Message tempMessage;
         try {
             tempMessage = telegramBotConfig.execute(sendPhoto);
         } catch (TelegramApiException e) {
@@ -75,7 +75,7 @@ public class PhotoServise {
         sendPhoto.setCaption("name: " + USER_LIST.get(message.getChatId()).getName());
         sendPhoto.setChatId("-100"+channelId);
 
-        Message tempMessage = null;
+        Message tempMessage;
         try {
             tempMessage = telegramBotConfig.execute(sendPhoto);
         } catch (TelegramApiException e) {

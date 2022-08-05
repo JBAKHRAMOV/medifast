@@ -37,15 +37,6 @@ public class ButtonName {
     public static final String STOP_UZ = "Tugatish ✅";
     public static final String STOP_RU = "Готово ✅";
 
-    public static final String MESSAGE_SEND_UZ = "Tog'ri";
-
-    public static final String MESSAGE_SEND_RU = "Правильно";
-
-
-    public static final String MESSAGE_SEND_STOP_UZ = "Rad etish";
-
-    public static final String MESSAGE_SEND_STOP_RU = "отклонять";
-
     public static final String NEXT_UZ = "Keyingisi ➡️";
     public static final String NEXT_RU = "следующий ➡️";
 

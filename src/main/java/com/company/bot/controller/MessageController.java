@@ -169,7 +169,7 @@ public class MessageController {
 
     public void fillFrom(Message message, BotUsersDTO user) {
         var qStatus = user.getQuestionnaireStatus();
-        String text="";
+        String text;
 
         var sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId().toString());

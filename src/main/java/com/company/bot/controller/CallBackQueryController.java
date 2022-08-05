@@ -68,44 +68,48 @@ public class CallBackQueryController {
 
     public void complaintFrom(CallbackQuery callbackQuery) {
         String data = callbackQuery.getData();
-        if (data.equals(NEXT_UZ) || data.equals(NEXT_RU)) {
-            var user = USER_LIST.get(callbackQuery.getMessage().getChatId());
-            user.setStartLength(ComplaintsService.COMPLAINTS_LIST.size() / 2);
-            user.setFinishLength(1);
-            USER_LIST.put(callbackQuery.getMessage().getChatId(), user);
-            complaintsMessageController.complaintsForm(data, callbackQuery.getMessage());
-        } else if (data.equals(BACK_UZ) || data.equals(BACK_RU)) {
-            var user = USER_LIST.get(callbackQuery.getMessage().getChatId());
-            user.setStartLength(0);
-            user.setFinishLength(2);
-            USER_LIST.put(callbackQuery.getMessage().getChatId(), user);
-            complaintsMessageController.complaintsForm(data, callbackQuery.getMessage());
-        } else if (data.equals(STOP_UZ) || data.equals(STOP_RU)) {
-            complaintsMessageController.result(callbackQuery.getMessage(), USER_LIST.get(callbackQuery.getMessage().getChatId()));
-        } else if (data.equals(CONFIRM_UZ) || data.equals(CONFIRM_RU)) {
-            var user = USER_LIST.get(callbackQuery.getMessage().getChatId());
-            user.setStatus(COMPLAIN_INFO);
-            USER_LIST.put(callbackQuery.getMessage().getChatId(), user);
-            callBackQueryService.startComplaintsInfoQuestionUz(callbackQuery.getMessage(), user);
-        } else if (data.equals(AGAIN_UZ) || data.equals(AGAIN_RU)) {
-            var user = USER_LIST.get(callbackQuery.getMessage().getChatId());
-            user.setStartLength(0);
-            user.setFinishLength(2);
-            USER_LIST.put(callbackQuery.getMessage().getChatId(), user);
-            List<ComplaintsDTO> list = new LinkedList<>();
-            USER_COMPLAINT.put(callbackQuery.getMessage().getChatId(), list);
-            complaintsMessageController.complentsButtonList(callbackQuery.getMessage(), user, 0);
-        } else {
-            complaintsMessageController.complaintsForm(data, callbackQuery.getMessage());
+        switch (data) {
+            case NEXT_UZ, NEXT_RU -> {
+                var user = USER_LIST.get(callbackQuery.getMessage().getChatId());
+                user.setStartLength(ComplaintsService.COMPLAINTS_LIST.size() / 2);
+                user.setFinishLength(1);
+                USER_LIST.put(callbackQuery.getMessage().getChatId(), user);
+                complaintsMessageController.complaintsForm(data, callbackQuery.getMessage());
+            }
+            case BACK_UZ, BACK_RU -> {
+                var user = USER_LIST.get(callbackQuery.getMessage().getChatId());
+                user.setStartLength(0);
+                user.setFinishLength(2);
+                USER_LIST.put(callbackQuery.getMessage().getChatId(), user);
+                complaintsMessageController.complaintsForm(data, callbackQuery.getMessage());
+            }
+            case STOP_UZ, STOP_RU ->
+                    complaintsMessageController.result(callbackQuery.getMessage(), USER_LIST.get(callbackQuery.getMessage().getChatId()));
+            case CONFIRM_UZ, CONFIRM_RU -> {
+                var user = USER_LIST.get(callbackQuery.getMessage().getChatId());
+                user.setStatus(COMPLAIN_INFO);
+                USER_LIST.put(callbackQuery.getMessage().getChatId(), user);
+                callBackQueryService.startComplaintsInfoQuestionUz(callbackQuery.getMessage(), user);
+            }
+            case AGAIN_UZ, AGAIN_RU -> {
+                var user = USER_LIST.get(callbackQuery.getMessage().getChatId());
+                user.setStartLength(0);
+                user.setFinishLength(2);
+                USER_LIST.put(callbackQuery.getMessage().getChatId(), user);
+                List<ComplaintsDTO> list = new LinkedList<>();
+                USER_COMPLAINT.put(callbackQuery.getMessage().getChatId(), list);
+                complaintsMessageController.complentsButtonList(callbackQuery.getMessage(), user, 0);
+            }
+            default -> complaintsMessageController.complaintsForm(data, callbackQuery.getMessage());
         }
     }
 
     public void complaintsInfo(CallbackQuery callbackQuery) {
         var user = USER_LIST.get(callbackQuery.getMessage().getChatId());
         String data = callbackQuery.getData();
-        if (data.equals(SKIP_UZ) || data.equals(SKIP_RU))
+        if (data.equals(SKIP_UZ) || data.equals(SKIP_RU)) {
             callBackQueryService.result(callbackQuery.getMessage());
-        else if (data.equals(STOP_UZ)&& user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
+        } else if (data.equals(STOP_UZ)&& user.getQuestionnaireStatus().equals(INSPECTION_PAPERS)
                 || data.equals(STOP_RU)&& user.getQuestionnaireStatus().equals(INSPECTION_PAPERS))
             callBackQueryService.result(callbackQuery.getMessage());
         else if (data.equals(STOP_RU) && user.getQuestionnaireStatus().equals(DRUGS_LIST)

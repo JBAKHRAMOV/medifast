@@ -32,11 +32,6 @@ public class MessageService {
     @Lazy
     private final TelegramBotConfig telegramBotConfig;
 
-    public void rus(SendMessage sendMessage) {
-        sendMessage.setText("Rus tilidagi qismi hali yakuniga yetmadi \n\n /start buyrug'ini bosib O'zbek tilida sinab ko'ring! ");
-        telegramBotConfig.sendMsg(sendMessage);
-    }
-
     public void phone(Message message, BotUsersDTO dto, SendMessage sendMessage) {
         if (message.hasContact())
             dto.setPhone(message.getContact().getPhoneNumber());
@@ -383,9 +378,10 @@ public class MessageService {
             builder.append(String.format("<i>Yurak urishi: </i> %s\n", dto.getHeartBeat()));
 
         builder.append(String.format("<i>Telefon raqam: </i> %s\n\n", dto.getPhone()));
-        builder.append("<b>Agar, o'z ma'lumotlaringizda xatoliklar bo'lsa uni\n" +
-                "qaytadan to'ldirib chiqing.\n" +
-                "</b>");
+        builder.append("""
+                <b>Agar, o'z ma'lumotlaringizda xatoliklar bo'lsa uni
+                qaytadan to'ldirib chiqing.
+                </b>""");
 
         return builder.toString();
     }
@@ -417,9 +413,10 @@ public class MessageService {
             builder.append(String.format("<i>Стук сердца: </i> %s\n", dto.getHeartBeat()));
 
         builder.append(String.format("<i>Номер телефона: </i> %s\n\n", dto.getPhone()));
-        builder.append("<b>Если в ваших данных есть ошибки\n" +
-                "Пожалуйста, заполните его снова.\n" +
-                "</b>");
+        builder.append("""
+                <b>Если в ваших данных есть ошибки
+                Пожалуйста, заполните его снова.
+                </b>""");
 
         return builder.toString();
     }

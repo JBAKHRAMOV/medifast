@@ -37,7 +37,7 @@ public class AudioService {
         voiceMsg.setVoice(new InputFile(voice.getFileId()));
 
 
-        Message tempMessage = null;
+        Message tempMessage;
         try {
             tempMessage = telegramBotConfig.execute(voiceMsg);
         } catch (TelegramApiException e) {
@@ -61,10 +61,5 @@ public class AudioService {
         else
             sendMsg.setText("Когда начались жалобы?");
         telegramBotConfig.sendMsg(sendMsg);
-
-       /* var sendMsg = new SendMessage();
-        sendMsg.setText(link + tempMessage.getMessageId());
-        sendMsg.setChatId();
-        telegramBotConfig.sendMsg(sendMsg);*/
     }
 }

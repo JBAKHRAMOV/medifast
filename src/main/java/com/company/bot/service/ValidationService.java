@@ -10,7 +10,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.time.DateTimeException;
-import java.time.LocalDate;
 
 import static com.company.bot.config.TelegramBotConfig.USER_LIST;
 import static com.company.bot.constants.ButtonName.*;
@@ -83,10 +82,7 @@ public class ValidationService {
         if (update.hasMessage()) {
             var messege = update.getMessage();
             if (messege.hasText()) {
-                if (checkDate(messege))
-                    return true;
-                else
-                    return false;
+                return checkDate(messege);
             }
         }
         sendMsg(update.getMessage());
@@ -218,7 +214,7 @@ public class ValidationService {
     public boolean checkDate(Message message) {
 
         try {
-            LocalDate localDate = DateUtil.stringToDate(message.getText());
+            DateUtil.stringToDate(message.getText());
         } catch (DateTimeException e) {
             var lang = USER_LIST.get(message.getChatId()).getLanguageCode();
             var sendMsg = new SendMessage();

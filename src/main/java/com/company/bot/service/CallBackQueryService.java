@@ -1,5 +1,10 @@
 package com.company.bot.service;
 
+import com.company.api.entity.ImageEntity;
+import com.company.api.entity.PatientEntity;
+import com.company.api.enums.ImageType;
+import com.company.api.repo.ImageRepository;
+import com.company.api.repo.PatientRepository;
 import com.company.bot.dto.*;
 import com.company.bot.entity.*;
 import com.company.bot.util.button.ButtonUtil;
@@ -26,6 +31,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 
 import static com.company.bot.config.TelegramBotConfig.*;
@@ -48,6 +54,8 @@ public class CallBackQueryService {
     private final DrugsPhotoRepository drugsPhotoRepository;
     private final InspectionPhotoRepository inspectionPhotoRepository;
     private final GeneratePdfService generatePdfService;
+    private final PatientRepository patientRepository;
+    private final ImageRepository imageRepository;
 
     public void handleLangCodeUZ(Message message, User user) {
         var dto = USER_LIST.get(user.getId());
@@ -336,18 +344,18 @@ public class CallBackQueryService {
             builder.append("<b>🔎 Пожалуйста, проверьте вашу информацию: </b>\n");
 
             if (!dto.getCauseOfComplaint().startsWith(" https")) {
-                builder.append("Жалобы, которые привели к обращению: " + dto.getCauseOfComplaint() + "\n");
+                builder.append("Жалобы, которые привели к обращению: ").append(dto.getCauseOfComplaint()).append("\n");
             }
-            builder.append("Когда начались жалобы: " + dto.getComplaintStartedTime() + "\n");
+            builder.append("Когда начались жалобы: ").append(dto.getComplaintStartedTime()).append("\n");
             if (!dto.getCauseOfComplaint().isEmpty()) {
-                builder.append("Лекарства, которые вы принимали и принимаете: " + dto.getDrugsList() + "\n");
+                builder.append("Лекарства, которые вы принимали и принимаете: ").append(dto.getDrugsList()).append("\n");
             }
             switch (dto.getCigarette()) {
                 case CIGARETTA_NO_RU -> builder.append("Сигареты: не курю" + "\n");
                 case CIGARETTA_05_1_RU -> builder.append("Сигарета: 0,5-1 пачка" + "\n");
                 case CIGARETTA_1_2_RU -> builder.append("Сигареты: 1-2 пачки" + "\n");
             }
-            builder.append("Заболевания, от которых вы сейчас лечитесь:" + dto.getDiseasesList() + "\n");
+            builder.append("Заболевания, от которых вы сейчас лечитесь:").append(dto.getDiseasesList()).append("\n");
         }
 
         var remove = new ReplyKeyboardRemove();
@@ -368,21 +376,6 @@ public class CallBackQueryService {
         delete.setMessageId(id);
         telegramBotConfig.sendMsg(delete);
 
-
-        /*var str = String.format("""
-                        <b>🔎 Iltimos, o'z ma'lumotlaringizni tekshirib chiqing.</b>
-                                                    
-                        <i>Murojatga sabab bo’lgan shikoyatlar: </i> %s
-                        <i>Shikoyatlar boshlangan vaqt: </i> %s
-                        <i>Qabul qilgan va qilayotgan dorilar: </i> %s
-                        <i>Sigaret: </i> %s
-                        <i>Hozirda davolanayotgan kasalliklar: </i> %s
-                                                
-                        """,
-                dto.getCauseOfComplaint(), dto.getComplaintStartedTime(),
-                dto.getDrugsList(), dto.getCigarette(),
-                dto.getDiseasesList());*/
-
         var sendMsg = new SendMessage();
         sendMsg.setParseMode("HTML");
         sendMsg.setChatId(String.valueOf(message.getChatId()));
@@ -392,18 +385,23 @@ public class CallBackQueryService {
 
     }
 
+    @Transactional
     public void confirm(Message message) {
         var id = message.getChatId();
-        var comlaintsList = USER_COMPLAINT.get(id);
+        var complaintsList = USER_COMPLAINT.get(id);
         var infoDto = USER_COMPLAINT_INFO.get(id);
         var drugs_photo_list = USER_PHOTOS_DRUGS.get(id);
         var inspection_photo_list = USER_PHOTOS_INSPECTION.get(id);
         var user = USER_LIST.get(id);
+        var tempPatientId = user.getTempPatientId();
         user.setStatus(ACTIVE);
         USER_LIST.put(id, user);
 
-        if (!comlaintsList.isEmpty()) {
-            for (ComplaintsDTO dto : comlaintsList) {
+        if (!complaintsList.isEmpty()) {
+            if (complaintsRepository.existsByUserId(id))
+                complaintsRepository.removeAllByUserId(id);
+            var builder = new StringBuilder("Muammolar: ");
+            for (ComplaintsDTO dto : complaintsList) {
                 var entity = new ComplaintsEntity();
                 entity.setUserId(id);
                 entity.setNameUz(dto.getNameUz());
@@ -411,10 +409,16 @@ public class CallBackQueryService {
                 entity.setKey(dto.getKey());
                 entity.setCreatedDate(LocalDate.now());
                 complaintsRepository.save(entity);
+
+                builder.append(dto.getNameUz()).append(", ");
             }
+            patientRepository.updateComplaints(builder.toString(), tempPatientId);
+
         }
 
         if (infoDto != null) {
+            if (complaintsInfoRepository.existsByUserId(id))
+                complaintsInfoRepository.removeAllByUserId(id);
             var entity = new ComplaintsInfoEntity();
             entity.setUserId(id);
             entity.setCauseOfComplaint(infoDto.getCauseOfComplaint());
@@ -426,31 +430,52 @@ public class CallBackQueryService {
             if (infoDto.getInspectionPapers() != null)
                 entity.setInspectionPapers(infoDto.getInspectionPapers());
             complaintsInfoRepository.save(entity);
+
+            patientRepository.updateComplaintsInfo(infoDto.getCauseOfComplaint(), infoDto.getComplaintStartedTime(), infoDto.getDrugsList(), infoDto.getCigarette(),
+                    infoDto.getDiseasesList(), tempPatientId);
         }
 
         if (drugs_photo_list != null) {
+            if (drugsPhotoRepository.existsByUserId(id))
+                drugsPhotoRepository.removeAllByUserId(id);
             for (UserPhotoDTO dto : drugs_photo_list) {
                 var entity = new DrugsPhotoEntity();
                 entity.setUserId(id);
                 entity.setFielId(dto.getFileId());
                 entity.setLink(dto.getLink());
                 drugsPhotoRepository.save(entity);
+
+                var image = new ImageEntity();
+                image.setLink(dto.getLink());
+                image.setType(ImageType.DRUGS);
+                image.setPatient(patientRepository.findById(tempPatientId).get());
+                imageRepository.save(image);
             }
+
         }
 
         if (inspection_photo_list != null) {
+            if (inspectionPhotoRepository.existsByUserId(id))
+                inspectionPhotoRepository.removeAllByUserId(id);
             for (UserPhotoDTO dto : inspection_photo_list) {
                 var entity = new InspectionPhotoEntity();
                 entity.setUserId(id);
                 entity.setFielId(dto.getFileId());
                 entity.setLink(dto.getLink());
                 inspectionPhotoRepository.save(entity);
+                var image = new ImageEntity();
+                image.setLink(dto.getLink());
+                image.setType(ImageType.INSPECTION);
+                image.setPatient(patientRepository.findById(tempPatientId).get());
+                imageRepository.save(image);
             }
+
+
         }
         generatePdfService.createPdf(new PdfDTO(
                 user,
                 infoDto,
-                comlaintsList,
+                complaintsList,
                 drugs_photo_list,
                 inspection_photo_list
         ));
@@ -513,6 +538,22 @@ public class CallBackQueryService {
         entity.setTemprature(dto.getTemprature());
         entity.setHeartBeat(dto.getHeartBeat());
         botUsersService.saveUser(entity);
+
+        PatientEntity patient = new PatientEntity();
+        patient.setName(dto.getName());
+        patient.setSurname(dto.getSurname());
+        patient.setPhone(dto.getPhone());
+        patient.setBirthDate(dto.getBirthDate());
+        patient.setGender(dto.getGender());
+        patient.setWeight(dto.getWeight());
+        patient.setHeight(dto.getHeight());
+        patient.setBloodPressure(dto.getBloodPrassure());
+        patient.setHeartBeat(dto.getHeartBeat());
+        patient.setDiabetes(dto.getDiabets());
+        patient.setTemperature(dto.getTemprature());
+        var id = patientRepository.save(patient).getId();
+        dto.setTempPatientId(id);
+        USER_LIST.put(tgId, dto);
     }
 
     private boolean checkData(BotUsersDTO user) {

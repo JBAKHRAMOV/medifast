@@ -39,6 +39,7 @@ public class PatientEntity extends BaseEntity {
     private String temperature;
     @Column
     private String complaints;
+
     @Column
     private String causeOfComplaint;
     @Column
@@ -49,6 +50,7 @@ public class PatientEntity extends BaseEntity {
     private String cigarette;
     @Column
     private String diseasesList;
+
     @Column
     @Enumerated(EnumType.STRING)
     private PatientStatus status;

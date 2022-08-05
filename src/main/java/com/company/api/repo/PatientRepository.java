@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import javax.persistence.Column;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
@@ -13,4 +14,28 @@ public interface PatientRepository extends JpaRepository<PatientEntity, Long> {
     @Modifying
     @Query("update PatientEntity set lastModifiedDate=?1 where id=?2")
     void updateLastModifiedDate(LocalDateTime lastModifiedDate, Long id);
+
+
+    @Transactional
+    @Modifying
+    @Query("update PatientEntity set complaints=?1 where id=?2")
+    void updateComplaints(String complaints, Long id);
+
+
+    /*@Column
+    private String causeOfComplaint;
+    @Column
+    private String complaintStartedTime;
+    @Column
+    private String drugsList;
+    @Column
+    private String cigarette;
+    @Column
+    private String diseasesList;*/
+    @Transactional
+    @Modifying
+    @Query("update PatientEntity set causeOfComplaint=?1, complaintStartedTime=?2,drugsList=?3, " +
+            " cigarette=?4, diseasesList=?5 where id=?6")
+    void updateComplaintsInfo(String causeOfComplaint,String complaintStartedTime,String drugsList,String cigarette,
+                              String diseasesList,Long id);
 }
