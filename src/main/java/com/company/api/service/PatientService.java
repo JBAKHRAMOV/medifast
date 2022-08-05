@@ -67,10 +67,9 @@ public class PatientService {
 
     public PageImpl<PatientDTO> searchPatient(String value, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "created_date");
-
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Page<PatientEntity> entityPage = patientRepository.searchPatient(value, pageable);
+        Page<PatientEntity> entityPage = patientRepository.searchPatient(value.toUpperCase() + "%", pageable);
 
         List<PatientDTO> patientDTOS = entityPage.stream().map(this::toDTO).toList();
 
@@ -106,5 +105,4 @@ public class PatientService {
     private ImageDTO toImageDTO(ImageEntity entity) {
         return mapper.map(entity, ImageDTO.class);
     }
-
 }

@@ -26,7 +26,7 @@ public interface PatientRepository extends JpaRepository<PatientEntity, Long> {
     Page<PatientEntity> filterByStatus(String status, Pageable pageable);
 
 
-    @Query(value = "select * from  patient where  name like ?1 or phone like ?1 or surname like ?1", nativeQuery = true)
+    @Query(value = "select * from  patient where  upper(name) like ?1 or upper(phone) like ?1 or upper(surname) like ?1", nativeQuery = true)
     Page<PatientEntity> searchPatient(String value, Pageable pageable);
 
     /*@Column
