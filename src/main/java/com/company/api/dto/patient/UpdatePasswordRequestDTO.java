@@ -1,4 +1,4 @@
-package com.company.api.dto;
+package com.company.api.dto.patient;
 
 import lombok.Builder;
 import lombok.Data;

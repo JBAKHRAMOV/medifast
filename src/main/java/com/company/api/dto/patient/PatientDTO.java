@@ -1,4 +1,4 @@
-package com.company.api.dto;
+package com.company.api.dto.patient;
 
 import com.company.api.enums.PatientStatus;
 import com.company.bot.enums.Gender;

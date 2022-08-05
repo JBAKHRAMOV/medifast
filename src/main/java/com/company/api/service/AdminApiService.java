@@ -1,7 +1,7 @@
 package com.company.api.service;
 
 import com.company.api.dto.BotInfoDTO;
-import com.company.api.dto.UpdatePasswordRequestDTO;
+import com.company.api.dto.patient.UpdatePasswordRequestDTO;
 import com.company.api.error.AppBadRequestException;
 import com.company.api.error.ItemNotFoundException;
 import com.company.api.repo.AdminRepository;

@@ -1,6 +1,6 @@
 package com.company.api.controller;
 
-import com.company.api.dto.UpdatePasswordRequestDTO;
+import com.company.api.dto.patient.UpdatePasswordRequestDTO;
 import com.company.api.service.AdminApiService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

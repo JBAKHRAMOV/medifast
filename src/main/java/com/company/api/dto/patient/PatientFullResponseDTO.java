@@ -1,5 +1,6 @@
-package com.company.api.dto;
+package com.company.api.dto.patient;
 
+import com.company.api.dto.ImageDTO;
 import lombok.Builder;
 import lombok.Data;
 
