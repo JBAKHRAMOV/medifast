@@ -2,6 +2,7 @@ package com.company.api.controller;
 
 import com.company.api.dto.patient.PatientFullResponseDTO;
 import com.company.api.dto.patient.UpdateDiagnosisRequestDTO;
+import com.company.api.dto.patient.UpdatePatientStatusRequestDTO;
 import com.company.api.enums.PatientStatus;
 import com.company.api.service.PatientService;
 import io.swagger.annotations.Api;
@@ -10,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("api/v1/patient")
@@ -33,43 +36,42 @@ public class PatientController {
         return ResponseEntity.ok(patientService.getPagination(page, size));
     }
 
-    @GetMapping("/search")
+    @GetMapping("/search/{value}")
     @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "Search patient", notes = "This method using for searching patient name or phone number")
-    public ResponseEntity<?> searchPatient(@RequestParam String value,
+    public ResponseEntity<?> searchPatient(@PathVariable("value") String value,
                                            @RequestParam(value = "page", defaultValue = "0") int page,
                                            @RequestParam(value = "size", defaultValue = "10") int size) {
         return ResponseEntity.ok(patientService.searchPatient(value, page, size));
     }
 
-    @GetMapping("/filter")
+    @GetMapping("/filter/{status}")
     @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "Filter by status", notes = "This method using for filter patient by status")
-    public ResponseEntity<?> filterByStatus(@RequestParam PatientStatus status,
+    public ResponseEntity<?> filterByStatus(@PathVariable("status") PatientStatus status,
                                             @RequestParam(value = "page", defaultValue = "0") int page,
                                             @RequestParam(value = "size", defaultValue = "10") int size) {
         return ResponseEntity.ok(patientService.filterByStatus(status, page, size));
     }
 
-    @PutMapping("update-status")
+    @PutMapping("/update-status")
     @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "Update status", notes = "This method using for update patient status")
-    public ResponseEntity<?> updateStatus(@RequestParam PatientStatus status,
-                                          @RequestParam Long patientId) {
-        return ResponseEntity.ok(patientService.updateStatus(status, patientId));
+    public ResponseEntity<?> updateStatus(@RequestBody @Valid UpdatePatientStatusRequestDTO dto) {
+        return ResponseEntity.ok(patientService.updateStatus(dto));
     }
 
     @PutMapping("/update-diagnosis")
     @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "Update diagnosis", notes = "This method using for update patient diagnosis")
-    public ResponseEntity<?> updateDiagnosis(@RequestBody UpdateDiagnosisRequestDTO dto) {
+    public ResponseEntity<?> updateDiagnosis(@RequestBody @Valid UpdateDiagnosisRequestDTO dto) {
         return ResponseEntity.ok(patientService.updateDiagnosis(dto));
     }
 
-    @DeleteMapping("/delete/{id}")
+  /*  @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "Delete patient by id", notes = "this method using for delete patient by id")
     public ResponseEntity<?> deleteById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(patientService.deleteById(id));
-    }
+    }*/
 }

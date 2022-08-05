@@ -29,16 +29,6 @@ public interface PatientRepository extends JpaRepository<PatientEntity, Long> {
     @Query(value = "select * from  patient where  upper(name) like ?1 or upper(phone) like ?1 or upper(surname) like ?1", nativeQuery = true)
     Page<PatientEntity> searchPatient(String value, Pageable pageable);
 
-    /*@Column
-    private String causeOfComplaint;
-    @Column
-    private String complaintStartedTime;
-    @Column
-    private String drugsList;
-    @Column
-    private String cigarette;
-    @Column
-    private String diseasesList;*/
     @Transactional
     @Modifying
     @Query("update PatientEntity set causeOfComplaint=?1, complaintStartedTime=?2,drugsList=?3, " +

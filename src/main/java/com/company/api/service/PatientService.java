@@ -4,6 +4,7 @@ import com.company.api.dto.ImageDTO;
 import com.company.api.dto.patient.PatientDTO;
 import com.company.api.dto.patient.PatientFullResponseDTO;
 import com.company.api.dto.patient.UpdateDiagnosisRequestDTO;
+import com.company.api.dto.patient.UpdatePatientStatusRequestDTO;
 import com.company.api.entity.ImageEntity;
 import com.company.api.entity.PatientEntity;
 import com.company.api.enums.PatientStatus;
@@ -35,10 +36,10 @@ public class PatientService {
         return new PageImpl<>(list, pageable, pagination.getTotalElements());
     }
 
-    public String updateStatus(PatientStatus status, Long patientId) {
-        var entity = patientRepository.findById(patientId).orElseThrow(() -> new ItemNotFoundException(String.format("%s id patient not found", patientId)));
-        entity.setStatus(status);
-        patientRepository.updateLastModifiedDate(LocalDateTime.now(), patientId);
+    public String updateStatus(UpdatePatientStatusRequestDTO dto) {
+        var entity = patientRepository.findById(dto.getPatientId()).orElseThrow(() -> new ItemNotFoundException(String.format("%s id patient not found", dto.getPatientId())));
+        entity.setStatus(dto.getStatus());
+        patientRepository.updateLastModifiedDate(LocalDateTime.now(), dto.getPatientId());
         patientRepository.save(entity);
         return "Status updated successfully";
     }
@@ -103,6 +104,10 @@ public class PatientService {
     }
 
     private ImageDTO toImageDTO(ImageEntity entity) {
-        return mapper.map(entity, ImageDTO.class);
+        return ImageDTO.builder()
+                .link(entity.getLink())
+                .id(entity.getId())
+                .type(entity.getType())
+                .build();
     }
 }

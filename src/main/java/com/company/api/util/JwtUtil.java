@@ -2,7 +2,7 @@ package com.company.api.util;
 
 
 import com.company.api.dto.JwtDTO;
-import com.company.api.error.TimeExpiredException;
+import com.company.api.error.AppForbiddenException;
 import io.jsonwebtoken.*;
 
 import java.util.Date;
@@ -33,7 +33,7 @@ public class JwtUtil {
             String userName = (String) claims.get("userName");
             return new JwtDTO(id, userName);
         } catch (JwtException e) {
-            throw new TimeExpiredException("JWT time expired");
+            throw new AppForbiddenException("JWT incorrect or time expired");
         }
     }
 }

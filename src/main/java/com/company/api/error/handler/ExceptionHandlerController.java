@@ -18,9 +18,4 @@ public class ExceptionHandlerController {
     public ResponseEntity<?> handleForbidden(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
-
-    @ExceptionHandler({TimeExpiredException.class})
-    public ResponseEntity<?> handeGone(RuntimeException e) {
-        return ResponseEntity.status(HttpStatus.GONE).body(e.getMessage());
-    }
 }

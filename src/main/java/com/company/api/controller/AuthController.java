@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -23,7 +25,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @ApiOperation(value = "Login", notes = "method for login ")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthDTO dto) {
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody @Valid AuthDTO dto) {
         return ResponseEntity.ok(authorizationService.login(dto));
     }
 }

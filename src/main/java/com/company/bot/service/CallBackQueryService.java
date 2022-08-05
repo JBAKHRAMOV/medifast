@@ -401,7 +401,7 @@ public class CallBackQueryService {
         if (!complaintsList.isEmpty()) {
             if (complaintsRepository.existsByUserId(id))
                 complaintsRepository.removeAllByUserId(id);
-            var builder = new StringBuilder("Muammolar: ");
+            var builder = new StringBuilder();
             for (ComplaintsDTO dto : complaintsList) {
                 var entity = new ComplaintsEntity();
                 entity.setUserId(id);
@@ -431,6 +431,10 @@ public class CallBackQueryService {
             if (infoDto.getInspectionPapers() != null)
                 entity.setInspectionPapers(infoDto.getInspectionPapers());
             complaintsInfoRepository.save(entity);
+
+            if (infoDto.getDrugsList().isBlank()) {
+                infoDto.setDrugsList(null);
+            }
 
             patientRepository.updateComplaintsInfo(infoDto.getCauseOfComplaint(), infoDto.getComplaintStartedTime(), infoDto.getDrugsList(), infoDto.getCigarette(),
                     infoDto.getDiseasesList(), tempPatientId);
@@ -473,14 +477,6 @@ public class CallBackQueryService {
 
 
         }
-        generatePdfService.createPdf(new PdfDTO(
-                user,
-                infoDto,
-                complaintsList,
-                drugs_photo_list,
-                inspection_photo_list
-        ));
-
         var delete = new DeleteMessage();
         delete.setMessageId(message.getMessageId());
         delete.setChatId(String.valueOf(message.getChatId()));
