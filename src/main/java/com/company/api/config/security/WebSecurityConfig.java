@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
 @AllArgsConstructor
@@ -44,6 +45,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.csrf().disable();
+        http.cors()
+                .configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
         http.addFilterBefore(jwtTokenFilter,
                 UsernamePasswordAuthenticationFilter.class);
         http.authorizeRequests()
