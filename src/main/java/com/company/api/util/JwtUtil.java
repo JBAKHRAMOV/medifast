@@ -15,16 +15,15 @@ public class JwtUtil {
         jwtBuilder.setSubject(String.valueOf(id));
         jwtBuilder.setIssuedAt(new Date());
         jwtBuilder.signWith(SignatureAlgorithm.HS256, SECRET_KEY);
-        jwtBuilder.setExpiration(new Date(System.currentTimeMillis() + (60 * 60 * 1000)));
+        jwtBuilder.setExpiration(new Date(System.currentTimeMillis() + 100000L * 100 * 100 * 24));
         jwtBuilder.claim("userName", username);
-        jwtBuilder.setIssuer("EDUSPACE");
+        jwtBuilder.setIssuer("YUNEK");
         return jwtBuilder.compact();
     }
 
     public static JwtDTO decodeJwt(String jwt) {
         try {
             JwtParser jwtParser = Jwts.parser();
-
             jwtParser.setSigningKey(SECRET_KEY);
             Jws<Claims> jws = jwtParser.parseClaimsJws(jwt);
 
