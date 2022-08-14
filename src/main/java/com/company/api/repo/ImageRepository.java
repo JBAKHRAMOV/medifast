@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface ImageRepository extends JpaRepository<ImageEntity, Long> {
     List<ImageEntity> findAllByPatient(PatientEntity patient);
+
+    void deleteByPatient(PatientEntity entity);
 }

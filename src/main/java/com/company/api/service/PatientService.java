@@ -47,7 +47,7 @@ public class PatientService {
     public String deleteById(Long id) {
 
         var entity = patientRepository.findById(id).orElseThrow(() -> new ItemNotFoundException(String.format("%s id patient not found", id)));
-
+        imageRepository.deleteByPatient(entity);
         patientRepository.delete(entity);
 
         return "deleted successfully";

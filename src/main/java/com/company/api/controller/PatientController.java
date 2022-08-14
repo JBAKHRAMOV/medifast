@@ -68,10 +68,10 @@ public class PatientController {
         return ResponseEntity.ok(patientService.updateDiagnosis(dto));
     }
 
-  /*  @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "Delete patient by id", notes = "this method using for delete patient by id")
     public ResponseEntity<?> deleteById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(patientService.deleteById(id));
-    }*/
+    }
 }

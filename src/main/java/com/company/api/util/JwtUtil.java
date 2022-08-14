@@ -4,9 +4,11 @@ package com.company.api.util;
 import com.company.api.dto.JwtDTO;
 import com.company.api.error.AppForbiddenException;
 import io.jsonwebtoken.*;
+import lombok.experimental.UtilityClass;
 
 import java.util.Date;
 
+@UtilityClass
 public class JwtUtil {
     private final static String SECRET_KEY = "aniq topolmaysan";
 
