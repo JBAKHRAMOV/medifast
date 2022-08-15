@@ -20,6 +20,7 @@ public class PatientDTO implements Serializable {
     private Gender gender;
     private String weight;
     private String height;
+    private String region;
     private Double currentTemperature;
     private String bloodPressure;
     private String heartBeat;

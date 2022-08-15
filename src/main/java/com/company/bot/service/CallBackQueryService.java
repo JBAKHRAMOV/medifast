@@ -54,7 +54,6 @@ public class CallBackQueryService {
     private final ComplaintsInfoRepository complaintsInfoRepository;
     private final DrugsPhotoRepository drugsPhotoRepository;
     private final InspectionPhotoRepository inspectionPhotoRepository;
-    private final GeneratePdfService generatePdfService;
     private final PatientRepository patientRepository;
     private final ImageRepository imageRepository;
 
@@ -182,7 +181,7 @@ public class CallBackQueryService {
 
             editMessageText.setChatId(String.valueOf(message.getChatId()));
             if (dto.getLanguageCode().equals(UZ)) {
-                editMessageText.setText("Bosh menu!");
+                editMessageText.setText("Bosh menyu!");
                 editMessageText.setReplyMarkup(ButtonUtil.complaintsMenu(UZ));
             } else {
                 editMessageText.setText("Главное меню!");
@@ -212,7 +211,7 @@ public class CallBackQueryService {
 
         editMessageText.setChatId(String.valueOf(message.getChatId()));
         if (dto.getLanguageCode().equals(UZ)) {
-            editMessageText.setText("Bosh menu");
+            editMessageText.setText("Bosh menyu!");
             editMessageText.setReplyMarkup(ButtonUtil.complaintsMenu(UZ));
         } else {
             editMessageText.setText("Информация получена ✅");
@@ -485,7 +484,7 @@ public class CallBackQueryService {
         var sendMsg = new SendMessage();
         sendMsg.setChatId(String.valueOf(message.getChatId()));
         if (user.getLanguageCode().equals(UZ))
-            sendMsg.setText(" Malumotlar qabul qilindi!\n Sizga aloqaga chiqamiz!");
+            sendMsg.setText(" Ma'lumotlar qabul qilindi!\n Sizga aloqaga chiqamiz!");
         else
             sendMsg.setText(" Информация получена!\n Мы свяжемся с вами!");
 
@@ -536,6 +535,9 @@ public class CallBackQueryService {
         entity.setHeartBeat(dto.getHeartBeat());
         botUsersService.saveUser(entity);
 
+        // TODO: 8/15/2022 ochiraman sout ni
+        System.out.println(dto.toString());
+
         PatientEntity patient = new PatientEntity();
         patient.setName(dto.getName());
         patient.setSurname(dto.getSurname());
@@ -544,6 +546,7 @@ public class CallBackQueryService {
         patient.setGender(dto.getGender());
         patient.setWeight(dto.getWeight());
         patient.setHeight(dto.getHeight());
+        patient.setRegion(dto.getRegion());
         patient.setBloodPressure(dto.getBloodPrassure());
         patient.setHeartBeat(dto.getHeartBeat());
         patient.setDiabetes(dto.getDiabets());

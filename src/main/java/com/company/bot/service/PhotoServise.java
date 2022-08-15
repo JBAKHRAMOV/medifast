@@ -59,7 +59,7 @@ public class PhotoServise {
         var sendMsg = new SendMessage();
         sendMsg.setChatId(String.valueOf(message.getChatId()));
         if (USER_LIST.get(message.getChatId()).getLanguageCode().equals(UZ))
-            sendMsg.setText("Barcha rasmlarni jo'natib bolganingizdan so'ng tugatish tugmasini bosing!");
+            sendMsg.setText("Barcha rasmlarni jo'natib bo'lganingizdan so'ng tugatish tugmasini bosing!");
         else
             sendMsg.setText("После того, как вы загрузили все изображения, нажмите «Готово»!");
         sendMsg.setReplyMarkup(ButtonUtil.photoNext(USER_LIST.get(message.getChatId()).getLanguageCode()));

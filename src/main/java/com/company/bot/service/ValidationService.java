@@ -104,8 +104,8 @@ public class ValidationService {
         if (update.hasMessage()) {
             if (update.getMessage().hasText()) {
                 var text = update.getMessage().getText();
-                if (text.equals(ABOUT_BOT_BTN_RU) ||
-                        text.equals(ABOUT_BOT_BTN_UZ) |
+                if (text.equals(ABOUT_DOCTOR_BTN_RU) ||
+                        text.equals(ABOUT_DOCTOR_BTN_UZ) |
                                 text.equals(FILL_FORM_BTN_RU) ||
                         text.equals(FILL_FORM_BTN_UZ)) {
                     return true;

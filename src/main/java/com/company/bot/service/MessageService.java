@@ -88,18 +88,32 @@ public class MessageService {
 
     public void weight(Message message, BotUsersDTO dto, SendMessage sendMessage) {
         dto.setWeight(message.getText());
-        dto.setQuestionnaireStatus(BLOOD_PRESSURE);
+        dto.setQuestionnaireStatus(REGION);
         TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
 
         if (dto.getLanguageCode().equals(UZ)) {
+            sendMessage.setText("Iltimos, yashash hududingizni kiriting");
+        } else {
+            sendMessage.setText("Пожалуйста, укажите свой район проживания");
+        }
+
+        telegramBotConfig.sendMsg(sendMessage);
+    }
+
+    public void region(Message message, BotUsersDTO dto, SendMessage sendMessage) {
+        dto.setRegion(message.getText());
+        dto.setQuestionnaireStatus(BLOOD_PRESSURE);
+        TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
+        if (dto.getLanguageCode().equals(UZ)) {
+            sendMessage.setText("Qon bosimingizni kiriting\nYoki o'tkazib yuboring");
             sendMessage.setReplyMarkup(ButtonUtil.skip(UZ));
-            sendMessage.setText("Qon bosimizgizni kiriting\nYoki o'tkazib yuboring");
         } else {
             sendMessage.setText("Введите свое кровяное давление\nИли пропустить");
             sendMessage.setReplyMarkup(ButtonUtil.skip(RU));
         }
 
         telegramBotConfig.sendMsg(sendMessage);
+
     }
 
     public void bloodPressure(Message message, BotUsersDTO dto, SendMessage sendMessage, String text) {
@@ -110,7 +124,7 @@ public class MessageService {
 
         if (dto.getLanguageCode().equals(UZ)) {
             sendMessage.setReplyMarkup(ButtonUtil.skip(UZ));
-            sendMessage.setText("Yurak urishi kiriting\nYoki o'tkazib yuboring");
+            sendMessage.setText("Yurak urish sonini kiriting\nYoki o'tkazib yuboring");
         } else {
             sendMessage.setText("Введите сердцебиение\nИли пропустить");
             sendMessage.setReplyMarkup(ButtonUtil.skip(RU));
@@ -126,7 +140,7 @@ public class MessageService {
 
         if (dto.getLanguageCode().equals(UZ)) {
             sendMessage.setReplyMarkup(ButtonUtil.skip(UZ));
-            sendMessage.setText("Qandli diabetingiz bolsa kirting\nYoki o'tkazib yuboring");
+            sendMessage.setText("Qandli diabetingiz bo'lsa kirting\nYoki o'tkazib yuboring");
         } else {
             sendMessage.setText("Введите, если у вас диабет\nИли пропустить");
             sendMessage.setReplyMarkup(ButtonUtil.skip(RU));
@@ -142,7 +156,7 @@ public class MessageService {
 
         if (dto.getLanguageCode().equals(UZ)) {
             sendMessage.setReplyMarkup(ButtonUtil.skip(UZ));
-            sendMessage.setText("Tempraturangizni kiriting\nYoki o'tkazib yuboring");
+            sendMessage.setText("Temperaturangizni kiriting\nYoki o'tkazib yuboring");
         } else {
             sendMessage.setText("Введите температуру\nИли пропустить");
             sendMessage.setReplyMarkup(ButtonUtil.skip(RU));
@@ -166,6 +180,7 @@ public class MessageService {
 
         telegramBotConfig.sendMsg(sendMessage);
     }
+
 
     public void height(Message message, BotUsersDTO dto, SendMessage sendMessage) {
         dto.setHeight(message.getText());
@@ -219,11 +234,12 @@ public class MessageService {
         TelegramBotConfig.USER_LIST.put(message.getChatId(), dto);
     }
 
+
     public void surname(Message message, BotUsersDTO dto, SendMessage sendMessage) {
         if (dto.getLanguageCode().equals(UZ))
             sendMessage.setText("Iltimos, familyangizni kiriting.");
         else
-            sendMessage.setText("Пожалуйста, введите свою фамилию.");
+            sendMessage.setText("Пожалуйста, введите Ваше фамилию.");
 
         telegramBotConfig.sendMsg(sendMessage);
 
@@ -329,7 +345,7 @@ public class MessageService {
         sendMsg.setChatId(String.valueOf(message.getChatId()));
         if (user.getLanguageCode().equals(UZ))
             sendMsg.setText("O’tkazilgan tekshiruv qog’ozlari bo’lsa rasmini yoki rasmga tushirib yuboring (ohirgi 2 oydagisi)" +
-                    "\nRasm jo'natib bo'lganingizdan so'ng tugatish tugamsini bosing ");
+                    "\nRasm jo'natib bo'lganingizdan so'ng tugatish tugmasini bosing ");
         else
             sendMsg.setText("Если у вас есть документы о проверке, сфотографируйте или пришлите фото (за последние 2 месяца)" +
                     "\nКогда вы закончите отправку изображения, нажмите кнопку «Готово».");
@@ -360,11 +376,13 @@ public class MessageService {
                         <i>Jinsingiz: </i> %s
                         <i>Bo'yingiz: </i> %s
                         <i>Vazningiz: </i> %s
+                        <i>Yashash hududingiz: </i> %s
                         """,
                 dto.getName(), dto.getSurname(),
                 dto.getBirthDate().toString(),
                 gender,
-                dto.getHeight(), dto.getWeight());
+                dto.getHeight(), dto.getWeight(),
+                dto.getRegion());
 
 
         StringBuilder builder = new StringBuilder(str);
@@ -387,7 +405,7 @@ public class MessageService {
     }
 
     private String getFormatRU(BotUsersDTO dto, String gender) {
-        var str= String.format("""
+        var str = String.format("""
                         <b>🔎 Пожалуйста, проверьте вашу информацию.</b>
                                                     
                         <i>Имя: </i> %s
@@ -396,11 +414,13 @@ public class MessageService {
                         <i>твой пол: </i> %s
                         <i>Твой рост: </i> %s
                         <i>Твой вес: </i> %s
+                        <i>ваш район: </i> %s
                         """,
                 dto.getName(), dto.getSurname(),
                 dto.getBirthDate().toString(),
                 gender,
-                dto.getHeight(), dto.getWeight());
+                dto.getHeight(), dto.getWeight(),
+                dto.getRegion());
 
         StringBuilder builder = new StringBuilder(str);
         if (dto.getBloodPrassure() != null)

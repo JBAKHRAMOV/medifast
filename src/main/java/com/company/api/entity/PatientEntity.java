@@ -30,6 +30,8 @@ public class PatientEntity extends BaseEntity {
     @Column
     private String height;
     @Column
+    private String region;
+    @Column
     private String bloodPressure;
     @Column
     private String heartBeat;

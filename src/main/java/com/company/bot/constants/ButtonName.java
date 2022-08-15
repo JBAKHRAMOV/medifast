@@ -3,8 +3,8 @@ package com.company.bot.constants;
 public class ButtonName {
     public static final String FILL_FORM_BTN_UZ = "✍️ Anketa to'ldirish";
     public static final String FILL_FORM_BTN_RU = "✍️ Заполните анкету";
-    public static final String ABOUT_BOT_BTN_UZ = "\uD83E\uDD16 Bot haqida ma'lumot";
-    public static final String ABOUT_BOT_BTN_RU = "\uD83E\uDD16 Информация о боте";
+    public static final String ABOUT_DOCTOR_BTN_UZ = "\uD83D\uDC68\u200D⚕️Doktor haqida ma'lumot";
+    public static final String ABOUT_DOCTOR_BTN_RU = "\uD83D\uDC68\u200D⚕️Информация о враче";
 
     public static final String SEND_CONTACT_UZ = "Raqaminmi jo'natish";
     public static final String SEND_CONTACT_RU = "Отправить контакты";
@@ -51,7 +51,7 @@ public class ButtonName {
     public static final String CIGARETTA_05_1_RU = "0.5-1 пачка \uD83D\uDEAC";
     public static final String CIGARETTA_1_2_RU = "1-2 пачка \uD83D\uDEAC";
 
-    public static final String MENU_UZ = "Menuga qaytish ◀️";
+    public static final String MENU_UZ = "Menyuga qaytish ◀️";
     public static final String MENU_RU = "Вернуться в меню ◀️";
 
     public static final String AGAIN_DATA_UZ = "Qayta yozish ✍️";

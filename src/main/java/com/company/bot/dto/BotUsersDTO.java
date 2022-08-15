@@ -40,6 +40,7 @@ public class BotUsersDTO implements Serializable {
     private Gender gender;
     private String weight;
     private String height;
+    private String region;
     private Integer startLength = 0;
     private Integer finishLength = 2;
     private Boolean checkUser=false;

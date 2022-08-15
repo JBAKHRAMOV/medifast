@@ -32,6 +32,9 @@ public class BotUsersEntity extends BaseEntity {
     private String phone;
 
     @Column
+    private String region;
+
+    @Column
     private LocalDate birthDate;
 
     @Column

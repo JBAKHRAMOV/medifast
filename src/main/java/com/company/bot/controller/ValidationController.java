@@ -33,7 +33,7 @@ public class ValidationController {
             case ACTIVE -> bln = validationService.active(update);
             case FILL_FORM -> {
                 switch (user.getQuestionnaireStatus()) {
-                    case WEIGHT, BIRTH_DATE, HEIGHT, SURNAME, NAME ,BLOOD_PRESSURE, HEART_BEAT, TEMPERATURE, DIABETES-> bln = validationService.fillFormSome(update);
+                    case WEIGHT, BIRTH_DATE, HEIGHT, REGION, SURNAME, NAME ,BLOOD_PRESSURE, HEART_BEAT, TEMPERATURE, DIABETES-> bln = validationService.fillFormSome(update);
                     case PHONE -> bln = validationService.fillFormPhone(update);
                     case GENDER -> bln = validationService.fillFormGender(update);
                     case DEFAULT -> bln = validationService.fillFormDefault(update);

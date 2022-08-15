@@ -22,11 +22,11 @@ public class ButtonUtil {
         switch (languageCode) {
             case UZ -> {
                 row.add(FILL_FORM_BTN_UZ);
-                row.add(ABOUT_BOT_BTN_UZ);
+                row.add(ABOUT_DOCTOR_BTN_UZ);
             }
             case RU -> {
                 row.add(FILL_FORM_BTN_RU);
-                row.add(ABOUT_BOT_BTN_RU);
+                row.add(ABOUT_DOCTOR_BTN_RU);
             }
         }
 
@@ -179,16 +179,17 @@ public class ButtonUtil {
         KeyboardRow row = new KeyboardRow();
         KeyboardRow row2 = new KeyboardRow();
         keyboard.add(row);
+        keyboard.add(row2);
         switch (languageCode) {
             case UZ -> {
                 row.add(FILL_FORM_BTN_UZ);
-                row.add(MENU_UZ);
-                row2.add(ABOUT_BOT_BTN_UZ);
+                row.add(ABOUT_DOCTOR_BTN_UZ);
+                row2.add(MENU_UZ);
             }
             case RU -> {
                 row.add(FILL_FORM_BTN_RU);
-                row.add(MENU_RU);
-                row2.add(ABOUT_BOT_BTN_RU);
+                row.add(ABOUT_DOCTOR_BTN_RU);
+                row2.add(MENU_RU);
             }
         }
         keyboardMarkup.setKeyboard(keyboard);

@@ -68,6 +68,7 @@ public class TelegramBotConfig extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+
         long id = 0;
         String tempText = "";
         boolean bln;
@@ -82,7 +83,6 @@ public class TelegramBotConfig extends TelegramLongPollingBot {
         }
 
         if (!validationController.checkUSer(update) && !tempText.equals("/start")) {
-            System.out.println("if");
             var remove = new ReplyKeyboardRemove();
             remove.setRemoveKeyboard(true);
             var sendMsg = new SendMessage();

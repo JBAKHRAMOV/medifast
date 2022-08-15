@@ -17,7 +17,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -50,6 +52,9 @@ public class MessageController {
     @Value("${user.admin}")
     private Long adminId;
 
+    @Value("${doctor.info.immage.fileId}")
+    private String docktorInfoImmage;
+
 
     public void messageController(Message message) {
         var text = "";
@@ -64,6 +69,7 @@ public class MessageController {
         if (text == null) {
             return;
         }
+
 
         if (message.hasText())
             text = message.getText();
@@ -97,10 +103,10 @@ public class MessageController {
                 USER_LIST.put(user.getTelegramId(), user);
                 List<ComplaintsDTO> list = new LinkedList<>();
                 USER_COMPLAINT.put(message.getChatId(), list);
-                List<UserPhotoDTO> inspectionList=new LinkedList<>();
+                List<UserPhotoDTO> inspectionList = new LinkedList<>();
                 USER_PHOTOS_INSPECTION.put(message.getChatId(), inspectionList);
-                List<UserPhotoDTO> drugsList=new LinkedList<>();
-                USER_PHOTOS_DRUGS.put(message.getChatId(),drugsList);
+                List<UserPhotoDTO> drugsList = new LinkedList<>();
+                USER_PHOTOS_DRUGS.put(message.getChatId(), drugsList);
                 complaintsMessageController.complentsButtonList(message, user, 1);
             }
         } else if (user.getStatus().equals(COMPLAIN_INFO)) {
@@ -118,15 +124,22 @@ public class MessageController {
             } else
                 complaintInfo(message, user);
 
+        } else if (text.equals(ABOUT_DOCTOR_BTN_UZ) ||
+                text.equals(ABOUT_DOCTOR_BTN_RU)) {
+            var sendP = new SendPhoto();
+            sendP.setChatId(String.valueOf(message.getChatId()));
+            sendP.setPhoto(new InputFile(docktorInfoImmage));
+            telegramBotConfig.sendMsg(sendP);
+
         }
     }
 
 
     private void start(Message message) {
         var user = usersRepository.findByTelegramId(message.getChatId());
-        if (user.isEmpty()){
-            USER_LIST.put(message.getChatId(), new BotUsersDTO(message.getChatId()));}
-        else {
+        if (user.isEmpty()) {
+            USER_LIST.put(message.getChatId(), new BotUsersDTO(message.getChatId()));
+        } else {
             var entity = user.get();
 
             var dto = new BotUsersDTO(entity.getTelegramId());
@@ -163,7 +176,7 @@ public class MessageController {
         delete.setMessageId(id);
         telegramBotConfig.sendMsg(delete);
 
-        if (message.getChatId().equals(adminId)){
+        if (message.getChatId().equals(adminId)) {
             return;
         }
 
@@ -184,9 +197,9 @@ public class MessageController {
         if (message.hasContact())
             text = String.valueOf(message.getContact());
         else
-            text= message.getText();
+            text = message.getText();
 
-        if (Objects.equals(SKIP_UZ, text) || Objects.equals(text,SKIP_RU)) {
+        if (Objects.equals(SKIP_UZ, text) || Objects.equals(text, SKIP_RU)) {
             fillFromTemp(qStatus, message, user, sendMessage);
             return;
         }
@@ -199,6 +212,7 @@ public class MessageController {
             case HEIGHT -> messageService.height(message, user, sendMessage);
             case WEIGHT -> messageService.weight(message, user, sendMessage);
             case PHONE -> messageService.phone(message, user, sendMessage);
+            case REGION -> messageService.region(message, user, sendMessage);
             case BLOOD_PRESSURE -> messageService.bloodPressure(message, user, sendMessage, text);
             case HEART_BEAT -> messageService.heartBeats(message, user, sendMessage, text);
             case TEMPERATURE -> messageService.tempratura(message, user, sendMessage, text);

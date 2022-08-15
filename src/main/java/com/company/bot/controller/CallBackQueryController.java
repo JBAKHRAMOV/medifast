@@ -1,9 +1,9 @@
 package com.company.bot.controller;
 
 
-import com.company.bot.service.ComplaintsService;
 import com.company.bot.dto.ComplaintsDTO;
 import com.company.bot.service.CallBackQueryService;
+import com.company.bot.service.ComplaintsService;
 import com.company.bot.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +39,8 @@ public class CallBackQueryController {
     public void callBackQueryController(CallbackQuery callbackQuery) {
         var user = USER_LIST.get(callbackQuery.getMessage().getChatId());
         String data = callbackQuery.getData();
+
+
         if (user.getStatus().equals(COMPLAIN_FROM)) complaintFrom(callbackQuery);
         else if (user.getStatus().equals(COMPLAIN_INFO)) complaintsInfo(callbackQuery);
         else if (user.getStatus().equals(CHANGE_LANG))
