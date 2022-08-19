@@ -1,16 +1,16 @@
 package com.company.bot.controller;
 
-import com.company.bot.dto.UserPhotoDTO;
-import com.company.bot.service.AudioService;
-import com.company.bot.service.PhotoServise;
-import com.company.bot.util.button.InlineButtonUtil;
 import com.company.bot.config.TelegramBotConfig;
 import com.company.bot.dto.BotUsersDTO;
 import com.company.bot.dto.ComplaintsDTO;
+import com.company.bot.dto.UserPhotoDTO;
 import com.company.bot.enums.UserQuestionnaireStatus;
 import com.company.bot.repository.BotUsersRepository;
+import com.company.bot.service.AudioService;
 import com.company.bot.service.CallBackQueryService;
 import com.company.bot.service.MessageService;
+import com.company.bot.service.PhotoServise;
+import com.company.bot.util.button.InlineButtonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +24,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -51,10 +52,6 @@ public class MessageController {
 
     @Value("${user.admin}")
     private Long adminId;
-
-    @Value("${doctor.info.immage.fileId}")
-    private String docktorInfoImmage;
-
 
     public void messageController(Message message) {
         var text = "";
@@ -128,7 +125,8 @@ public class MessageController {
                 text.equals(ABOUT_DOCTOR_BTN_RU)) {
             var sendP = new SendPhoto();
             sendP.setChatId(String.valueOf(message.getChatId()));
-            sendP.setPhoto(new InputFile(docktorInfoImmage));
+            File file = new File("src\\main\\resources\\immage\\doctorImmage.jpg");
+            sendP.setPhoto(new InputFile(file));
             telegramBotConfig.sendMsg(sendP);
 
         }
