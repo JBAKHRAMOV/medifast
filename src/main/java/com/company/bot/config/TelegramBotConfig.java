@@ -32,21 +32,18 @@ public class TelegramBotConfig extends TelegramLongPollingBot {
 
     public static final Map<Long, BotUsersDTO> USER_LIST = new HashMap<>();// userlar
     public static final Map<Long, ComplaintsInfoDTO> USER_COMPLAINT_INFO = new HashMap<>();// shikotlar yozilgani
-    public static final Map<Long, List<ComplaintsDTO>> USER_COMPLAINT = new HashMap();// Shikoyatlar button
+    public static final Map<Long, List<ComplaintsDTO>> USER_COMPLAINT = new HashMap<>();// Shikoyatlar button
     public static final Map<Long, List<UserPhotoDTO>> USER_PHOTOS_DRUGS = new HashMap<>();// dorilar rasmlari
 
     public static final Map<Long, List<UserPhotoDTO>> USER_PHOTOS_INSPECTION = new HashMap<>();// tekshiruv rasmlari
     //test
     @Lazy
-    @Autowired
-    private MessageController messageController;
+    private final MessageController messageController;
 
     @Lazy
-    @Autowired
-    private CallBackQueryController callBackQueryController;
+    private final CallBackQueryController callBackQueryController;
     @Lazy
-    @Autowired
-    private ValidationController validationController;
+    private final ValidationController validationController;
 
     @Value("${bot.name}")
     private String botUsername;
@@ -55,6 +52,12 @@ public class TelegramBotConfig extends TelegramLongPollingBot {
     private String botToken;
     @Value("${user.admin}")
     private Long adminId;
+
+    public TelegramBotConfig(MessageController messageController, CallBackQueryController callBackQueryController, ValidationController validationController) {
+        this.messageController = messageController;
+        this.callBackQueryController = callBackQueryController;
+        this.validationController = validationController;
+    }
 
     @Override
     public String getBotUsername() {
